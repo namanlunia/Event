@@ -8,6 +8,7 @@ import TimelinePreview from "@/components/home/TimelinePreview";
 import SponsorsSection from "@/components/home/SponsorsSection";
 import TestimonialsSection from "@/components/home/TestimonialsSection";
 import FAQSection from "@/components/home/FAQSection";
+import OmnikonBanner from "@/components/home/omnikon-banner";
 import { AboutThisSeasonNotice } from "@/components/visual/DemoModeBanner";
 
 export default function HomePage() {
@@ -39,6 +40,13 @@ export default function HomePage() {
 
       {/* "About this season" — honest transparency notice */}
       <AboutThisSeasonNotice />
+
+      {/* Omnikon HUD Animated Banner */}
+      <section className="relative py-12 md:py-16 z-10 border-t border-white/5">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <OmnikonBanner />
+        </div>
+      </section>
 
       {/* Frequently asked questions */}
       <FAQSection />
