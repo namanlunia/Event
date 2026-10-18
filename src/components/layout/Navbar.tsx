@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   ChevronDown,
   Menu,
@@ -11,18 +11,19 @@ import {
   Flame,
   Check,
 } from "lucide-react";
-import { DEMO_PERSONAS, useAppStore } from "@/lib/store";
-
+import { useAppStore, PERSONAS_LIST } from "@/lib/store";
 import { SEASON_LABEL } from "@/lib/season";
 import { DemoModeBanner } from "@/components/visual/DemoModeBanner";
 import { SITE_CONFIG } from "@/lib/site-config";
 
 export default function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [roleDropdownOpen, setRoleDropdownOpen] = useState(false);
-  const { currentPersona, switchRole } = useAppStore();
+  const [moreDropdownOpen, setMoreDropdownOpen] = useState(false);
+  const { activeRole, personaConfig, switchRole } = useAppStore();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -32,16 +33,21 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const navLinks = [
+  const primaryNavLinks = [
     { name: "Home", href: "/" },
     { name: "Projects", href: "/projects" },
     { name: "Leaderboard", href: "/leaderboard" },
     { name: "Timeline", href: "/timeline" },
     { name: "Mentors", href: "/mentors" },
     { name: "Ambassadors", href: "/ambassadors" },
+  ];
+
+  const moreNavLinks = [
     { name: "Rules & Points", href: "/rules" },
     { name: "Verify Cert", href: "/certificate" },
   ];
+
+  const isMoreActive = moreNavLinks.some((l) => pathname === l.href);
 
   return (
     <header
@@ -81,13 +87,13 @@ export default function Navbar() {
 
         {/* Desktop Navigation Links */}
         <nav className="hidden lg:flex items-center gap-1 xl:gap-2">
-          {navLinks.map((link) => {
+          {primaryNavLinks.map((link) => {
             const isActive = pathname === link.href;
             return (
               <Link
                 key={link.name}
                 href={link.href}
-                className={`px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
+                className={`px-3 py-2 text-sm font-medium rounded-lg whitespace-nowrap transition-all duration-200 ${
                   isActive
                     ? "text-white bg-white/5 border border-red-primary/40 shadow-red-glow-sm"
                     : "text-text-secondary hover:text-white hover:bg-white/[0.04]"
@@ -97,6 +103,43 @@ export default function Navbar() {
               </Link>
             );
           })}
+
+          {/* More Dropdown (Rules & Points, Verify Cert) */}
+          <div className="relative">
+            <button
+              onClick={() => setMoreDropdownOpen(!moreDropdownOpen)}
+              className={`flex items-center gap-1 px-3 py-2 text-sm font-medium rounded-lg whitespace-nowrap transition-all duration-200 ${
+                isMoreActive
+                  ? "text-white bg-white/5 border border-red-primary/40 shadow-red-glow-sm"
+                  : "text-text-secondary hover:text-white hover:bg-white/[0.04]"
+              }`}
+            >
+              <span>More</span>
+              <ChevronDown className="w-3.5 h-3.5" />
+            </button>
+
+            {moreDropdownOpen && (
+              <div className="absolute left-0 mt-2 w-44 bg-surface-1/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl p-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
+                {moreNavLinks.map((link) => {
+                  const isActive = pathname === link.href;
+                  return (
+                    <Link
+                      key={link.name}
+                      href={link.href}
+                      onClick={() => setMoreDropdownOpen(false)}
+                      className={`block px-3 py-2 text-xs font-medium rounded-lg whitespace-nowrap transition-colors ${
+                        isActive
+                          ? "bg-red-primary/15 text-red-bright font-bold"
+                          : "text-text-secondary hover:text-white hover:bg-white/5"
+                      }`}
+                    >
+                      {link.name}
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         </nav>
 
         {/* Right Action Section: Role Persona Switcher & Dashboard Access */}
@@ -111,8 +154,8 @@ export default function Navbar() {
               >
                 <div className="w-2 h-2 rounded-full bg-red-bright animate-ping"></div>
                 <span>Role:</span>
-                <span className="text-red-bright font-bold capitalize">
-                  {currentPersona.role.replace("_", " ")}
+                <span className="text-red-bright font-bold">
+                  {personaConfig.roleLabel}
                 </span>
                 <ChevronDown className="w-3.5 h-3.5" />
               </button>
@@ -121,20 +164,21 @@ export default function Navbar() {
                 <div className="absolute right-0 mt-2 w-72 bg-surface-1/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
                   <div className="px-3 py-2 border-b border-white/10 mb-1">
                     <p className="text-xs font-mono text-red-bright uppercase font-bold tracking-wider">
-                      Instant Persona Switcher
+                      Instant Role Switcher
                     </p>
                     <p className="text-[11px] text-text-muted">
                       Test role-based access & dashboards
                     </p>
                   </div>
                   <div className="space-y-1">
-                    {DEMO_PERSONAS.map((persona) => {
-                      const isSelected = currentPersona.role === persona.role;
+                    {PERSONAS_LIST.map((persona) => {
+                      const isSelected = activeRole === persona.id;
                       return (
                         <button
-                          key={persona.role}
+                          key={persona.id}
                           onClick={() => {
-                            switchRole(persona.role);
+                            switchRole(persona.id);
+                            router.push(persona.dashboardRoute);
                             setRoleDropdownOpen(false);
                           }}
                           className={`w-full flex items-center justify-between p-2 rounded-lg text-left transition-colors ${
@@ -145,12 +189,12 @@ export default function Navbar() {
                         >
                           <div className="flex items-center gap-2.5">
                             <div className="w-7 h-7 rounded-full bg-surface-2 border border-white/20 flex items-center justify-center font-bold text-white text-[10px]">
-                              {persona.name.charAt(0)}
+                              {persona.avatarInitials}
                             </div>
                             <div>
-                              <div className="text-xs font-semibold">{persona.name}</div>
+                              <div className="text-xs font-semibold">{persona.personaName}</div>
                               <div className="text-[10px] text-text-muted font-mono">
-                                {persona.title}
+                                {persona.roleLabel}
                               </div>
                             </div>
                           </div>
@@ -174,7 +218,7 @@ export default function Navbar() {
 
           {/* Direct Dashboard Link based on active Persona */}
           <Link
-            href={currentPersona.dashboardUrl}
+            href={personaConfig.dashboardRoute}
             className="flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg bg-red-primary hover:bg-red-bright text-white shadow-red-glow-sm hover:shadow-red-glow transition-all duration-200"
           >
             <Terminal className="w-3.5 h-3.5" />
@@ -185,7 +229,7 @@ export default function Navbar() {
         {/* Mobile Hamburger Toggle */}
         <div className="flex lg:hidden items-center gap-2">
           <Link
-            href={currentPersona.dashboardUrl}
+            href={personaConfig.dashboardRoute}
             className="p-2 text-xs font-mono rounded-lg bg-red-primary text-white"
           >
             Dashboard
@@ -204,7 +248,7 @@ export default function Navbar() {
       {mobileMenuOpen && (
         <div className="lg:hidden bg-surface-1/95 backdrop-blur-xl border-b border-white/10 px-4 py-6 space-y-4">
           <div className="space-y-1">
-            {navLinks.map((link) => (
+            {[...primaryNavLinks, ...moreNavLinks].map((link) => (
               <Link
                 key={link.name}
                 href={link.href}
@@ -218,41 +262,58 @@ export default function Navbar() {
                 {link.name}
               </Link>
             ))}
-            <Link
-              href="/register"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block px-3 py-2.5 rounded-lg text-sm font-medium text-text-secondary hover:text-white"
-            >
-              Register & Apply
-            </Link>
           </div>
 
+          {/* Mobile Role Switcher (DEMO_MODE ONLY) */}
           {SITE_CONFIG.DEMO_MODE && (
-            <div className="pt-4 border-t border-white/10">
-              <p className="text-xs font-mono text-text-muted uppercase mb-2">
-                Select Demo Persona
-              </p>
+            <div className="pt-4 border-t border-white/10 space-y-2">
+              <span className="text-[11px] font-mono text-text-muted uppercase tracking-wider block">
+                Switch Role Workspace:
+              </span>
               <div className="grid grid-cols-2 gap-2">
-                {DEMO_PERSONAS.map((p) => (
-                  <button
-                    key={p.role}
-                    onClick={() => {
-                      switchRole(p.role);
-                      setMobileMenuOpen(false);
-                    }}
-                    className={`p-2 rounded-lg text-left text-xs border ${
-                      currentPersona.role === p.role
-                        ? "border-red-bright bg-red-primary/10 text-white"
-                        : "border-white/5 bg-surface-2 text-text-secondary"
-                    }`}
-                  >
-                    <div className="font-bold">{p.name.split(" ")[0]}</div>
-                    <div className="text-[10px] text-text-muted">{p.role}</div>
-                  </button>
-                ))}
+                {PERSONAS_LIST.map((persona) => {
+                  const isSelected = activeRole === persona.id;
+                  return (
+                    <button
+                      key={persona.id}
+                      onClick={() => {
+                        switchRole(persona.id);
+                        router.push(persona.dashboardRoute);
+                        setMobileMenuOpen(false);
+                      }}
+                      className={`p-2 rounded-lg text-left text-xs border ${
+                        isSelected
+                          ? "bg-red-primary/20 border-red-bright text-white font-bold"
+                          : "bg-surface-2 border-white/5 text-text-secondary"
+                      }`}
+                    >
+                      <div className="font-semibold truncate">{persona.roleLabel}</div>
+                      <div className="text-[10px] text-text-muted truncate">
+                        {persona.personaName}
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
             </div>
           )}
+
+          <div className="pt-4 border-t border-white/10 flex flex-col gap-2">
+            <Link
+              href="/register"
+              onClick={() => setMobileMenuOpen(false)}
+              className="w-full text-center py-2.5 text-xs font-mono rounded-lg border border-white/10 text-white"
+            >
+              Register for OWOC
+            </Link>
+            <Link
+              href={personaConfig.dashboardRoute}
+              onClick={() => setMobileMenuOpen(false)}
+              className="w-full text-center py-2.5 text-xs font-semibold rounded-lg bg-red-primary text-white"
+            >
+              Open {personaConfig.roleLabel} Dashboard
+            </Link>
+          </div>
         </div>
       )}
     </header>

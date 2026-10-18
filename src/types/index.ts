@@ -102,13 +102,16 @@ export interface PullRequest {
   contributor_name: string;
   contributor_avatar: string;
   pr_number: number;
+  number?: number;
   pr_url: string;
   title: string;
   difficulty: "Easy" | "Medium" | "Hard";
   points_awarded: number;
   quality_bonus: number;
-  status: "pending" | "approved" | "merged" | "rejected";
+  quality_score?: number;
+  status: "pending" | "approved" | "merged" | "rejected" | "review_requested";
   mentor_feedback?: string;
+  mentor_notes?: string;
   merged_at?: string;
   created_at: string;
 }
@@ -116,11 +119,23 @@ export interface PullRequest {
 export interface PointsLedgerItem {
   id: string;
   user_id: string;
+  user_name?: string;
   points: number;
   reason: string;
   type: "pr_merge" | "streak_bonus" | "quality_bonus" | "mentor_bonus" | "referral" | "bonus";
   reference_id?: string;
   awarded_by?: string;
+  pr_id?: string;
+  pr_title?: string;
+  project_id?: string;
+  project_name?: string;
+  base_points?: number;
+  quality_bonus?: number;
+  streak_bonus?: number;
+  awarded_by_role?: string;
+  awarded_by_name?: string;
+  total_points?: number;
+  awarded_at?: string;
   created_at: string;
 }
 
@@ -230,6 +245,7 @@ export interface ProjectAdminApplication {
   email: string;
   github_username: string;
   project_name: string;
+  repository_name?: string;
   repo_url: string;
   project_desc: string;
   domain: ProjectDomain;
@@ -319,7 +335,7 @@ export interface ProjectAnnouncement {
 
 export interface InAppNotification {
   id: string;
-  user_id: string;
+  user_id?: string;
   role?: UserRole;
   title: string;
   message: string;
@@ -331,8 +347,10 @@ export interface InAppNotification {
 
 export interface AuditLogItem {
   id: string;
-  admin_id: string;
-  admin_email: string;
+  admin_id?: string;
+  admin_email?: string;
+  actor_role?: string;
+  actor_name?: string;
   action: string;
   target_type: string;
   target_id: string;

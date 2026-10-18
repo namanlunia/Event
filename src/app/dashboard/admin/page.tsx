@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   ShieldAlert,
   FolderGit2,
@@ -62,9 +63,11 @@ import {
 
 export default function SuperAdminDashboardPage() {
   return (
-    <RoleGuard allowedRoles={["super_admin"]}>
-      <SuperAdminDashboardContent />
-    </RoleGuard>
+    <Suspense fallback={<div className="p-8 text-neutral-400">Loading admin dashboard...</div>}>
+      <RoleGuard allowedRoles={["super_admin"]}>
+        <SuperAdminDashboardContent />
+      </RoleGuard>
+    </Suspense>
   );
 }
 
@@ -92,9 +95,10 @@ function SuperAdminDashboardContent() {
   } = useAppStore();
 
   const isDemo = SITE_CONFIG.DEMO_MODE;
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-  // Active Main Tab
-  const [activeTab, setActiveTab] = useState<
+  type AdminTab =
     | "overview"
     | "approvals"
     | "users"
@@ -106,8 +110,41 @@ function SuperAdminDashboardContent() {
     | "certificates"
     | "season"
     | "logs"
-    | "exports"
-  >("overview");
+    | "exports";
+
+  const [activeTab, setActiveTab] = useState<AdminTab>("overview");
+
+  useEffect(() => {
+    let tabParam = searchParams?.get("tab");
+    if (tabParam === "points") tabParam = "rules";
+    if (tabParam === "sponsors") tabParam = "content";
+    if (tabParam === "audit") tabParam = "logs";
+
+    const validTabs: AdminTab[] = [
+      "overview",
+      "approvals",
+      "users",
+      "projects",
+      "rules",
+      "leaderboard",
+      "badges",
+      "content",
+      "certificates",
+      "season",
+      "logs",
+      "exports",
+    ];
+
+    if (tabParam && validTabs.includes(tabParam as AdminTab)) {
+      setActiveTab(tabParam as AdminTab);
+    }
+  }, [searchParams]);
+
+  const handleTabChange = (newTab: AdminTab) => {
+    setActiveTab(newTab);
+    const queryTab = newTab === "rules" ? "points" : newTab === "content" ? "sponsors" : newTab === "logs" ? "audit" : newTab;
+    router.push(`/dashboard/admin?tab=${queryTab}`, { scroll: false });
+  };
 
   // Approvals Sub-Tab
   const [approvalsTab, setApprovalsTab] = useState<"projects" | "mentors" | "ambassadors" | "project_admins">("projects");
@@ -563,7 +600,7 @@ function SuperAdminDashboardContent() {
         ].map((tab) => (
           <button
             key={tab.id}
-            onClick={() => setActiveTab(tab.id as typeof activeTab)}
+            onClick={() => handleTabChange(tab.id as AdminTab)}
             className={`px-3.5 py-2.5 rounded-t-xl transition-colors font-bold whitespace-nowrap flex items-center gap-2 ${
               activeTab === tab.id
                 ? "bg-surface-1 border-t-2 border-red-bright text-white"

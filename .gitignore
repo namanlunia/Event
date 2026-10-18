@@ -42,3 +42,8 @@ Thumbs.db
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# qa artifacts & test screenshots
+qa/
+test-results/
+playwright-report/

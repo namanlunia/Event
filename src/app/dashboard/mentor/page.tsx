@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   Users,
   GitPullRequest,
@@ -45,9 +46,11 @@ import {
 
 export default function MentorDashboardPage() {
   return (
-    <RoleGuard allowedRoles={["mentor", "super_admin"]}>
-      <MentorDashboardContent />
-    </RoleGuard>
+    <Suspense fallback={<div className="p-8 text-neutral-400">Loading mentor dashboard...</div>}>
+      <RoleGuard allowedRoles={["mentor", "super_admin"]}>
+        <MentorDashboardContent />
+      </RoleGuard>
+    </Suspense>
   );
 }
 
@@ -66,7 +69,23 @@ function MentorDashboardContent() {
   } = useAppStore();
 
   const isDemo = SITE_CONFIG.DEMO_MODE;
-  const [activeTab, setActiveTab] = useState<"overview" | "mentees" | "reviews" | "office-hours" | "feedback" | "resources">("overview");
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  type MentorTab = "overview" | "mentees" | "reviews" | "office-hours" | "feedback" | "resources" | "guide";
+  const [activeTab, setActiveTab] = useState<MentorTab>("overview");
+
+  useEffect(() => {
+    const tabParam = searchParams?.get("tab") as MentorTab | null;
+    if (tabParam && ["overview", "mentees", "reviews", "office-hours", "feedback", "resources", "guide"].includes(tabParam)) {
+      setActiveTab(tabParam);
+    }
+  }, [searchParams]);
+
+  const handleTabChange = (newTab: MentorTab) => {
+    setActiveTab(newTab);
+    router.push(`/dashboard/mentor?tab=${newTab}`, { scroll: false });
+  };
 
   // Inactivity threshold (configurable N days, default 3)
   const [inactivityDaysThreshold, setInactivityDaysThreshold] = useState(3);
@@ -301,7 +320,7 @@ function MentorDashboardContent() {
       {/* Tabs Navigation */}
       <div className="flex border-b border-white/10 gap-2 overflow-x-auto pb-1 text-xs font-mono">
         <button
-          onClick={() => setActiveTab("overview")}
+          onClick={() => handleTabChange("overview")}
           className={`px-4 py-2.5 rounded-t-xl transition-colors font-bold whitespace-nowrap flex items-center gap-2 ${
             activeTab === "overview"
               ? "bg-surface-1 border-t-2 border-red-bright text-white"
@@ -313,7 +332,7 @@ function MentorDashboardContent() {
         </button>
 
         <button
-          onClick={() => setActiveTab("mentees")}
+          onClick={() => handleTabChange("mentees")}
           className={`px-4 py-2.5 rounded-t-xl transition-colors font-bold whitespace-nowrap flex items-center gap-2 ${
             activeTab === "mentees"
               ? "bg-surface-1 border-t-2 border-red-bright text-white"
@@ -325,7 +344,7 @@ function MentorDashboardContent() {
         </button>
 
         <button
-          onClick={() => setActiveTab("reviews")}
+          onClick={() => handleTabChange("reviews")}
           className={`px-4 py-2.5 rounded-t-xl transition-colors font-bold whitespace-nowrap flex items-center gap-2 ${
             activeTab === "reviews"
               ? "bg-surface-1 border-t-2 border-red-bright text-white"
@@ -337,7 +356,7 @@ function MentorDashboardContent() {
         </button>
 
         <button
-          onClick={() => setActiveTab("office-hours")}
+          onClick={() => handleTabChange("office-hours")}
           className={`px-4 py-2.5 rounded-t-xl transition-colors font-bold whitespace-nowrap flex items-center gap-2 ${
             activeTab === "office-hours"
               ? "bg-surface-1 border-t-2 border-red-bright text-white"
@@ -349,7 +368,7 @@ function MentorDashboardContent() {
         </button>
 
         <button
-          onClick={() => setActiveTab("feedback")}
+          onClick={() => handleTabChange("feedback")}
           className={`px-4 py-2.5 rounded-t-xl transition-colors font-bold whitespace-nowrap flex items-center gap-2 ${
             activeTab === "feedback"
               ? "bg-surface-1 border-t-2 border-red-bright text-white"
@@ -361,7 +380,7 @@ function MentorDashboardContent() {
         </button>
 
         <button
-          onClick={() => setActiveTab("resources")}
+          onClick={() => handleTabChange("resources")}
           className={`px-4 py-2.5 rounded-t-xl transition-colors font-bold whitespace-nowrap flex items-center gap-2 ${
             activeTab === "resources"
               ? "bg-surface-1 border-t-2 border-red-bright text-white"

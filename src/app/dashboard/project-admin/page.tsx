@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   FolderGit2,
   GitPullRequest,
@@ -47,9 +48,11 @@ import {
 
 export default function ProjectAdminDashboardPage() {
   return (
-    <RoleGuard allowedRoles={["project_admin", "super_admin"]}>
-      <ProjectAdminDashboardContent />
-    </RoleGuard>
+    <Suspense fallback={<div className="p-8 text-neutral-400">Loading project admin dashboard...</div>}>
+      <RoleGuard allowedRoles={["project_admin", "super_admin"]}>
+        <ProjectAdminDashboardContent />
+      </RoleGuard>
+    </Suspense>
   );
 }
 
@@ -72,9 +75,23 @@ function ProjectAdminDashboardContent() {
   } = useAppStore();
 
   const isDemo = SITE_CONFIG.DEMO_MODE;
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-  // Selected Active Tab
-  const [activeTab, setActiveTab] = useState<"overview" | "projects" | "submit" | "applications" | "issues" | "prs" | "announcements">("overview");
+  type AdminTab = "overview" | "projects" | "submit" | "applications" | "issues" | "prs" | "announcements";
+  const [activeTab, setActiveTab] = useState<AdminTab>("overview");
+
+  useEffect(() => {
+    const tabParam = searchParams?.get("tab") as AdminTab | null;
+    if (tabParam && ["overview", "projects", "submit", "applications", "issues", "prs", "announcements"].includes(tabParam)) {
+      setActiveTab(tabParam);
+    }
+  }, [searchParams]);
+
+  const handleTabChange = (newTab: AdminTab) => {
+    setActiveTab(newTab);
+    router.push(`/dashboard/project-admin?tab=${newTab}`, { scroll: false });
+  };
 
   // Selected Project for Deep Dive Tabbed View
   const [selectedProjectId, setSelectedProjectId] = useState<string>(projects[0]?.id || "");
@@ -356,7 +373,7 @@ function ProjectAdminDashboardContent() {
       {/* Navigation Tabs Bar */}
       <div className="flex border-b border-white/10 gap-2 overflow-x-auto pb-1 text-xs font-mono">
         <button
-          onClick={() => setActiveTab("overview")}
+          onClick={() => handleTabChange("overview")}
           className={`px-4 py-2.5 rounded-t-xl transition-colors font-bold whitespace-nowrap flex items-center gap-2 ${
             activeTab === "overview"
               ? "bg-surface-1 border-t-2 border-red-bright text-white"
@@ -368,7 +385,7 @@ function ProjectAdminDashboardContent() {
         </button>
 
         <button
-          onClick={() => setActiveTab("projects")}
+          onClick={() => handleTabChange("projects")}
           className={`px-4 py-2.5 rounded-t-xl transition-colors font-bold whitespace-nowrap flex items-center gap-2 ${
             activeTab === "projects"
               ? "bg-surface-1 border-t-2 border-red-bright text-white"
@@ -380,7 +397,7 @@ function ProjectAdminDashboardContent() {
         </button>
 
         <button
-          onClick={() => setActiveTab("submit")}
+          onClick={() => handleTabChange("submit")}
           className={`px-4 py-2.5 rounded-t-xl transition-colors font-bold whitespace-nowrap flex items-center gap-2 ${
             activeTab === "submit"
               ? "bg-surface-1 border-t-2 border-red-bright text-white"
@@ -392,7 +409,7 @@ function ProjectAdminDashboardContent() {
         </button>
 
         <button
-          onClick={() => setActiveTab("applications")}
+          onClick={() => handleTabChange("applications")}
           className={`px-4 py-2.5 rounded-t-xl transition-colors font-bold whitespace-nowrap flex items-center gap-2 ${
             activeTab === "applications"
               ? "bg-surface-1 border-t-2 border-red-bright text-white"
@@ -404,7 +421,7 @@ function ProjectAdminDashboardContent() {
         </button>
 
         <button
-          onClick={() => setActiveTab("issues")}
+          onClick={() => handleTabChange("issues")}
           className={`px-4 py-2.5 rounded-t-xl transition-colors font-bold whitespace-nowrap flex items-center gap-2 ${
             activeTab === "issues"
               ? "bg-surface-1 border-t-2 border-red-bright text-white"
@@ -416,7 +433,7 @@ function ProjectAdminDashboardContent() {
         </button>
 
         <button
-          onClick={() => setActiveTab("prs")}
+          onClick={() => handleTabChange("prs")}
           className={`px-4 py-2.5 rounded-t-xl transition-colors font-bold whitespace-nowrap flex items-center gap-2 ${
             activeTab === "prs"
               ? "bg-surface-1 border-t-2 border-red-bright text-white"
@@ -428,7 +445,7 @@ function ProjectAdminDashboardContent() {
         </button>
 
         <button
-          onClick={() => setActiveTab("announcements")}
+          onClick={() => handleTabChange("announcements")}
           className={`px-4 py-2.5 rounded-t-xl transition-colors font-bold whitespace-nowrap flex items-center gap-2 ${
             activeTab === "announcements"
               ? "bg-surface-1 border-t-2 border-red-bright text-white"
