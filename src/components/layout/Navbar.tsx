@@ -2,28 +2,25 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import {
   ChevronDown,
   Menu,
   X,
   Terminal,
   Flame,
-  Check,
 } from "lucide-react";
-import { useAppStore, PERSONAS_LIST } from "@/lib/store";
+import { useAppStore } from "@/lib/store";
 import { SEASON_LABEL } from "@/lib/season";
 import { DemoModeBanner } from "@/components/visual/DemoModeBanner";
 import { SITE_CONFIG } from "@/lib/site-config";
 
 export default function Navbar() {
   const pathname = usePathname();
-  const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [roleDropdownOpen, setRoleDropdownOpen] = useState(false);
   const [moreDropdownOpen, setMoreDropdownOpen] = useState(false);
-  const { activeRole, personaConfig, switchRole } = useAppStore();
+  const { personaConfig } = useAppStore();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -142,74 +139,8 @@ export default function Navbar() {
           </div>
         </nav>
 
-        {/* Right Action Section: Role Persona Switcher & Dashboard Access */}
+        {/* Right Action Section: Register & Dashboard Access */}
         <div className="hidden md:flex items-center gap-3">
-          {/* Quick Persona Switcher Modal/Dropdown (DEMO_MODE ONLY) */}
-          {SITE_CONFIG.DEMO_MODE && (
-            <div className="relative">
-              <button
-                onClick={() => setRoleDropdownOpen(!roleDropdownOpen)}
-                data-testid="navbar-role-switcher"
-                className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-1 border border-white/10 hover:border-red-primary/40 transition-colors text-xs font-mono text-text-secondary hover:text-white"
-                title="Test the platform as different stakeholders"
-              >
-                <div className="w-2 h-2 rounded-full bg-red-bright animate-ping"></div>
-                <span>Role:</span>
-                <span data-testid="navbar-current-role" className="text-red-bright font-bold">
-                  {personaConfig.roleLabel}
-                </span>
-                <ChevronDown className="w-3.5 h-3.5" />
-              </button>
-
-              {roleDropdownOpen && (
-                <div data-testid="navbar-role-menu" className="absolute right-0 mt-2 w-72 bg-surface-1/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
-                  <div className="px-3 py-2 border-b border-white/10 mb-1">
-                    <p className="text-xs font-mono text-red-bright uppercase font-bold tracking-wider">
-                      Instant Role Switcher
-                    </p>
-                    <p className="text-[11px] text-text-muted">
-                      Test role-based access & dashboards
-                    </p>
-                  </div>
-                  <div className="space-y-1">
-                    {PERSONAS_LIST.map((persona) => {
-                      const isSelected = activeRole === persona.id;
-                      return (
-                        <button
-                          key={persona.id}
-                          data-testid={`navbar-role-option-${persona.id}`}
-                          onClick={() => {
-                            switchRole(persona.id);
-                            router.push(persona.dashboardRoute);
-                            setRoleDropdownOpen(false);
-                          }}
-                          className={`w-full flex items-center justify-between p-2 rounded-lg text-left transition-colors ${
-                            isSelected
-                              ? "bg-red-primary/15 border border-red-primary/40 text-white"
-                              : "hover:bg-white/5 text-text-secondary hover:text-white"
-                          }`}
-                        >
-                          <div className="flex items-center gap-2.5">
-                            <div className="w-7 h-7 rounded-full bg-surface-2 border border-white/20 flex items-center justify-center font-bold text-white text-[10px]">
-                              {persona.avatarInitials}
-                            </div>
-                            <div>
-                              <div className="text-xs font-semibold">{persona.personaName}</div>
-                              <div className="text-[10px] text-text-muted font-mono">
-                                {persona.roleLabel}
-                              </div>
-                            </div>
-                          </div>
-                          {isSelected && <Check className="w-4 h-4 text-red-bright" />}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-
           {/* Register Link */}
           <Link
             href="/register"
@@ -225,17 +156,6 @@ export default function Navbar() {
           >
             <Terminal className="w-3.5 h-3.5" />
             <span>Dashboard</span>
-          </Link>
-
-          {/* User Profile Avatar with Initials */}
-          <Link
-            href={personaConfig.dashboardRoute}
-            data-testid="user-menu-avatar"
-            className="w-8 h-8 rounded-lg bg-surface-2 border border-white/15 hover:border-red-primary/40 flex items-center justify-center font-bold text-xs text-white transition-colors"
-            title={`${personaConfig.personaName} (${personaConfig.roleLabel})`}
-            aria-label={`User menu for ${personaConfig.personaName}`}
-          >
-            <span>{personaConfig.avatarInitials}</span>
           </Link>
         </div>
 
@@ -276,40 +196,6 @@ export default function Navbar() {
               </Link>
             ))}
           </div>
-
-          {/* Mobile Role Switcher (DEMO_MODE ONLY) */}
-          {SITE_CONFIG.DEMO_MODE && (
-            <div className="pt-4 border-t border-white/10 space-y-2">
-              <span className="text-[11px] font-mono text-text-muted uppercase tracking-wider block">
-                Switch Role Workspace:
-              </span>
-              <div className="grid grid-cols-2 gap-2">
-                {PERSONAS_LIST.map((persona) => {
-                  const isSelected = activeRole === persona.id;
-                  return (
-                    <button
-                      key={persona.id}
-                      onClick={() => {
-                        switchRole(persona.id);
-                        router.push(persona.dashboardRoute);
-                        setMobileMenuOpen(false);
-                      }}
-                      className={`p-2 rounded-lg text-left text-xs border ${
-                        isSelected
-                          ? "bg-red-primary/20 border-red-bright text-white font-bold"
-                          : "bg-surface-2 border-white/5 text-text-secondary"
-                      }`}
-                    >
-                      <div className="font-semibold truncate">{persona.roleLabel}</div>
-                      <div className="text-[10px] text-text-muted truncate">
-                        {persona.personaName}
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
 
           <div className="pt-4 border-t border-white/10 flex flex-col gap-2">
             <Link

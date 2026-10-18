@@ -22,13 +22,13 @@ test.describe('Role consistency, navigation, and persona synchronization', () =>
     // 1. Starts at / as a contributor
     await page.goto('/');
 
-    // Check navbar avatar initials for default contributor (Sarah Chen -> SC)
-    const navAvatar = page.locator('[data-testid="user-menu-avatar"]').first();
-    await expect(navAvatar).toBeVisible();
-    await expect(navAvatar).toHaveText('SC');
-
     // 2. Visits contributor dashboard
     await page.goto('/dashboard/contributor');
+
+    // Confirms user menu avatar initials for default contributor (Sarah Chen -> SC)
+    const userAvatar = page.locator('[data-testid="user-menu-avatar"]').first();
+    await expect(userAvatar).toBeVisible();
+    await expect(userAvatar).toHaveText('SC');
 
     // Confirms switcher says 'Contributor'
     const roleSwitcherCurrent = page.locator('[data-testid="role-switcher-current"]');
