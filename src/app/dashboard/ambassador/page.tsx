@@ -15,13 +15,30 @@ import {
   Flame,
   CheckCircle2,
 } from "lucide-react";
-import { MOCK_AMBASSADORS } from "@/data/mockDatabase";
+import { useAppStore } from "@/lib/store";
+import { SITE_CONFIG } from "@/lib/site-config";
+import { MOCK_AMBASSADORS } from "@/lib/demo-data";
+import { SampleBadge } from "@/components/visual/DemoModeBanner";
+import AvatarDisplay from "@/components/visual/AvatarDisplay";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export default function AmbassadorDashboard() {
-  const ambassador = MOCK_AMBASSADORS[0]; // Kabir Sen (IIT Bombay)
+  const { currentPersona } = useAppStore();
+  const isDemo = SITE_CONFIG.DEMO_MODE;
+  const demoAmbassador = isDemo && MOCK_AMBASSADORS.length > 0 ? MOCK_AMBASSADORS[0] : null;
+
   const [copied, setCopied] = useState(false);
 
-  const referralUrl = `https://owoc.omnikon.org?ref=${ambassador.referral_code}`;
+  const ambassadorName = demoAmbassador ? demoAmbassador.full_name : (currentPersona?.name || "Campus Ambassador");
+  const collegeName = demoAmbassador ? demoAmbassador.college_name : "Your University Chapter";
+  const referralCode = demoAmbassador ? demoAmbassador.referral_code : "CAMPUS-2026";
+  const referralsCount = demoAmbassador ? demoAmbassador.referrals_count : 0;
+  const targetGoal = demoAmbassador ? demoAmbassador.target_goal : 25;
+  const rankDisplay = demoAmbassador ? `#${demoAmbassador.rank}` : "Standby";
+  const activeContributors = demoAmbassador ? 118 : 0;
+  const rewardTier = demoAmbassador ? demoAmbassador.reward_tier : "Initiate Tier";
+
+  const referralUrl = `https://owoc.org?ref=${referralCode}`;
 
   const handleCopy = () => {
     if (typeof navigator !== "undefined" && navigator.clipboard) {
@@ -35,26 +52,26 @@ export default function AmbassadorDashboard() {
     {
       id: "t-1",
       title: "Host Campus Git & OWOC Orientation Session",
-      reward: "Earned +100 pts & Verified Badge",
-      status: "completed",
+      reward: "Earn +100 pts & Verified Campus Lead Badge",
+      status: isDemo ? "completed" : "active",
     },
     {
       id: "t-2",
-      title: "Distribute Promo Kit across Engineering Batches",
-      reward: "Earned +50 pts",
-      status: "completed",
+      title: "Share OWOC Roadmap across Engineering Groups",
+      reward: "Earn +50 pts",
+      status: isDemo ? "completed" : "active",
     },
     {
       id: "t-3",
-      title: "Onboard 150+ Verified University Contributors",
-      reward: "Unlocks Master Ambassador Custom Backpack",
-      status: "active",
-      progress: "142 / 150 (94%)",
+      title: `Onboard ${SITE_CONFIG.AMBASSADOR_REWARDS[0].minReferrals}+ Verified University Contributors`,
+      reward: `Unlocks ${SITE_CONFIG.AMBASSADOR_REWARDS[0].tierName} Tier: ${SITE_CONFIG.AMBASSADOR_REWARDS[0].perks[0]}`,
+      status: isDemo ? "active" : "upcoming",
+      progress: isDemo ? "142 / 150 (94%)" : "0 / 10 (0%)",
     },
     {
       id: "t-4",
-      title: "Organize Weekend Peer Code Review Clinic",
-      reward: "Eligible for Sponsor Fast-track Pipeline",
+      title: "Organize Weekend Peer Contribution Workroom",
+      reward: "Earn +75 pts",
       status: "upcoming",
     },
   ];
@@ -66,26 +83,22 @@ export default function AmbassadorDashboard() {
         <div className="absolute top-0 right-0 w-80 h-80 bg-red-primary/10 blur-3xl pointer-events-none" />
 
         <div className="flex items-center gap-4">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={ambassador.avatar_url}
-            alt={ambassador.full_name}
-            className="w-16 h-16 rounded-2xl object-cover border-2 border-red-bright shadow-red-glow-sm"
-          />
+          <AvatarDisplay name={ambassadorName} size="lg" />
           <div>
             <div className="flex items-center gap-2 mb-1">
               <span className="text-xs font-mono text-red-bright uppercase font-bold tracking-wider">
                 CAMPUS AMBASSADOR COMMAND
               </span>
               <span className="px-2 py-0.5 rounded bg-surface-2 text-[10px] font-mono text-text-muted">
-                {ambassador.college_name}
+                {collegeName}
               </span>
+              {isDemo && <SampleBadge />}
             </div>
             <h1 className="font-heading font-black text-2xl sm:text-3xl text-white">
-              {ambassador.full_name}
+              {ambassadorName}
             </h1>
             <p className="text-xs text-text-secondary mt-0.5">
-              Rank #{ambassador.rank} Campus Ambassador Nationwide • {ambassador.reward_tier} Tier
+              Rank {rankDisplay} • {rewardTier}
             </p>
           </div>
         </div>
@@ -97,7 +110,7 @@ export default function AmbassadorDashboard() {
               Your Referral Code
             </span>
             <span className="font-mono text-sm font-bold text-red-bright">
-              {ambassador.referral_code}
+              {referralCode}
             </span>
           </div>
           <button
@@ -120,10 +133,14 @@ export default function AmbassadorDashboard() {
             <Users className="w-4 h-4 text-red-bright" />
           </div>
           <div className="font-heading font-black text-3xl text-white">
-            {ambassador.referrals_count}
+            <AnimatedCounter
+              value={referralsCount}
+              fallbackText="0"
+              className="font-heading font-black text-3xl text-white"
+            />
           </div>
           <p className="text-[11px] text-text-muted font-mono mt-1">
-            Target Goal: {ambassador.target_goal} builders
+            Target Goal: {targetGoal} builders
           </p>
         </div>
 
@@ -135,10 +152,10 @@ export default function AmbassadorDashboard() {
             <Trophy className="w-4 h-4 text-yellow-400" />
           </div>
           <div className="font-heading font-black text-3xl text-white">
-            Rank #{ambassador.rank}
+            {rankDisplay}
           </div>
           <p className="text-[11px] text-yellow-400 font-mono mt-1">
-            Leading Ambassador across 350+ campuses
+            {isDemo ? "Leading Ambassador across sample campuses" : "Rankings active when coding starts"}
           </p>
         </div>
 
@@ -149,9 +166,15 @@ export default function AmbassadorDashboard() {
             </span>
             <Flame className="w-4 h-4 text-orange-400" />
           </div>
-          <div className="font-heading font-black text-3xl text-white">118</div>
+          <div className="font-heading font-black text-3xl text-white">
+            <AnimatedCounter
+              value={activeContributors}
+              fallbackText="0"
+              className="font-heading font-black text-3xl text-white"
+            />
+          </div>
           <p className="text-[11px] text-green-400 font-mono mt-1">
-            83% conversion rate to merged PRs
+            {isDemo ? "Contributors with merged PRs" : "Tracks contributors from your link"}
           </p>
         </div>
 
@@ -163,10 +186,10 @@ export default function AmbassadorDashboard() {
             <Sparkles className="w-4 h-4 text-red-bright" />
           </div>
           <div className="font-heading font-bold text-lg text-white">
-            {ambassador.reward_tier}
+            {rewardTier}
           </div>
           <p className="text-[11px] text-red-bright font-mono mt-1">
-            Swag Box & Recommendation Unlocked
+            {isDemo ? "Digital Credential & Verification" : "Complete milestones to level up"}
           </p>
         </div>
       </div>
@@ -179,26 +202,29 @@ export default function AmbassadorDashboard() {
               Reward Tier Progression
             </h3>
             <p className="text-xs text-text-muted">
-              Refer 8 more student developers to complete the Master Ambassador 150 milestone.
+              {isDemo
+                ? "Sample tier milestone tracking"
+                : "Refer student developers to unlock verified ambassador tiers."}
             </p>
           </div>
           <span className="font-mono text-xs font-bold text-red-bright">
-            94% Completed
+            {isDemo ? "94% Completed" : "0% Completed"}
           </span>
         </div>
 
         <div className="w-full bg-surface-2 h-3 rounded-full overflow-hidden border border-white/5">
           <div
             className="bg-gradient-to-r from-red-primary to-red-bright h-full rounded-full transition-all duration-500 shadow-red-glow-sm"
-            style={{ width: "94%" }}
+            style={{ width: isDemo ? "94%" : "4%" }}
           />
         </div>
 
         <div className="grid grid-cols-4 text-center text-[10px] font-mono text-text-muted pt-2">
-          <div>Bronze (25) ✓</div>
-          <div>Silver (50) ✓</div>
-          <div>Gold (100) ✓</div>
-          <div className="text-red-bright font-bold">Master (150) - 8 left</div>
+          {SITE_CONFIG.AMBASSADOR_REWARDS.map((tier) => (
+            <div key={tier.tierName}>
+              {tier.tierName} ({tier.minReferrals}+)
+            </div>
+          ))}
         </div>
       </div>
 
@@ -252,21 +278,21 @@ export default function AmbassadorDashboard() {
               Official Promo Kit & Assets
             </h3>
             <p className="text-xs text-text-secondary leading-relaxed mb-4">
-              Download pre-approved branding materials, social media posters, captions, and slide decks to conduct workshops at your campus.
+              Download pre-approved branding materials, presentation slides, and posters to conduct orientation workshops at your campus.
             </p>
 
             <div className="space-y-2.5">
               <div className="p-3 rounded-xl bg-surface-1 border border-white/5 flex items-center justify-between">
                 <div>
                   <div className="text-xs font-bold text-white">
-                    Campus Workshop Deck (Keynote & PPTX)
+                    Campus Orientation Deck
                   </div>
                   <div className="text-[10px] text-text-muted">
-                    12 slides covering Git basics, OWOC points & issues
+                    Slides covering open source basics, OWOC points & guidelines
                   </div>
                 </div>
                 <button
-                  onClick={() => alert("Downloading OWOC_Campus_Deck_2024.pptx")}
+                  onClick={() => alert("Downloading OWOC_Campus_Deck.pptx")}
                   className="p-2 rounded-lg bg-surface-2 hover:bg-red-primary/20 text-text-muted hover:text-white transition-colors"
                 >
                   <Download className="w-4 h-4" />
@@ -276,10 +302,10 @@ export default function AmbassadorDashboard() {
               <div className="p-3 rounded-xl bg-surface-1 border border-white/5 flex items-center justify-between">
                 <div>
                   <div className="text-xs font-bold text-white">
-                    Social Posters & Story Templates (Figma & PNG)
+                    Social Posters & Story Templates
                   </div>
                   <div className="text-[10px] text-text-muted">
-                    9:16 and 1:1 banners with QR code placeholder
+                    Banner templates for university technical club channels
                   </div>
                 </div>
                 <button
@@ -300,7 +326,7 @@ export default function AmbassadorDashboard() {
                   </div>
                 </div>
                 <button
-                  onClick={() => alert("Copied sample email copy to clipboard!")}
+                  onClick={() => alert("Copied sample outreach copy to clipboard!")}
                   className="p-2 rounded-lg bg-surface-2 hover:bg-red-primary/20 text-text-muted hover:text-white transition-colors"
                 >
                   <Copy className="w-4 h-4" />
@@ -310,8 +336,8 @@ export default function AmbassadorDashboard() {
           </div>
 
           <div className="pt-4 border-t border-white/5 flex items-center justify-between text-xs font-mono text-text-muted">
-            <span>Ambassador Kit v2.4</span>
-            <span className="text-red-bright font-bold">Updated for Sprint 3</span>
+            <span>Ambassador Kit</span>
+            <span className="text-red-bright font-bold">Inaugural Edition</span>
           </div>
         </div>
       </div>

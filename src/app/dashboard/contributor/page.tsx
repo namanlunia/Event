@@ -12,15 +12,20 @@ import {
   CheckCircle2,
   Clock,
   Share2,
-  FileCheck,
-  Zap,
+  FolderGit2,
+  ShieldCheck,
 } from "lucide-react";
 import {
   MOCK_PRS,
   MOCK_BADGES,
-  MOCK_CONTRIBUTORS,
   MOCK_SAMPLE_CERTIFICATE,
-} from "@/data/mockDatabase";
+} from "@/lib/demo-data";
+import { SITE_CONFIG } from "@/lib/site-config";
+import { SampleBadge } from "@/components/visual/DemoModeBanner";
+import AvatarDisplay from "@/components/visual/AvatarDisplay";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { useAppStore } from "@/lib/store";
+import { PHASES, getCodingPeriodProgress } from "@/lib/season";
 import {
   ResponsiveContainer,
   AreaChart,
@@ -31,15 +36,34 @@ import {
 } from "recharts";
 
 export default function ContributorDashboard() {
-  const contributor = MOCK_CONTRIBUTORS[0]; // Aarav Patel
+  const { currentPersona } = useAppStore();
+  const isDemoMode = SITE_CONFIG.DEMO_MODE;
   const [showShareModal, setShowShareModal] = useState(false);
 
-  const weeklyData = [
-    { week: "Sprint 1 (Nov 18)", points: 280, prs: 2 },
-    { week: "Sprint 2 (Nov 25)", points: 540, prs: 4 },
-    { week: "Sprint 3 (Dec 02)", points: 890, prs: 6 },
-    { week: "Sprint 4 (Current)", points: 1240, prs: 8 },
-  ];
+  const codingStartDate = new Date(`${PHASES[2].startDate}T00:00:00`).toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+
+  const weeklyData = isDemoMode
+    ? [
+        { week: "Week 1", points: 280, prs: 2 },
+        { week: "Week 2", points: 540, prs: 4 },
+        { week: "Week 3", points: 890, prs: 6 },
+        { week: "Week 4", points: 1240, prs: 8 },
+      ]
+    : [
+        { week: "Week 1", points: 0, prs: 0 },
+        { week: "Week 2", points: 0, prs: 0 },
+        { week: "Week 3", points: 0, prs: 0 },
+        { week: "Week 4", points: 0, prs: 0 },
+      ];
+
+  const totalPoints = isDemoMode ? 1240 : 0;
+  const totalPrs = isDemoMode ? MOCK_PRS.length : 0;
+  const currentRank = isDemoMode ? "#1" : "Standby";
+  const streakDays = isDemoMode ? 12 : 0;
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto">
@@ -48,45 +72,36 @@ export default function ContributorDashboard() {
         <div className="absolute top-0 right-0 w-80 h-80 bg-red-primary/10 blur-3xl pointer-events-none" />
 
         <div className="flex items-center gap-4">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={contributor.avatar_url}
-            alt={contributor.full_name}
-            className="w-16 h-16 rounded-2xl object-cover border-2 border-red-bright shadow-red-glow-sm"
+          <AvatarDisplay
+            name={currentPersona.name}
+            size="lg"
+            className="border-2 border-red-bright shadow-red-glow-sm"
           />
           <div>
             <div className="flex items-center gap-2 mb-1">
               <span className="text-xs font-mono text-red-bright uppercase font-bold tracking-wider">
-                CONTRIBUTOR PROFILE
+                CONTRIBUTOR WORKSPACE
               </span>
-              <span className="px-2 py-0.5 rounded bg-surface-2 text-[10px] font-mono text-text-muted">
-                {contributor.college_name}
-              </span>
+              {isDemoMode && <SampleBadge />}
             </div>
             <h1 className="font-heading font-black text-2xl sm:text-3xl text-white">
-              Welcome back, {contributor.full_name}!
+              Welcome, {currentPersona.name}!
             </h1>
             <p className="text-xs text-text-secondary mt-0.5">
-              You are currently leading the global leaderboard in 1st Place.
+              {isDemoMode
+                ? `Sample dashboard mode (Coding period opens ${codingStartDate}).`
+                : `Active contributor account. Coding period opens ${codingStartDate}.`}
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-3">
-          <button
-            onClick={() => setShowShareModal(true)}
-            className="px-4 py-2.5 rounded-xl bg-surface-2 border border-white/10 hover:border-red-primary/40 text-xs font-mono text-white transition-colors flex items-center gap-2"
-          >
-            <Share2 className="w-3.5 h-3.5 text-red-bright" />
-            <span>Share Public Profile</span>
-          </button>
-
           <Link
             href="/projects"
-            className="px-5 py-2.5 rounded-xl bg-red-primary hover:bg-red-bright text-white text-xs font-bold shadow-red-glow transition-all flex items-center gap-2"
+            className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-red-primary to-red-bright text-white text-xs font-bold shadow-red-glow hover:shadow-red-glow-lg transition-all flex items-center gap-2"
           >
             <GitPullRequest className="w-3.5 h-3.5" />
-            <span>Find New Issues</span>
+            <span>Browse Repositories</span>
           </Link>
         </div>
       </div>
@@ -104,87 +119,87 @@ export default function ContributorDashboard() {
             </div>
           </div>
           <div className="font-heading font-black text-3xl text-white">
-            {contributor.points}
-            <span className="text-xs font-mono text-red-bright ml-1">pts</span>
+            <AnimatedCounter value={totalPoints} fallbackText="0" />
           </div>
-          <p className="text-[11px] text-green-400 font-mono mt-1">
-            +350 pts earned this sprint
-          </p>
+          <span className="text-xs text-text-muted mt-1 block">
+            {isDemoMode ? "Across sample sprints" : "Earned from merged pull requests"}
+          </span>
         </div>
 
-        {/* Global Rank */}
-        <div className="glass-card p-6 rounded-2xl border border-white/10 relative group">
+        {/* Pull Requests Merged */}
+        <div className="glass-card p-6 rounded-2xl border border-white/10 group">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-mono text-text-muted uppercase">
-              Global Standing
+              Merged PRs
             </span>
-            <div className="p-2 rounded-xl bg-yellow-500/10 text-yellow-400">
+            <div className="p-2 rounded-xl bg-surface-2 text-text-muted">
+              <GitPullRequest className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="font-heading font-black text-3xl text-white">
+            <AnimatedCounter value={totalPrs} fallbackText="0" />
+          </div>
+          <span className="text-xs text-text-muted mt-1 block">
+            {isDemoMode ? "Verified sample PRs" : "0 pull requests submitted"}
+          </span>
+        </div>
+
+        {/* Global Standings Rank */}
+        <div className="glass-card p-6 rounded-2xl border border-white/10 group">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-mono text-text-muted uppercase">
+              Standing Rank
+            </span>
+            <div className="p-2 rounded-xl bg-surface-2 text-yellow-400">
               <Trophy className="w-4 h-4" />
             </div>
           </div>
           <div className="font-heading font-black text-3xl text-white">
-            Rank #{contributor.rank}
+            {currentRank}
           </div>
-          <p className="text-[11px] text-yellow-400 font-mono mt-1">
-            Top 0.1% of 2,500+ builders
-          </p>
+          <span className="text-xs text-text-muted mt-1 block">
+            {isDemoMode ? "Sample Leaderboard #1" : `Opens ${codingStartDate}`}
+          </span>
         </div>
 
-        {/* Merged PRs */}
-        <div className="glass-card p-6 rounded-2xl border border-white/10 relative group">
+        {/* Contribution Streak */}
+        <div className="glass-card p-6 rounded-2xl border border-white/10 group">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-mono text-text-muted uppercase">
-              PRs Merged
+              Current Streak
             </span>
-            <div className="p-2 rounded-xl bg-surface-2 text-text-muted group-hover:text-white transition-colors">
-              <GitPullRequest className="w-4 h-4" />
-            </div>
-          </div>
-          <div className="font-heading font-black text-3xl text-white">8</div>
-          <p className="text-[11px] text-text-muted font-mono mt-1">
-            Across 3 approved repositories
-          </p>
-        </div>
-
-        {/* Daily Streak */}
-        <div className="glass-card p-6 rounded-2xl border border-white/10 relative group">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-mono text-text-muted uppercase">
-              Active Streak
-            </span>
-            <div className="p-2 rounded-xl bg-orange-500/10 text-orange-400">
+            <div className="p-2 rounded-xl bg-surface-2 text-orange-400">
               <Flame className="w-4 h-4" />
             </div>
           </div>
-          <div className="font-heading font-black text-3xl text-white flex items-center gap-1.5">
-            <span>{contributor.streak_days}</span>
-            <span className="text-xs font-mono text-text-muted">days</span>
+          <div className="font-heading font-black text-3xl text-white">
+            <AnimatedCounter value={streakDays} suffix=" Days" fallbackText="0 Days" />
           </div>
-          <p className="text-[11px] text-orange-400 font-mono mt-1">
-            🔥 14-day streak bonus active (+50 pts)
-          </p>
+          <span className="text-xs text-text-muted mt-1 block">
+            {isDemoMode ? "Consecutive activity bonus" : "Consecutive days with PRs"}
+          </span>
         </div>
       </div>
 
-      {/* Activity Chart & Certificate Card */}
+      {/* Chart and Certificate Row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Recharts Contributor Points Graph */}
-        <div className="lg:col-span-2 glass-card p-6 sm:p-8 rounded-2xl border border-white/10 space-y-4">
+        {/* Sprint Performance Chart */}
+        <div className="lg:col-span-2 glass-card p-6 sm:p-8 rounded-2xl border border-white/10 space-y-6">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="font-heading font-bold text-lg text-white">
-                Points Velocity Over Sprints
+                Sprint Contribution Trajectory
               </h3>
               <p className="text-xs text-text-muted">
-                Cumulative points scored across winter sprint evaluations.
+                {isDemoMode
+                  ? "Points accumulated across winter coding sprint cycles (Sample)"
+                  : "Points accumulated will chart automatically as PRs are merged."}
               </p>
             </div>
-            <span className="text-xs font-mono text-red-bright font-bold">
-              Sprint 4 Active
-            </span>
+            {isDemoMode && <SampleBadge />}
           </div>
 
-          <div className="h-64 w-full pt-4">
+          <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={weeklyData}>
                 <defs>
@@ -221,127 +236,181 @@ export default function ContributorDashboard() {
           </div>
         </div>
 
-        {/* Certificate Ready Card */}
-        <div className="glass-card p-6 sm:p-8 rounded-2xl border border-red-primary/40 bg-gradient-to-b from-red-primary/10 to-surface-1 flex flex-col justify-between shadow-red-glow-sm">
-          <div>
-            <div className="w-12 h-12 rounded-xl bg-red-primary/20 text-red-bright border border-red-primary/40 flex items-center justify-center mb-4">
-              <Award className="w-6 h-6" />
+        {/* Certificate Card */}
+        {isDemoMode ? (
+          <div className="glass-card p-6 sm:p-8 rounded-2xl border border-red-primary/40 bg-gradient-to-b from-red-primary/10 to-surface-1 flex flex-col justify-between shadow-red-glow-sm">
+            <div>
+              <div className="w-12 h-12 rounded-xl bg-red-primary/20 text-red-bright border border-red-primary/40 flex items-center justify-center mb-4">
+                <Award className="w-6 h-6" />
+              </div>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-red-primary/20 text-red-bright font-bold">
+                  SAMPLE CREDENTIAL
+                </span>
+                <SampleBadge />
+              </div>
+              <h3 className="font-heading font-bold text-xl text-white mb-1">
+                Digital Certificate of Excellence
+              </h3>
+              <p className="text-xs text-text-secondary leading-relaxed mb-4">
+                Preview of verifiable certificate issued upon program completion.
+              </p>
+              <div className="p-3 rounded-xl bg-surface-2 border border-white/5 font-mono text-xs text-text-muted mb-4 space-y-1">
+                <div>UID: {MOCK_SAMPLE_CERTIFICATE.id}</div>
+                <div>Status: Verified</div>
+              </div>
             </div>
-            <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-red-primary/20 text-red-bright font-bold">
-              EARNED & VERIFIED
-            </span>
-            <h3 className="font-heading font-bold text-xl text-white mt-2 mb-1">
-              Digital Certificate of Excellence
-            </h3>
-            <p className="text-xs text-text-secondary leading-relaxed mb-4">
-              You have qualified for the official OWOC Certificate for Rank #1 in WinterVision Core.
-            </p>
-            <div className="p-3 rounded-xl bg-surface-2 border border-white/5 font-mono text-xs text-text-muted mb-4 space-y-1">
-              <div>UID: {MOCK_SAMPLE_CERTIFICATE.id}</div>
-              <div>Hash: 0x8F9A4E27B13...</div>
-            </div>
-          </div>
 
-          <Link
-            href={`/certificate/${MOCK_SAMPLE_CERTIFICATE.id}`}
-            className="w-full py-2.5 rounded-xl bg-red-primary hover:bg-red-bright text-white text-xs font-bold shadow-red-glow transition-all flex items-center justify-center gap-2"
-          >
-            <span>View & Download Certificate</span>
-            <ExternalLink className="w-3.5 h-3.5" />
-          </Link>
-        </div>
+            <Link
+              href={`/certificate/${MOCK_SAMPLE_CERTIFICATE.id}`}
+              className="w-full py-2.5 rounded-xl bg-red-primary hover:bg-red-bright text-white text-xs font-bold shadow-red-glow transition-all flex items-center justify-center gap-2"
+            >
+              <span>View Sample Certificate</span>
+              <ExternalLink className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+        ) : (
+          <div className="glass-card p-6 sm:p-8 rounded-2xl border border-white/10 flex flex-col justify-between">
+            <div>
+              <div className="w-12 h-12 rounded-xl bg-surface-2 text-text-muted border border-white/5 flex items-center justify-center mb-4">
+                <Award className="w-6 h-6" />
+              </div>
+              <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-surface-2 text-text-muted font-bold">
+                NOT YET ISSUED
+              </span>
+              <h3 className="font-heading font-bold text-xl text-white mt-2 mb-1">
+                Certificate of Participation
+              </h3>
+              <p className="text-xs text-text-secondary leading-relaxed mb-4">
+                Merge at least 1 approved pull request during the active coding period to qualify for your verifiable digital certificate with QR verification code.
+              </p>
+            </div>
+
+            <Link
+              href="/rules"
+              className="w-full py-2.5 rounded-xl bg-surface-1 border border-white/10 hover:border-red-primary/40 text-text-secondary hover:text-white text-xs font-semibold text-center transition-colors"
+            >
+              View Qualification Rules
+            </Link>
+          </div>
+        )}
       </div>
 
       {/* Pull Requests Status Table */}
       <div className="glass-card rounded-2xl border border-white/10 overflow-hidden shadow-2xl">
         <div className="p-6 border-b border-white/10 flex items-center justify-between">
           <div>
-            <h3 className="font-heading font-bold text-lg text-white">
-              My Pull Requests
-            </h3>
+            <div className="flex items-center gap-2">
+              <h3 className="font-heading font-bold text-lg text-white">
+                My Pull Requests
+              </h3>
+              {isDemoMode && <SampleBadge />}
+            </div>
             <p className="text-xs text-text-muted">
-              Status, assigned points, and feedback from repository mentors.
+              Status, assigned points, and feedback from repository maintainers.
             </p>
           </div>
           <span className="text-xs font-mono text-text-secondary">
-            {MOCK_PRS.length} Tracked
+            {isDemoMode ? `${MOCK_PRS.length} Tracked` : "0 Tracked"}
           </span>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead className="bg-surface-1/90 border-b border-white/10 text-text-muted font-mono uppercase">
-              <tr>
-                <th className="py-4 px-6">PR #</th>
-                <th className="py-4 px-6">Title & Repository</th>
-                <th className="py-4 px-6">Difficulty</th>
-                <th className="py-4 px-6">Quality Multiplier</th>
-                <th className="py-4 px-6">Status</th>
-                <th className="py-4 px-6 text-right">Points</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-white/5 font-mono">
-              {MOCK_PRS.map((pr) => (
-                <tr key={pr.id} className="hover:bg-white/[0.02] transition-colors">
-                  <td className="py-4 px-6 text-text-muted font-bold">
-                    #{pr.pr_number}
-                  </td>
-                  <td className="py-4 px-6 font-sans">
-                    <div className="font-semibold text-white">{pr.title}</div>
-                    <div className="text-[11px] text-text-muted font-mono">
-                      Repo: {pr.project_name}
-                    </div>
-                    {pr.mentor_feedback && (
-                      <div className="text-[11px] text-text-secondary italic mt-1 font-sans">
-                        &ldquo;{pr.mentor_feedback}&rdquo;
-                      </div>
-                    )}
-                  </td>
-                  <td className="py-4 px-6">
-                    <span
-                      className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                        pr.difficulty === "Easy"
-                          ? "bg-green-500/10 text-green-400"
-                          : pr.difficulty === "Medium"
-                          ? "bg-yellow-500/10 text-yellow-400"
-                          : "bg-red-primary/20 text-red-bright"
-                      }`}
-                    >
-                      {pr.difficulty}
-                    </span>
-                  </td>
-                  <td className="py-4 px-6 text-text-muted">
-                    {pr.quality_bonus > 0 ? (
-                      <span className="text-green-400 font-bold">
-                        +{pr.quality_bonus} pts bonus
-                      </span>
-                    ) : (
-                      "—"
-                    )}
-                  </td>
-                  <td className="py-4 px-6">
-                    <span
-                      className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] uppercase font-bold border ${
-                        pr.status === "merged"
-                          ? "bg-green-500/10 text-green-400 border-green-500/30"
-                          : pr.status === "approved"
-                          ? "bg-blue-500/10 text-blue-400 border-blue-500/30"
-                          : "bg-yellow-500/10 text-yellow-400 border-yellow-500/30"
-                      }`}
-                    >
-                      {pr.status === "merged" && <CheckCircle2 className="w-3 h-3" />}
-                      {pr.status === "pending" && <Clock className="w-3 h-3" />}
-                      <span>{pr.status}</span>
-                    </span>
-                  </td>
-                  <td className="py-4 px-6 text-right font-black text-sm text-red-bright">
-                    +{pr.points_awarded + pr.quality_bonus} pts
-                  </td>
+        {isDemoMode ? (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs">
+              <thead className="bg-surface-1/90 border-b border-white/10 text-text-muted font-mono uppercase">
+                <tr>
+                  <th className="py-4 px-6">PR #</th>
+                  <th className="py-4 px-6">Title & Repository</th>
+                  <th className="py-4 px-6">Difficulty</th>
+                  <th className="py-4 px-6">Quality Multiplier</th>
+                  <th className="py-4 px-6">Status</th>
+                  <th className="py-4 px-6 text-right">Points</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody className="divide-y divide-white/5 font-mono">
+                {MOCK_PRS.map((pr) => (
+                  <tr key={pr.id} className="hover:bg-white/[0.02] transition-colors">
+                    <td className="py-4 px-6 text-text-muted font-bold">
+                      #{pr.pr_number}
+                    </td>
+                    <td className="py-4 px-6 font-sans">
+                      <div className="font-semibold text-white">{pr.title}</div>
+                      <div className="text-[11px] text-text-muted font-mono">
+                        Repo: {pr.project_name}
+                      </div>
+                      {pr.mentor_feedback && (
+                        <div className="text-[11px] text-text-secondary italic mt-1 font-sans">
+                          &ldquo;{pr.mentor_feedback}&rdquo;
+                        </div>
+                      )}
+                    </td>
+                    <td className="py-4 px-6">
+                      <span
+                        className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                          pr.difficulty === "Easy"
+                            ? "bg-green-500/10 text-green-400"
+                            : pr.difficulty === "Medium"
+                            ? "bg-yellow-500/10 text-yellow-400"
+                            : "bg-red-primary/20 text-red-bright"
+                        }`}
+                      >
+                        {pr.difficulty}
+                      </span>
+                    </td>
+                    <td className="py-4 px-6 text-text-muted">
+                      {pr.quality_bonus > 0 ? (
+                        <span className="text-green-400 font-bold">
+                          +{pr.quality_bonus} pts bonus
+                        </span>
+                      ) : (
+                        "—"
+                      )}
+                    </td>
+                    <td className="py-4 px-6">
+                      <span
+                        className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] uppercase font-bold border ${
+                          pr.status === "merged"
+                            ? "bg-green-500/10 text-green-400 border-green-500/30"
+                            : pr.status === "approved"
+                            ? "bg-blue-500/10 text-blue-400 border-blue-500/30"
+                            : "bg-yellow-500/10 text-yellow-400 border-yellow-500/30"
+                        }`}
+                      >
+                        {pr.status === "merged" && <CheckCircle2 className="w-3 h-3" />}
+                        {pr.status === "pending" && <Clock className="w-3 h-3" />}
+                        <span>{pr.status}</span>
+                      </span>
+                    </td>
+                    <td className="py-4 px-6 text-right font-black text-sm text-red-bright">
+                      +{pr.points_awarded + pr.quality_bonus} pts
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="p-12 text-center space-y-4">
+            <div className="w-12 h-12 rounded-2xl bg-surface-2 border border-white/5 flex items-center justify-center mx-auto text-text-muted">
+              <FolderGit2 className="w-6 h-6" />
+            </div>
+            <h4 className="font-heading font-bold text-white text-base">
+              No pull requests recorded yet
+            </h4>
+            <p className="text-xs text-text-secondary max-w-sm mx-auto">
+              Browse approved project repositories, claim an open issue, and submit your pull request on GitHub once the coding period begins.
+            </p>
+            <div className="pt-2">
+              <Link
+                href="/projects"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-red-primary hover:bg-red-bright text-white text-xs font-bold shadow-red-glow transition-all"
+              >
+                <span>Browse Projects</span>
+              </Link>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Badges & Achievements Grid */}
@@ -351,109 +420,53 @@ export default function ContributorDashboard() {
             Badges & Achievements
           </h3>
           <p className="text-xs text-text-muted">
-            Milestones unlocked through continuous craftsmanship.
+            {isDemoMode
+              ? "Sample achievement milestones."
+              : "Solve issues and build streaks to unlock achievement badges."}
           </p>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-          {MOCK_BADGES.map((b) => (
-            <div
-              key={b.id}
-              className={`p-4 rounded-xl border text-center transition-all ${
-                b.unlocked
-                  ? "bg-surface-1 border-red-primary/40 shadow-red-glow-sm"
-                  : "bg-surface-2/40 border-white/5 opacity-50"
-              }`}
-            >
+          {MOCK_BADGES.map((b) => {
+            const isUnlocked = isDemoMode ? b.unlocked : false;
+            return (
               <div
-                className={`w-12 h-12 rounded-xl mx-auto flex items-center justify-center mb-2 ${
-                  b.unlocked
-                    ? "bg-red-primary/20 text-red-bright border border-red-bright/40"
-                    : "bg-surface-2 text-text-muted"
+                key={b.id}
+                className={`p-4 rounded-xl border text-center transition-all ${
+                  isUnlocked
+                    ? "bg-surface-1 border-red-primary/40 shadow-red-glow-sm"
+                    : "bg-surface-2/40 border-white/5 opacity-50"
                 }`}
               >
-                <Award className="w-6 h-6" />
+                <div
+                  className={`w-12 h-12 rounded-xl mx-auto flex items-center justify-center mb-2 ${
+                    isUnlocked
+                      ? "bg-red-primary/20 text-red-bright border border-red-bright/40"
+                      : "bg-surface-2 text-text-muted"
+                  }`}
+                >
+                  <Award className="w-6 h-6" />
+                </div>
+                <h4 className="font-heading font-bold text-xs text-white truncate">
+                  {b.title}
+                </h4>
+                <p className="text-[10px] text-text-muted line-clamp-2 mt-1">
+                  {b.description}
+                </p>
+                <span
+                  className={`text-[9px] font-mono uppercase mt-2 inline-block px-1.5 py-0.5 rounded ${
+                    isUnlocked
+                      ? "bg-green-500/10 text-green-400"
+                      : "bg-white/5 text-text-muted"
+                  }`}
+                >
+                  {isUnlocked ? "Unlocked" : "Locked"}
+                </span>
               </div>
-              <h4 className="font-heading font-bold text-xs text-white truncate">
-                {b.title}
-              </h4>
-              <p className="text-[10px] text-text-muted line-clamp-2 mt-1">
-                {b.description}
-              </p>
-              <span
-                className={`text-[9px] font-mono uppercase mt-2 inline-block px-1.5 py-0.5 rounded ${
-                  b.unlocked
-                    ? "bg-green-500/10 text-green-400"
-                    : "bg-white/5 text-text-muted"
-                }`}
-              >
-                {b.unlocked ? "Unlocked" : "Locked"}
-              </span>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
-
-      {/* Shareable Public Profile Modal */}
-      {showShareModal && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-surface-1 border border-white/10 rounded-2xl max-w-md w-full p-6 shadow-2xl relative animate-in fade-in zoom-in-95 duration-200 text-center">
-            <button
-              onClick={() => setShowShareModal(false)}
-              className="absolute top-4 right-4 text-text-muted hover:text-white"
-            >
-              ✕
-            </button>
-
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={contributor.avatar_url}
-              alt={contributor.full_name}
-              className="w-20 h-20 rounded-full mx-auto object-cover border-2 border-red-bright mb-3"
-            />
-            <h3 className="font-heading font-bold text-xl text-white">
-              {contributor.full_name}
-            </h3>
-            <p className="text-xs text-text-muted font-mono mb-4">
-              @{contributor.github_username} • {contributor.college_name}
-            </p>
-
-            <div className="grid grid-cols-3 gap-2 p-3 bg-surface-2 rounded-xl border border-white/5 mb-6 text-xs font-mono">
-              <div>
-                <span className="text-text-muted block text-[10px]">Rank</span>
-                <span className="text-red-bright font-bold">#{contributor.rank}</span>
-              </div>
-              <div>
-                <span className="text-text-muted block text-[10px]">Points</span>
-                <span className="text-white font-bold">{contributor.points}</span>
-              </div>
-              <div>
-                <span className="text-text-muted block text-[10px]">Streak</span>
-                <span className="text-orange-400 font-bold">{contributor.streak_days}d</span>
-              </div>
-            </div>
-
-            <p className="text-xs text-text-secondary mb-6">
-              Share your verified OWOC contributor profile badge with recruiters and social networks!
-            </p>
-
-            <button
-              onClick={() => {
-                if (typeof navigator !== "undefined" && navigator.clipboard) {
-                  navigator.clipboard.writeText(
-                    `${window.location.origin}/leaderboard?user=${contributor.github_username}`
-                  );
-                  alert("Public profile link copied to clipboard!");
-                  setShowShareModal(false);
-                }
-              }}
-              className="w-full py-2.5 rounded-xl bg-red-primary hover:bg-red-bright text-white text-xs font-bold transition-all"
-            >
-              Copy Public Profile URL
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

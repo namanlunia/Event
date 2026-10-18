@@ -17,10 +17,16 @@ import {
   Flame,
 } from "lucide-react";
 import { useAppStore } from "@/lib/store";
-import { MOCK_CONTRIBUTORS, MOCK_AMBASSADORS } from "@/data/mockDatabase";
+import { SITE_CONFIG } from "@/lib/site-config";
+import { SEASON_LABEL } from "@/lib/season";
+import { getProgramStats, getActiveContributors, getApprovedProjects } from "@/lib/dataService";
+import { SampleBadge } from "@/components/visual/DemoModeBanner";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export default function SuperAdminDashboard() {
   const { projects, approveProject, rejectProject } = useAppStore();
+  const stats = getProgramStats();
+  const isDemo = SITE_CONFIG.DEMO_MODE;
 
   const [easyPts, setEasyPts] = useState(10);
   const [medPts, setMedPts] = useState(25);
@@ -28,72 +34,83 @@ export default function SuperAdminDashboard() {
   const [streakBonus, setStreakBonus] = useState(15);
   const [rulesSaved, setRulesSaved] = useState(false);
 
-  const [pendingApprovals, setPendingApprovals] = useState([
-    {
-      id: "pen-1",
-      name: "Solana Pay Micro-settlements",
-      org: "Solana Collective",
-      domain: "Web3",
-      maintainer: "Kaelen Voss",
-      repo: "https://github.com/omnikon/winterpay-solana",
-      status: "pending",
-    },
-    {
-      id: "pen-2",
-      name: "CryoLang WebAssembly Runtime",
-      org: "Compiler Collective",
-      domain: "Full-Stack",
-      maintainer: "Dr. Aris Thorne",
-      repo: "https://github.com/omnikon/cryolang",
-      status: "pending",
-    },
-  ]);
+  const [pendingApprovals, setPendingApprovals] = useState(
+    isDemo
+      ? [
+          {
+            id: "pen-1",
+            name: "Sample Micro-settlements Engine",
+            org: "Sample Open Source Org",
+            domain: "Web3 & Systems",
+            maintainer: "Sample Maintainer",
+            repo: "https://github.com/example/sample-engine",
+            status: "pending",
+          },
+          {
+            id: "pen-2",
+            name: "Sample WebAssembly Runtime",
+            org: "Sample Collective",
+            domain: "Full-Stack",
+            maintainer: "Sample Reviewer",
+            repo: "https://github.com/example/sample-wasm",
+            status: "pending",
+          },
+        ]
+      : []
+  );
 
-  const [ambassadorApplications, setAmbassadorApplications] = useState([
-    {
-      id: "amb-app-1",
-      name: "Rohan Vats",
-      college: "IIT Kharagpur",
-      year: "3rd Year B.Tech",
-      pitch: "Lead coordinator for Google Developer Student Club on campus. Conducted git workshops for 300+ students.",
-      status: "pending",
-    },
-    {
-      id: "amb-app-2",
-      name: "Shruti Saxena",
-      college: "NSUT Delhi",
-      year: "2nd Year CS",
-      pitch: "Open-source society lead with an active Discord community of 600+ student developers.",
-      status: "pending",
-    },
-  ]);
+  const [ambassadorApplications, setAmbassadorApplications] = useState(
+    isDemo
+      ? [
+          {
+            id: "amb-app-1",
+            name: "Sample Applicant 1",
+            college: "Sample University",
+            year: "3rd Year CS",
+            pitch: "Organized open source onboarding sessions for fellow students.",
+            status: "pending",
+          },
+          {
+            id: "amb-app-2",
+            name: "Sample Applicant 2",
+            college: "Sample Institute of Tech",
+            year: "2nd Year Engineering",
+            pitch: "Technical club lead with student developer community experience.",
+            status: "pending",
+          },
+        ]
+      : []
+  );
 
-  const auditLogs = [
-    {
-      action: "Project Approved",
-      target: "WinterVision Core",
-      admin: "Devansh Rastogi",
-      time: "2 hours ago",
-    },
-    {
-      action: "Points Config Updated",
-      target: "Hard PR base from 45 to 50 pts",
-      admin: "Devansh Rastogi",
-      time: "1 day ago",
-    },
-    {
-      action: "Ambassador Verified",
-      target: "Kabir Sen (IIT Bombay)",
-      admin: "Devansh Rastogi",
-      time: "2 days ago",
-    },
-    {
-      action: "Certificate Issued",
-      target: "OWOC-2024-C-9821 (Aarav Patel)",
-      admin: "System Automated",
-      time: "3 days ago",
-    },
-  ];
+  const auditLogs = isDemo
+    ? [
+        {
+          action: "Sample Project Evaluated",
+          target: "Sample Repository",
+          admin: "Lead Reviewer",
+          time: "2 hours ago",
+        },
+        {
+          action: "Points Engine Configured",
+          target: "Hard PR base: 50 pts",
+          admin: "Council Admin",
+          time: "1 day ago",
+        },
+        {
+          action: "Ambassador Application Processed",
+          target: "Sample Lead",
+          admin: "Operations",
+          time: "2 days ago",
+        },
+      ]
+    : [
+        {
+          action: "System Console Ready",
+          target: `Inaugural Edition ${SEASON_LABEL}`,
+          admin: "Super Admin",
+          time: "Active Instance",
+        },
+      ];
 
   const handleSaveRules = (e: React.FormEvent) => {
     e.preventDefault();
@@ -113,19 +130,21 @@ export default function SuperAdminDashboard() {
   };
 
   const exportLeaderboard = () => {
+    const contributors = getActiveContributors();
     const header = "Rank,Name,Email,College,Points,Streak\n";
-    const rows = MOCK_CONTRIBUTORS.map(
+    const rows = contributors.map(
       (c) => `${c.rank},"${c.full_name}",${c.email},"${c.college_name}",${c.points},${c.streak_days}`
     ).join("\n");
-    handleExportCSV("owoc_2024_leaderboard.csv", header + rows);
+    handleExportCSV("owoc_2026_leaderboard.csv", header + rows);
   };
 
   const exportProjects = () => {
+    const approvedProjects = getApprovedProjects();
     const header = "Project Name,Domain,Difficulty,Organization,Maintainer,Stars\n";
-    const rows = projects.map(
+    const rows = approvedProjects.map(
       (p) => `"${p.name}","${p.domain}","${p.difficulty}","${p.organization}","${p.maintainer_name}",${p.stars_count}`
     ).join("\n");
-    handleExportCSV("owoc_2024_projects.csv", header + rows);
+    handleExportCSV("owoc_2026_projects.csv", header + rows);
   };
 
   return (
@@ -144,14 +163,15 @@ export default function SuperAdminDashboard() {
                 SUPER ADMIN COMMAND CENTER
               </span>
               <span className="px-2 py-0.5 rounded bg-surface-2 text-[10px] font-mono text-text-muted">
-                Devansh Rastogi (Program Director)
+                Program Operations
               </span>
+              {isDemo && <SampleBadge />}
             </div>
             <h1 className="font-heading font-black text-2xl sm:text-3xl text-white">
               OWOC Operations & Governance
             </h1>
             <p className="text-xs text-text-secondary mt-0.5">
-              Program overview, approval queues, points configuration, and audit trail.
+              Program overview, repository approval queue, scoring configuration, and system audit trail.
             </p>
           </div>
         </div>
@@ -184,9 +204,15 @@ export default function SuperAdminDashboard() {
             </span>
             <Users className="w-4 h-4 text-red-bright" />
           </div>
-          <div className="font-heading font-black text-3xl text-white">2,540</div>
-          <p className="text-[11px] text-green-400 font-mono mt-1">
-            +180 registrations this week
+          <div className="font-heading font-black text-3xl text-white">
+            <AnimatedCounter
+              value={stats.studentBuilders}
+              fallbackText="Opening Soon"
+              className="font-heading font-black text-3xl text-white"
+            />
+          </div>
+          <p className="text-[11px] text-text-muted font-mono mt-1">
+            Student contributors
           </p>
         </div>
 
@@ -197,9 +223,15 @@ export default function SuperAdminDashboard() {
             </span>
             <FolderGit2 className="w-4 h-4 text-white" />
           </div>
-          <div className="font-heading font-black text-3xl text-white">124</div>
+          <div className="font-heading font-black text-3xl text-white">
+            <AnimatedCounter
+              value={stats.approvedProjects}
+              fallbackText="—"
+              className="font-heading font-black text-3xl text-white"
+            />
+          </div>
           <p className="text-[11px] text-text-muted font-mono mt-1">
-            Across 6 technological domains
+            Approved for contributors
           </p>
         </div>
 
@@ -210,22 +242,35 @@ export default function SuperAdminDashboard() {
             </span>
             <GitPullRequest className="w-4 h-4 text-green-400" />
           </div>
-          <div className="font-heading font-black text-3xl text-white">4,860</div>
+          <div className="font-heading font-black text-3xl text-white">
+            <AnimatedCounter
+              value={stats.mergedPRs}
+              fallbackText="—"
+              className="font-heading font-black text-3xl text-white"
+            />
+          </div>
           <p className="text-[11px] text-green-400 font-mono mt-1">
-            100% verified commit history
+            Scored pull requests
           </p>
         </div>
 
         <div className="glass-card p-6 rounded-2xl border border-white/10">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-mono text-text-muted uppercase">
-              Partner Universities
+              Campuses Active
             </span>
             <Award className="w-4 h-4 text-yellow-400" />
           </div>
-          <div className="font-heading font-black text-3xl text-white">350+</div>
+          <div className="font-heading font-black text-3xl text-white">
+            <AnimatedCounter
+              value={stats.participatingColleges}
+              suffix="+"
+              fallbackText="Onboarding"
+              className="font-heading font-black text-3xl text-white"
+            />
+          </div>
           <p className="text-[11px] text-yellow-400 font-mono mt-1">
-            Campus ambassador chapters active
+            University chapters
           </p>
         </div>
       </div>
@@ -248,71 +293,81 @@ export default function SuperAdminDashboard() {
             </span>
           </div>
 
-          <div className="space-y-3">
-            {pendingApprovals.map((p) => (
-              <div
-                key={p.id}
-                className="p-4 rounded-xl bg-surface-1 border border-white/5 space-y-3"
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-surface-2 text-red-bright border border-red-primary/30">
-                      {p.domain}
+          {pendingApprovals.length > 0 ? (
+            <div className="space-y-3">
+              {pendingApprovals.map((p) => (
+                <div
+                  key={p.id}
+                  className="p-4 rounded-xl bg-surface-1 border border-white/5 space-y-3"
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-surface-2 text-red-bright border border-red-primary/30">
+                        {p.domain}
+                      </span>
+                      <h4 className="font-heading font-bold text-sm text-white mt-1">
+                        {p.name}
+                      </h4>
+                      <p className="text-xs text-text-muted">
+                        Org: {p.org} • Lead: {p.maintainer}
+                      </p>
+                    </div>
+
+                    <span
+                      className={`text-[10px] font-mono px-2 py-0.5 rounded font-bold uppercase ${
+                        p.status === "approved"
+                          ? "bg-green-500/10 text-green-400 border border-green-500/30"
+                          : p.status === "rejected"
+                          ? "bg-red-primary/20 text-red-bright border border-red-primary/40"
+                          : "bg-yellow-500/10 text-yellow-400 border border-yellow-500/30"
+                      }`}
+                    >
+                      {p.status}
                     </span>
-                    <h4 className="font-heading font-bold text-sm text-white mt-1">
-                      {p.name}
-                    </h4>
-                    <p className="text-xs text-text-muted">
-                      Org: {p.org} • Lead: {p.maintainer}
-                    </p>
                   </div>
 
-                  <span
-                    className={`text-[10px] font-mono px-2 py-0.5 rounded font-bold uppercase ${
-                      p.status === "approved"
-                        ? "bg-green-500/10 text-green-400 border border-green-500/30"
-                        : p.status === "rejected"
-                        ? "bg-red-primary/20 text-red-bright border border-red-primary/40"
-                        : "bg-yellow-500/10 text-yellow-400 border border-yellow-500/30"
-                    }`}
-                  >
-                    {p.status}
-                  </span>
+                  {p.status === "pending" && (
+                    <div className="flex items-center gap-2 pt-2 border-t border-white/5">
+                      <button
+                        onClick={() => {
+                          setPendingApprovals(
+                            pendingApprovals.map((item) =>
+                              item.id === p.id ? { ...item, status: "approved" } : item
+                            )
+                          );
+                        }}
+                        className="px-3 py-1.5 rounded-lg bg-green-600 hover:bg-green-500 text-white text-xs font-semibold flex items-center gap-1.5 transition-colors"
+                      >
+                        <CheckCircle2 className="w-3.5 h-3.5" />
+                        <span>Approve Repository</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          setPendingApprovals(
+                            pendingApprovals.map((item) =>
+                              item.id === p.id ? { ...item, status: "rejected" } : item
+                            )
+                          );
+                        }}
+                        className="px-3 py-1.5 rounded-lg bg-surface-2 border border-white/5 hover:border-red-primary/40 text-text-muted hover:text-white text-xs flex items-center gap-1.5 transition-colors"
+                      >
+                        <XCircle className="w-3.5 h-3.5" />
+                        <span>Reject</span>
+                      </button>
+                    </div>
+                  )}
                 </div>
-
-                {p.status === "pending" && (
-                  <div className="flex items-center gap-2 pt-2 border-t border-white/5">
-                    <button
-                      onClick={() => {
-                        setPendingApprovals(
-                          pendingApprovals.map((item) =>
-                            item.id === p.id ? { ...item, status: "approved" } : item
-                          )
-                        );
-                      }}
-                      className="px-3 py-1.5 rounded-lg bg-green-600 hover:bg-green-500 text-white text-xs font-semibold flex items-center gap-1.5 transition-colors"
-                    >
-                      <CheckCircle2 className="w-3.5 h-3.5" />
-                      <span>Approve Repository</span>
-                    </button>
-                    <button
-                      onClick={() => {
-                        setPendingApprovals(
-                          pendingApprovals.map((item) =>
-                            item.id === p.id ? { ...item, status: "rejected" } : item
-                          )
-                        );
-                      }}
-                      className="px-3 py-1.5 rounded-lg bg-surface-2 border border-white/5 hover:border-red-primary/40 text-text-muted hover:text-white text-xs flex items-center gap-1.5 transition-colors"
-                    >
-                      <XCircle className="w-3.5 h-3.5" />
-                      <span>Reject</span>
-                    </button>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="p-8 rounded-xl bg-surface-1 border border-white/5 text-center text-text-muted space-y-2">
+              <CheckCircle2 className="w-8 h-8 text-green-400 mx-auto mb-1" />
+              <div className="text-sm font-bold text-white">Queue Empty</div>
+              <p className="text-xs text-text-secondary">
+                No project repository submissions currently awaiting admin review.
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Live Points Engine Rules Configurator */}
@@ -395,48 +450,58 @@ export default function SuperAdminDashboard() {
             Campus Ambassador Applications
           </h3>
 
-          <div className="space-y-3">
-            {ambassadorApplications.map((app) => (
-              <div
-                key={app.id}
-                className="p-4 rounded-xl bg-surface-1 border border-white/5 space-y-2"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="font-bold text-sm text-white">{app.name}</span>
-                  <span className="text-[10px] font-mono text-text-muted">
-                    {app.college} • {app.year}
-                  </span>
-                </div>
-                <p className="text-xs text-text-secondary">{app.pitch}</p>
-                {app.status === "pending" && (
-                  <div className="flex items-center gap-2 pt-2">
-                    <button
-                      onClick={() => {
-                        setAmbassadorApplications(
-                          ambassadorApplications.map((a) =>
-                            a.id === app.id ? { ...a, status: "approved" } : a
-                          )
-                        );
-                      }}
-                      className="px-3 py-1 bg-green-600 text-white text-xs font-semibold rounded-lg"
-                    >
-                      Approve Ambassador
-                    </button>
-                    <button
-                      onClick={() => {
-                        setAmbassadorApplications(
-                          ambassadorApplications.filter((a) => a.id !== app.id)
-                        );
-                      }}
-                      className="px-3 py-1 bg-surface-2 text-text-muted text-xs rounded-lg"
-                    >
-                      Decline
-                    </button>
+          {ambassadorApplications.length > 0 ? (
+            <div className="space-y-3">
+              {ambassadorApplications.map((app) => (
+                <div
+                  key={app.id}
+                  className="p-4 rounded-xl bg-surface-1 border border-white/5 space-y-2"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-sm text-white">{app.name}</span>
+                    <span className="text-[10px] font-mono text-text-muted">
+                      {app.college} • {app.year}
+                    </span>
                   </div>
-                )}
-              </div>
-            ))}
-          </div>
+                  <p className="text-xs text-text-secondary">{app.pitch}</p>
+                  {app.status === "pending" && (
+                    <div className="flex items-center gap-2 pt-2">
+                      <button
+                        onClick={() => {
+                          setAmbassadorApplications(
+                            ambassadorApplications.map((a) =>
+                              a.id === app.id ? { ...a, status: "approved" } : a
+                            )
+                          );
+                        }}
+                        className="px-3 py-1 bg-green-600 text-white text-xs font-semibold rounded-lg"
+                      >
+                        Approve Ambassador
+                      </button>
+                      <button
+                        onClick={() => {
+                          setAmbassadorApplications(
+                            ambassadorApplications.filter((a) => a.id !== app.id)
+                          );
+                        }}
+                        className="px-3 py-1 bg-surface-2 text-text-muted text-xs rounded-lg"
+                      >
+                        Decline
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="p-8 rounded-xl bg-surface-1 border border-white/5 text-center text-text-muted space-y-2">
+              <CheckCircle2 className="w-8 h-8 text-green-400 mx-auto mb-1" />
+              <div className="text-sm font-bold text-white">No Pending Applications</div>
+              <p className="text-xs text-text-secondary">
+                Submitted campus ambassador applications will appear here for committee review.
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Audit Log Table */}
