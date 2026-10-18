@@ -267,11 +267,11 @@ function SuperAdminDashboardContent() {
 
   // Content Management: Sponsors State
   const [sponsors, setSponsors] = useState([
-    { id: "sp-1", name: "Omnikon Technologies", tier: "Alpha Title", confirmed: true },
-    { id: "sp-2", name: "Solana Foundation", tier: "Alpha Title", confirmed: true },
-    { id: "sp-3", name: "Vercel Cloud", tier: "Crimson Partner", confirmed: true },
-    { id: "sp-4", name: "Supabase", tier: "Crimson Partner", confirmed: true },
-    { id: "sp-5", name: "GitHub Education", tier: "Community Supporter", confirmed: false },
+    { id: "sp-1", name: "Sample Partner A", tier: "Alpha Title", confirmed: true },
+    { id: "sp-2", name: "Sample Partner B", tier: "Alpha Title", confirmed: true },
+    { id: "sp-3", name: "Sample Partner C", tier: "Crimson Partner", confirmed: true },
+    { id: "sp-4", name: "Sample Partner D", tier: "Crimson Partner", confirmed: true },
+    { id: "sp-5", name: "Sample Partner E", tier: "Community Supporter", confirmed: false },
   ]);
 
   // Badges Definitions
@@ -1352,7 +1352,7 @@ function SuperAdminDashboardContent() {
               <div>
                 <span className="font-bold text-white">Suspicious User (@sus-botnet)</span>
                 <p className="text-text-muted mt-0.5">
-                  Anomaly: 6 pull requests merged within 4 minutes on repository "Solana SDK".
+                  Anomaly: 6 pull requests merged within 4 minutes on repository "OpenPay SDK".
                 </p>
               </div>
 

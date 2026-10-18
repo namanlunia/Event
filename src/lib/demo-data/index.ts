@@ -61,16 +61,16 @@ export const MOCK_PROJECTS: Project[] = [
   },
   {
     id: "proj-2",
-    name: "Solana WinterPay SDK",
-    slug: "solana-winterpay-sdk",
-    tagline: "Micro-payment protocol and SDK for decentralized compute credits on Solana",
+    name: "OpenPay Web3 SDK",
+    slug: "openpay-web3-sdk",
+    tagline: "Micro-payment protocol and SDK for decentralized compute credits",
     description:
-      "A developer-first TypeScript and Rust SDK providing sub-second settlement for AI agent micropayments, streaming subscriptions, and state channel liquidity on Solana Devnet and Mainnet.",
+      "A developer-first TypeScript and Rust SDK providing sub-second settlement for AI agent micropayments, streaming subscriptions, and state channel liquidity across Web3 protocols.",
     repository_url: "",
-    tech_stack: ["Solana", "Rust", "Anchor", "TypeScript", "Web3.js"],
+    tech_stack: ["Rust", "Anchor", "TypeScript", "Web3.js"],
     difficulty: "Intermediate",
     domain: "Web3",
-    organization: "Solana Collective",
+    organization: "OpenPay Protocol",
     status: "approved",
     maintainer_id: "user-m3",
     maintainer_name: "Kaelen Voss",
@@ -502,7 +502,7 @@ export const MOCK_PRS: PullRequest[] = [
   {
     id: "pr-104",
     project_id: "proj-2",
-    project_name: "Solana WinterPay SDK",
+    project_name: "OpenPay Web3 SDK",
     contributor_id: "c-4",
     contributor_name: "Diya Menon",
     contributor_avatar: "",
@@ -672,50 +672,50 @@ export const MOCK_FAQS: FAQItem[] = [
   {
     category: "Points & Rewards",
     question: "What rewards and certificates do participants receive?",
-    answer: "All contributors who merge at least 1 approved PR receive a cryptographically verified Digital Certificate of Participation. Top 100 contributors receive official OWOC Winter Swag Boxes, custom hoodies, and direct referral opportunities with partner tech firms.",
+    answer: "All contributors who merge at least 1 approved PR receive a cryptographically verified Digital Certificate of Participation. Top 100 contributors receive official OWOC Winter Swag Boxes, custom hoodies, and recognition across community channels.",
   }
 ];
 
 export const MOCK_SPONSORS: Sponsor[] = [
   {
     id: "sp-1",
-    name: "Omnikon Technologies",
+    name: "Sample Partner A",
     tier: "Alpha Title",
     logo: "",
-    website: "https://omnikon.org",
-    description: "Title partner powering cloud compute, mentorship platforms, and global developer programs."
+    website: "",
+    description: "Sample partner supporting open-source student mentorship and community workshops."
   },
   {
     id: "sp-2",
-    name: "Solana Foundation",
+    name: "Sample Partner B",
     tier: "Alpha Title",
     logo: "",
-    website: "https://solana.com",
-    description: "Supporting high-performance decentralized systems, Web3 grants, and bounty tracks."
+    website: "",
+    description: "Sample partner supporting high-performance systems and developer tooling."
   },
   {
     id: "sp-3",
-    name: "Vercel Cloud",
+    name: "Sample Partner C",
     tier: "Crimson Partner",
     logo: "",
-    website: "https://vercel.com",
-    description: "Empowering developers to build and deploy high-performance modern web platforms."
+    website: "",
+    description: "Sample partner empowering student developers to build modern web platforms."
   },
   {
     id: "sp-4",
-    name: "Supabase",
+    name: "Sample Partner D",
     tier: "Crimson Partner",
     logo: "",
-    website: "https://supabase.com",
-    description: "The open source Firebase alternative powering database, auth, and real-time state."
+    website: "",
+    description: "Sample partner supporting open-source databases and developer tooling."
   },
   {
     id: "sp-5",
-    name: "GitHub Education",
+    name: "Sample Partner E",
     tier: "Community Supporter",
     logo: "",
-    website: "https://github.com",
-    description: "Providing developer packs, student credits, and Git workshop toolkits."
+    website: "",
+    description: "Sample community partner supporting student workshops and university chapters."
   }
 ];
 
@@ -810,12 +810,12 @@ export const MOCK_CONTRIBUTOR_APPLICATIONS: ContributorProjectApplication[] = [
   {
     id: "ca-2",
     project_id: "proj-2",
-    project_name: "Solana WinterPay SDK",
+    project_name: "OpenPay Web3 SDK",
     contributor_id: "u-c2",
     contributor_name: "Zara Chen",
     github_username: "zarachen-web3",
-    message: "Active in Solana Anchor ecosystem. Want to help construct client-side state channels.",
-    plan: "Write integration tests with Solana localnet and construct off-chain payment channels.",
+    message: "Active in open-source Web3 ecosystem. Want to help construct client-side state channels.",
+    plan: "Write integration tests with localnet and construct off-chain payment channels.",
     status: "pending",
     applied_at: "2026-10-17T12:00:00Z"
   }
@@ -846,7 +846,7 @@ export const MOCK_POINTS_LEDGER: PointsLedgerItem[] = [
     id: "pl-3",
     user_id: "c-2",
     points: 50,
-    reason: "Merged PR #28: Solana Anchor state channel tests",
+    reason: "Merged PR #28: Anchor state channel tests",
     type: "pr_merge",
     reference_id: "pr-2",
     awarded_by: "user-m2",

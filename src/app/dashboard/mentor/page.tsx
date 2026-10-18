@@ -122,8 +122,8 @@ function MentorDashboardContent() {
     },
     {
       id: "res-2",
-      title: "Solana Anchor State Channel Architecture",
-      url: "https://www.anchor-lang.com/",
+      title: "Web3 State Channel Architecture",
+      url: "/rules",
       desc: "Reference implementation for sub-second payment settlement pipelines.",
       category: "Architecture",
     },
@@ -164,7 +164,7 @@ function MentorDashboardContent() {
           id: "m-2",
           name: "Zara Chen",
           github: "zarachen-web3",
-          project: "Solana WinterPay SDK",
+          project: "OpenPay Web3 SDK",
           prsCount: 2,
           points: 150,
           lastActivityDate: "2026-10-12",
@@ -405,7 +405,7 @@ function MentorDashboardContent() {
               <div className="text-2xl font-black text-white font-mono">
                 <AnimatedCounter to={projects.length} />
               </div>
-              <div className="text-[10px] text-text-muted mt-1">WinterVision Core, Solana SDK</div>
+              <div className="text-[10px] text-text-muted mt-1">WinterVision Core, OpenPay SDK</div>
             </div>
 
             <div className="glass-card p-5 rounded-2xl border border-white/10">
