@@ -339,3 +339,67 @@ export function getCodingPeriodProgress(currentDate: Date = new Date()): {
     totalWeeks,
   };
 }
+
+export interface PrimaryCta {
+  text: string;
+  href: string;
+  disabled: boolean;
+  tooltip?: string;
+}
+
+/**
+ * Returns primary call-to-action configuration based on program timeline.
+ * Before Oct 20: returns "Registration opens Oct 20" (disabled).
+ * Oct 20 to Dec 3 (pre-coding): returns "Register Now — Free".
+ * Dec 4 to Dec 26 (coding sprint): returns "Start Contributing".
+ * After coding sprint: returns "View Leaderboard".
+ */
+export function getPrimaryCta(currentDate: Date = new Date()): PrimaryCta {
+  const firstPhaseStart = new Date(`${PHASES[0].startDate}T00:00:00`).getTime();
+  const codingStart = new Date(`${CODING_PHASE.startDate}T00:00:00`).getTime();
+  const codingEnd = new Date(`${CODING_PHASE.endDate}T23:59:59`).getTime();
+  const now = currentDate.getTime();
+
+  if (now < firstPhaseStart) {
+    const startFormatted = new Date(`${PHASES[0].startDate}T00:00:00`).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    });
+    return {
+      text: `Registration opens ${startFormatted}`,
+      href: "/register",
+      disabled: true,
+      tooltip: `Contributor and project registrations open on ${startFormatted}.`,
+    };
+  }
+
+  if (now < codingStart) {
+    return {
+      text: "Register Now — Free",
+      href: "/register",
+      disabled: false,
+    };
+  }
+
+  if (now <= codingEnd) {
+    return {
+      text: "Start Contributing",
+      href: "/projects",
+      disabled: false,
+    };
+  }
+
+  return {
+    text: "View Leaderboard",
+    href: "/leaderboard",
+    disabled: false,
+  };
+}
+
+/**
+ * Checks if current date is before coding period starts (Dec 4, 2026).
+ */
+export function isBeforeCodingPeriod(currentDate: Date = new Date()): boolean {
+  const codingStart = new Date(`${CODING_PHASE.startDate}T00:00:00`).getTime();
+  return currentDate.getTime() < codingStart;
+}
