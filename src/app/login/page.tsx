@@ -5,12 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   Flame,
-  Mail,
   ArrowRight,
-  ShieldCheck,
-  Check,
   Sparkles,
-  Terminal,
 } from "lucide-react";
 import { DEMO_PERSONAS, useAppStore } from "@/lib/store";
 import { UserRole } from "@/types";
@@ -20,7 +16,7 @@ import AvatarDisplay from "@/components/visual/AvatarDisplay";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { currentPersona, switchRole } = useAppStore();
+  const { switchRole } = useAppStore();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -143,6 +139,12 @@ export default function LoginPage() {
             </button>
           </div>
         </form>
+
+        <div className="pt-4 mt-4 border-t border-white/5 text-center">
+          <Link href="/register" className="text-xs font-mono text-text-muted hover:text-white transition-colors">
+            New to OWOC? <span className="text-red-bright font-bold">Register & Apply &rarr;</span>
+          </Link>
+        </div>
       </div>
     </div>
   );

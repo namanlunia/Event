@@ -4,7 +4,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { useInView, animate } from "framer-motion";
 
 export interface AnimatedCounterProps {
-  value: number | null | undefined;
+  value?: number | null | undefined;
+  to?: number | null | undefined;
   suffix?: string;
   prefix?: string;
   duration?: number; // Duration in seconds, default 1.6s
@@ -31,6 +32,7 @@ function formatLocaleNumber(val: number, decimals: number = 0): string {
 
 export function AnimatedCounter({
   value,
+  to,
   suffix = "",
   prefix = "",
   duration = 1.6,
@@ -40,9 +42,10 @@ export function AnimatedCounter({
 }: AnimatedCounterProps) {
   const containerRef = useRef<HTMLSpanElement>(null);
 
-  // If value is null, undefined, or 0, do not show "0+", render muted placeholder
-  const isValidNumber = typeof value === "number" && !isNaN(value) && isFinite(value);
-  const targetValue = isValidNumber ? value : 0;
+  // If value or to is provided, resolve target value
+  const rawVal = value !== undefined ? value : to;
+  const isValidNumber = typeof rawVal === "number" && !isNaN(rawVal) && isFinite(rawVal);
+  const targetValue = isValidNumber ? rawVal : 0;
   const isZeroOrEmpty = !isValidNumber || targetValue === 0;
 
   // CRITICAL REQUIREMENT: Server and no-JS default is the FINAL formatted value.

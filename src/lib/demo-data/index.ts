@@ -10,6 +10,18 @@ import {
   Sponsor,
   TimelineStep,
   Certificate,
+  MentorApplication,
+  ProjectAdminApplication,
+  ContributorProjectApplication,
+  PointsLedgerItem,
+  PointsRulesConfig,
+  LeaderboardSettings,
+  OfficeHoursSession,
+  MentorFeedbackRecord,
+  ProjectAnnouncement,
+  InAppNotification,
+  AuditLogItem,
+  SiteSettings,
 } from "@/types";
 import {
   PHASES,
@@ -720,3 +732,304 @@ export const MOCK_SAMPLE_CERTIFICATE: Certificate = {
   verification_hash: "0x8F9A4E27B13C9945D783E002B18944FE78B9910D",
   qr_code_data: "https://owoc.omnikon.org/certificate/OWOC-2026-C-9821"
 };
+
+export const MOCK_MENTOR_APPLICATIONS: MentorApplication[] = [
+  {
+    id: "m-app-1",
+    user_id: "u-m1",
+    full_name: "Dr. Kavita Shenoy",
+    email: "kavita.shenoy@example.edu",
+    github_username: "kshenoy-ai",
+    linkedin_url: "https://linkedin.com/in/kshenoy-ai",
+    bio: "Senior Researcher in compiler optimization and edge acceleration. 8+ years experience guiding graduate research.",
+    expertise_domains: ["AI/ML", "Rust", "CUDA"],
+    weekly_availability_hours: 6,
+    preferred_projects: "WinterVision Core",
+    status: "pending",
+    created_at: "2026-10-15T10:00:00Z"
+  },
+  {
+    id: "m-app-2",
+    user_id: "u-m2",
+    full_name: "Marcus Vance",
+    email: "marcus.v@cloudscale.io",
+    github_username: "mvance-dev",
+    linkedin_url: "https://linkedin.com/in/marcusvance",
+    bio: "Staff Infrastructure Engineer. Maintained high-throughput Kubernetes operators and Envoy proxies.",
+    expertise_domains: ["Cloud & DevOps", "Go", "Security"],
+    weekly_availability_hours: 4,
+    preferred_projects: "KubeMesh Controller",
+    status: "pending",
+    created_at: "2026-10-16T14:30:00Z"
+  }
+];
+
+export const MOCK_PROJECT_ADMIN_APPLICATIONS: ProjectAdminApplication[] = [
+  {
+    id: "pa-app-1",
+    user_id: "u-pa1",
+    full_name: "Rohan Kulkarni",
+    email: "rohan@hypercache.org",
+    github_username: "rohank-sys",
+    project_name: "HyperCache Distributed KV",
+    repo_url: "https://github.com/hypercache/hypercache-engine",
+    project_desc: "Distributed in-memory cache leveraging RDMA and io_uring with microsecond latency.",
+    domain: "Cloud & DevOps",
+    tech_stack: ["Rust", "C++", "Linux", "gRPC"],
+    status: "pending",
+    created_at: "2026-10-14T09:15:00Z"
+  },
+  {
+    id: "pa-app-2",
+    user_id: "u-pa2",
+    full_name: "Sarah Jenkins",
+    email: "sarah@aegis-sec.io",
+    github_username: "sjenkins-sec",
+    project_name: "Aegis Zero-Trust Proxy",
+    repo_url: "https://github.com/aegis-sec/aegis-proxy",
+    project_desc: "Identity-aware zero trust reverse proxy with automated mTLS rotation and eBPF observability.",
+    domain: "Security",
+    tech_stack: ["Go", "eBPF", "Kubernetes", "TLS"],
+    status: "pending",
+    created_at: "2026-10-16T11:45:00Z"
+  }
+];
+
+export const MOCK_CONTRIBUTOR_APPLICATIONS: ContributorProjectApplication[] = [
+  {
+    id: "ca-1",
+    project_id: "proj-1",
+    project_name: "WinterVision Core",
+    contributor_id: "u-c1",
+    contributor_name: "Aarav Patel",
+    github_username: "aaravp-dev",
+    message: "I have experience with C++20 and CUDA kernels. I would love to tackle issue #14 (vector transformations).",
+    plan: "Implement AVX-512 SIMD vectorization path, add microbenchmarks, and test memory alignments.",
+    status: "pending",
+    applied_at: "2026-10-16T08:20:00Z"
+  },
+  {
+    id: "ca-2",
+    project_id: "proj-2",
+    project_name: "Solana WinterPay SDK",
+    contributor_id: "u-c2",
+    contributor_name: "Zara Chen",
+    github_username: "zarachen-web3",
+    message: "Active in Solana Anchor ecosystem. Want to help construct client-side state channels.",
+    plan: "Write integration tests with Solana localnet and construct off-chain payment channels.",
+    status: "pending",
+    applied_at: "2026-10-17T12:00:00Z"
+  }
+];
+
+export const MOCK_POINTS_LEDGER: PointsLedgerItem[] = [
+  {
+    id: "pl-1",
+    user_id: "c-1",
+    points: 100,
+    reason: "Merged PR #14: Implement AVX-512 vector acceleration",
+    type: "pr_merge",
+    reference_id: "pr-1",
+    awarded_by: "user-m1",
+    created_at: "2026-12-05T16:20:00Z"
+  },
+  {
+    id: "pl-2",
+    user_id: "c-1",
+    points: 10,
+    reason: "Outstanding test coverage quality bonus for PR #14",
+    type: "quality_bonus",
+    reference_id: "pr-1",
+    awarded_by: "user-m1",
+    created_at: "2026-12-05T16:21:00Z"
+  },
+  {
+    id: "pl-3",
+    user_id: "c-2",
+    points: 50,
+    reason: "Merged PR #28: Solana Anchor state channel tests",
+    type: "pr_merge",
+    reference_id: "pr-2",
+    awarded_by: "user-m2",
+    created_at: "2026-12-07T14:10:00Z"
+  }
+];
+
+export const MOCK_POINTS_RULES: PointsRulesConfig = {
+  easy_points: 10,
+  medium_points: 25,
+  hard_points: 50,
+  streak_bonus: 15,
+  quality_bonus_max: 10,
+  daily_cap: 100,
+  version: 1,
+  updated_at: "2026-10-17T00:00:00Z"
+};
+
+export const MOCK_LEADERBOARD_SETTINGS: LeaderboardSettings = {
+  is_frozen: false,
+  disqualified_user_ids: [],
+  last_recalculated_at: "2026-10-17T12:00:00Z"
+};
+
+export const MOCK_OFFICE_HOURS: OfficeHoursSession[] = [
+  {
+    id: "oh-1",
+    mentor_id: "user-m1",
+    mentor_name: "Dr. Aris Thorne",
+    project_id: "proj-1",
+    project_name: "WinterVision Core",
+    title: "Rust & SIMD Optimization Clinic",
+    session_date: "2026-12-06",
+    start_time: "17:00",
+    end_time: "18:00",
+    meeting_url: "https://meet.google.com/owoc-mentor-simd",
+    max_attendees: 15,
+    booked_count: 8,
+    created_at: "2026-10-16T09:00:00Z"
+  },
+  {
+    id: "oh-2",
+    mentor_id: "user-m2",
+    mentor_name: "Elena Rostova",
+    project_id: "proj-1",
+    project_name: "WinterVision Core",
+    title: "CUDA Memory Allocation Architecture",
+    session_date: "2026-12-08",
+    start_time: "19:00",
+    end_time: "20:00",
+    meeting_url: "https://meet.google.com/owoc-mentor-cuda",
+    max_attendees: 12,
+    booked_count: 5,
+    created_at: "2026-10-16T11:00:00Z"
+  }
+];
+
+export const MOCK_MENTOR_FEEDBACK: MentorFeedbackRecord[] = [
+  {
+    id: "mf-1",
+    mentor_id: "user-m1",
+    mentor_name: "Dr. Aris Thorne",
+    contributor_id: "c-1",
+    contributor_name: "Aarav Patel",
+    pr_id: "pr-1",
+    pr_title: "Implement zero-copy buffer pooling",
+    is_private: false,
+    feedback_text: "Clean, idiomatic Rust code with comprehensive criterion benchmarks. Outstanding handling of cache-line alignment.",
+    quality_rating: 5,
+    created_at: "2026-12-05T16:22:00Z"
+  },
+  {
+    id: "mf-2",
+    mentor_id: "user-m1",
+    mentor_name: "Dr. Aris Thorne",
+    contributor_id: "c-1",
+    contributor_name: "Aarav Patel",
+    is_private: true,
+    feedback_text: "Strong technical candidate for next cohort maintainer invite.",
+    quality_rating: 5,
+    created_at: "2026-12-05T16:25:00Z"
+  }
+];
+
+export const MOCK_PROJECT_ANNOUNCEMENTS: ProjectAnnouncement[] = [
+  {
+    id: "pa-ann-1",
+    project_id: "proj-1",
+    project_name: "WinterVision Core",
+    author_id: "user-m1",
+    author_name: "Dr. Aris Thorne",
+    title: "Week 1 Focus: Zero-Copy Pipelines & Good-First-Issues",
+    content: "Welcome contributors! Please make sure your PRs compile cleanly with `--all-targets` and include unit tests for edge cases.",
+    created_at: "2026-12-02T10:00:00Z"
+  }
+];
+
+export const MOCK_NOTIFICATIONS: InAppNotification[] = [
+  {
+    id: "notif-1",
+    user_id: "all",
+    role: "contributor",
+    title: "Registration Verified",
+    message: "Your OWOC 2026 contributor profile is verified. Browse projects to prepare for December sprints.",
+    link: "/projects",
+    type: "info",
+    is_read: false,
+    created_at: "2026-10-17T10:00:00Z"
+  },
+  {
+    id: "notif-2",
+    user_id: "all",
+    role: "project_admin",
+    title: "New Contributor Application",
+    message: "Aarav Patel submitted an application to join WinterVision Core.",
+    link: "/dashboard/project-admin#applications",
+    type: "info",
+    is_read: false,
+    created_at: "2026-10-17T11:00:00Z"
+  },
+  {
+    id: "notif-3",
+    user_id: "all",
+    role: "mentor",
+    title: "PR Awaiting Review",
+    message: "PR #14 on WinterVision Core has been assigned to you for code review.",
+    link: "/dashboard/mentor#reviews",
+    type: "warning",
+    is_read: false,
+    created_at: "2026-10-17T11:30:00Z"
+  },
+  {
+    id: "notif-4",
+    user_id: "all",
+    role: "super_admin",
+    title: "Pending Repository Review",
+    message: "HyperCache Distributed KV was submitted by Rohan Kulkarni for OWOC listing.",
+    link: "/dashboard/admin#approvals",
+    type: "alert",
+    is_read: false,
+    created_at: "2026-10-17T12:00:00Z"
+  }
+];
+
+export const MOCK_AUDIT_LOGS: AuditLogItem[] = [
+  {
+    id: "al-1",
+    admin_id: "admin-1",
+    admin_email: "organizer@omnikon.org",
+    action: "approve_project",
+    target_type: "project",
+    target_id: "proj-1",
+    details_before: { status: "pending" },
+    details_after: { status: "approved" },
+    created_at: "2026-10-15T14:22:00Z"
+  },
+  {
+    id: "al-2",
+    admin_id: "admin-1",
+    admin_email: "organizer@omnikon.org",
+    action: "update_points_rules",
+    target_type: "points_rules_config",
+    target_id: "rules-v1",
+    details_before: { streak_bonus: 10 },
+    details_after: { streak_bonus: 15 },
+    created_at: "2026-10-16T09:10:00Z"
+  }
+];
+
+export const MOCK_SITE_SETTINGS: SiteSettings = {
+  contact_email: "contact@omnikon.org",
+  conduct_email: "conduct@omnikon.org",
+  twitter_url: "https://x.com/omnikon_owoc",
+  linkedin_url: "https://linkedin.com/company/omnikon",
+  github_url: "https://github.com/namanlunia/Event",
+  discord_url: "https://discord.gg/owoc",
+  ambassador_rewards_config: {
+    bronze_threshold: 10,
+    silver_threshold: 25,
+    gold_threshold: 50,
+    master_threshold: 100
+  },
+  updated_at: "2026-10-17T00:00:00Z"
+};
+

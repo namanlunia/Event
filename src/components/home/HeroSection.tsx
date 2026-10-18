@@ -198,25 +198,25 @@ export default function HeroSection() {
             <div className="space-y-3">
               {[
                 {
-                  href: "/dashboard/contributor",
+                  href: "/register",
                   icon: <Code2 className="w-5 h-5" />,
                   title: "Register as Contributor",
                   desc: "Solve real GitHub issues, earn points for merged PRs, and climb the leaderboard.",
                 },
                 {
-                  href: "/dashboard/mentor",
+                  href: "/apply/mentor",
                   icon: <Users className="w-5 h-5" />,
-                  title: "Register as Technical Mentor",
+                  title: "Apply as Technical Mentor",
                   desc: "Guide student contributors, review PRs, and assign quality score multipliers.",
                 },
                 {
-                  href: "/dashboard/maintainer",
+                  href: "/apply/project-admin",
                   icon: <Layers className="w-5 h-5" />,
-                  title: "Submit Project as Maintainer",
+                  title: "Apply as Project Admin (Maintainer)",
                   desc: "Onboard your open source repository, label issues, and welcome passionate contributors.",
                 },
                 {
-                  href: "/dashboard/ambassador",
+                  href: "/ambassadors",
                   icon: <Sparkles className="w-5 h-5" />,
                   title: "Apply as Campus Ambassador",
                   desc: "Represent OWOC in your college, track referrals, and unlock exclusive rewards.",

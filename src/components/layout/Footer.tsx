@@ -135,6 +135,16 @@ export default function Footer() {
                   Certificate Verification
                 </Link>
               </li>
+              <li>
+                <Link href="/apply/project-admin" className="text-red-bright hover:text-white font-mono text-xs transition-colors">
+                  &rarr; Apply as Project Admin
+                </Link>
+              </li>
+              <li>
+                <Link href="/apply/mentor" className="text-red-bright hover:text-white font-mono text-xs transition-colors">
+                  &rarr; Apply as Mentor
+                </Link>
+              </li>
             </ul>
           </div>
 
