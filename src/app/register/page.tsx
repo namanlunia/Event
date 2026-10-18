@@ -4,11 +4,11 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  Flame,
   FolderGit2,
   Users,
   ArrowRight,
 } from "lucide-react";
+import BrandLogo from "@/components/brand/BrandLogo";
 import { useAppStore } from "@/lib/store";
 import { SEASON_LABEL } from "@/lib/season";
 
@@ -33,15 +33,11 @@ export default function RegisterPage() {
       <div className="max-w-3xl w-full glass-card p-8 sm:p-12 rounded-3xl border border-white/10 shadow-2xl relative z-10 space-y-8">
         <div className="text-center space-y-2">
           <Link href="/" className="inline-flex items-center gap-2 mb-2 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-primary to-red-deep p-[1px] shadow-red-glow-sm">
-              <div className="w-full h-full bg-[#0B0B0D] rounded-xl flex items-center justify-center">
-                <Flame className="w-5 h-5 text-red-bright" />
-              </div>
-            </div>
+            <BrandLogo />
             <span className="font-heading font-black text-2xl text-white">OWOC {SEASON_LABEL}</span>
           </Link>
           <h1 className="font-heading font-black text-3xl sm:text-4xl text-white">
-            Join the Winter Cohort
+            Join the Winter Season
           </h1>
           <p className="text-xs sm:text-sm text-text-secondary max-w-lg mx-auto">
             Choose how you want to participate in Omnikon Winter of Code 2026.
@@ -61,7 +57,7 @@ export default function RegisterPage() {
               Student Contributor
             </h2>
             <p className="text-xs text-text-secondary leading-relaxed max-w-md">
-              Solve issues on production repositories, submit PRs, earn points on the live leaderboard, unlock digital certificates, and win winter swag boxes.
+              Solve issues on real open-source repositories, submit PRs, earn points on the leaderboard, unlock digital certificates, and win winter swag boxes.
             </p>
           </div>
 

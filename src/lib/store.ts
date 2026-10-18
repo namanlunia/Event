@@ -36,6 +36,15 @@ import {
   MOCK_SITE_SETTINGS,
 } from "@/lib/demo-data";
 import { SITE_CONFIG } from "@/lib/site-config";
+import {
+  PERSONAS,
+  PERSONAS_LIST,
+  getPersonaByRole,
+  normalizeRole,
+  getRoleFromPath,
+} from "@/lib/personas";
+
+export { normalizeRole, getRoleFromPath, PERSONAS, PERSONAS_LIST, getPersonaByRole };
 
 export interface DemoPersona {
   role: StandardRole;
@@ -46,182 +55,181 @@ export interface DemoPersona {
   dashboardUrl: string;
   badge: string;
   allowedRoles: StandardRole[];
+  roleLabel: string;
+  subtitle: string;
+  avatarInitials: string;
+  sidebarMenuTitle: string;
+  breadcrumbLabel: string;
 }
 
-export const DEMO_PERSONAS: DemoPersona[] = [
-  {
-    role: "contributor",
-    title: "Student Contributor",
-    name: "Sample Contributor",
-    email: "contributor@example.com",
-    avatar: "",
-    dashboardUrl: "/dashboard/contributor",
-    badge: "Student Contributor",
-    allowedRoles: ["contributor"],
-  },
-  {
-    role: "project_admin",
-    title: "Project Admin",
-    name: "Sample Maintainer",
-    email: "maintainer@example.com",
-    avatar: "",
-    dashboardUrl: "/dashboard/project-admin",
-    badge: "Project Maintainer",
-    allowedRoles: ["project_admin", "contributor"],
-  },
-  {
-    role: "mentor",
-    title: "Technical Mentor",
-    name: "Sample Mentor",
-    email: "mentor@example.com",
-    avatar: "",
-    dashboardUrl: "/dashboard/mentor",
-    badge: "Technical Mentor",
-    allowedRoles: ["mentor", "contributor"],
-  },
-  {
-    role: "super_admin",
-    title: "Super Admin",
-    name: "OWOC Admin",
-    email: "admin@example.com",
-    avatar: "",
-    dashboardUrl: "/dashboard/admin",
-    badge: "Program Organizer",
-    allowedRoles: ["super_admin", "project_admin", "mentor", "contributor", "ambassador"],
-  },
-  {
-    role: "ambassador",
-    title: "Campus Ambassador",
-    name: "Sample Ambassador",
-    email: "ambassador@example.com",
-    avatar: "",
-    dashboardUrl: "/dashboard/ambassador",
-    badge: "Campus Ambassador",
-    allowedRoles: ["ambassador", "contributor"],
-  },
-];
-
-export function normalizeRole(role: string): StandardRole {
-  if (role === "maintainer") return "project_admin";
-  if (role === "admin") return "super_admin";
-  if (["super_admin", "project_admin", "mentor", "contributor", "ambassador"].includes(role)) {
-    return role as StandardRole;
-  }
-  return "contributor";
-}
+export const DEMO_PERSONAS: DemoPersona[] = PERSONAS_LIST.map((p) => ({
+  role: p.id,
+  title: p.subtitle,
+  name: p.personaName,
+  email: `${p.id}@example.com`,
+  avatar: "",
+  dashboardUrl: p.dashboardRoute,
+  badge: p.roleLabel,
+  allowedRoles:
+    p.id === "super_admin"
+      ? ["super_admin", "project_admin", "mentor", "contributor", "ambassador"]
+      : [p.id, "contributor"],
+  roleLabel: p.roleLabel,
+  subtitle: p.subtitle,
+  avatarInitials: p.avatarInitials,
+  sidebarMenuTitle: p.sidebarMenuTitle,
+  breadcrumbLabel: p.breadcrumbLabel,
+}));
 
 const STORAGE_KEY_ROLE = "owoc_active_role";
-const STORAGE_KEY_PROJECTS = "owoc_projects_data";
-const STORAGE_KEY_PRS = "owoc_prs_data";
-const STORAGE_KEY_NOTIFS = "owoc_notifs_data";
+
+// Global singleton state so all components stay 100% in sync
+interface GlobalStoreState {
+  activeRole: StandardRole;
+  isHydrated: boolean;
+  projects: Project[];
+  pullRequests: PullRequest[];
+  mentorApplications: MentorApplication[];
+  projectAdminApplications: ProjectAdminApplication[];
+  contributorApplications: ContributorProjectApplication[];
+  pointsLedger: PointsLedgerItem[];
+  pointsRules: PointsRulesConfig;
+  leaderboardSettings: LeaderboardSettings;
+  officeHours: OfficeHoursSession[];
+  mentorFeedback: MentorFeedbackRecord[];
+  projectAnnouncements: ProjectAnnouncement[];
+  notifications: InAppNotification[];
+  auditLogs: AuditLogItem[];
+  siteSettings: SiteSettings;
+}
+
+const globalStore: GlobalStoreState = {
+  activeRole: "contributor",
+  isHydrated: false,
+  projects: SITE_CONFIG.DEMO_MODE ? [...MOCK_PROJECTS] : [],
+  pullRequests: SITE_CONFIG.DEMO_MODE ? [...MOCK_PRS] : [],
+  mentorApplications: SITE_CONFIG.DEMO_MODE ? [...MOCK_MENTOR_APPLICATIONS] : [],
+  projectAdminApplications: SITE_CONFIG.DEMO_MODE ? [...MOCK_PROJECT_ADMIN_APPLICATIONS] : [],
+  contributorApplications: SITE_CONFIG.DEMO_MODE ? [...MOCK_CONTRIBUTOR_APPLICATIONS] : [],
+  pointsLedger: SITE_CONFIG.DEMO_MODE ? [...MOCK_POINTS_LEDGER] : [],
+  pointsRules: SITE_CONFIG.DEMO_MODE
+    ? { ...MOCK_POINTS_RULES }
+    : {
+        easy_points: 10,
+        medium_points: 25,
+        hard_points: 50,
+        streak_bonus: 15,
+        quality_bonus_max: 10,
+        daily_cap: 100,
+        version: 1,
+        updated_at: new Date().toISOString(),
+      },
+  leaderboardSettings: SITE_CONFIG.DEMO_MODE
+    ? { ...MOCK_LEADERBOARD_SETTINGS }
+    : {
+        is_frozen: false,
+        disqualified_user_ids: [],
+        last_recalculated_at: new Date().toISOString(),
+      },
+  officeHours: SITE_CONFIG.DEMO_MODE ? [...MOCK_OFFICE_HOURS] : [],
+  mentorFeedback: SITE_CONFIG.DEMO_MODE ? [...MOCK_MENTOR_FEEDBACK] : [],
+  projectAnnouncements: SITE_CONFIG.DEMO_MODE ? [...MOCK_PROJECT_ANNOUNCEMENTS] : [],
+  notifications: SITE_CONFIG.DEMO_MODE ? [...MOCK_NOTIFICATIONS] : [],
+  auditLogs: SITE_CONFIG.DEMO_MODE ? [...MOCK_AUDIT_LOGS] : [],
+  siteSettings: SITE_CONFIG.DEMO_MODE
+    ? { ...MOCK_SITE_SETTINGS }
+    : {
+        contact_email: "contact@omnikon.org",
+        conduct_email: "conduct@omnikon.org",
+        twitter_url: "",
+        linkedin_url: "",
+        github_url: "",
+        discord_url: "",
+        ambassador_rewards_config: {
+          bronze_threshold: 10,
+          silver_threshold: 25,
+          gold_threshold: 50,
+          master_threshold: 100,
+        },
+        updated_at: new Date().toISOString(),
+      },
+};
+
+const subscribers = new Set<() => void>();
+
+function notifySubscribers() {
+  subscribers.forEach((cb) => {
+    try {
+      cb();
+    } catch (e) {
+      console.error("Store subscriber error:", e);
+    }
+  });
+}
+
+function persistRole(role: StandardRole) {
+  if (typeof window === "undefined") return;
+  try {
+    sessionStorage.setItem(STORAGE_KEY_ROLE, role);
+  } catch (e) {
+    console.warn("sessionStorage set error:", e);
+  }
+}
 
 export function useAppStore() {
-  const [currentPersona, setCurrentPersona] = useState<DemoPersona>(DEMO_PERSONAS[0]);
-  const [projects, setProjects] = useState<Project[]>(SITE_CONFIG.DEMO_MODE ? MOCK_PROJECTS : []);
-  const [pullRequests, setPullRequests] = useState<PullRequest[]>(SITE_CONFIG.DEMO_MODE ? MOCK_PRS : []);
-  const [mentorApplications, setMentorApplications] = useState<MentorApplication[]>(
-    SITE_CONFIG.DEMO_MODE ? MOCK_MENTOR_APPLICATIONS : []
-  );
-  const [projectAdminApplications, setProjectAdminApplications] = useState<ProjectAdminApplication[]>(
-    SITE_CONFIG.DEMO_MODE ? MOCK_PROJECT_ADMIN_APPLICATIONS : []
-  );
-  const [contributorApplications, setContributorApplications] = useState<ContributorProjectApplication[]>(
-    SITE_CONFIG.DEMO_MODE ? MOCK_CONTRIBUTOR_APPLICATIONS : []
-  );
-  const [pointsLedger, setPointsLedger] = useState<PointsLedgerItem[]>(
-    SITE_CONFIG.DEMO_MODE ? MOCK_POINTS_LEDGER : []
-  );
-  const [pointsRules, setPointsRules] = useState<PointsRulesConfig>(
-    SITE_CONFIG.DEMO_MODE ? MOCK_POINTS_RULES : {
-      easy_points: 10,
-      medium_points: 25,
-      hard_points: 50,
-      streak_bonus: 15,
-      quality_bonus_max: 10,
-      daily_cap: 100,
-      version: 1,
-      updated_at: new Date().toISOString()
-    }
-  );
-  const [leaderboardSettings, setLeaderboardSettings] = useState<LeaderboardSettings>(
-    SITE_CONFIG.DEMO_MODE ? MOCK_LEADERBOARD_SETTINGS : {
-      is_frozen: false,
-      disqualified_user_ids: [],
-      last_recalculated_at: new Date().toISOString()
-    }
-  );
-  const [officeHours, setOfficeHours] = useState<OfficeHoursSession[]>(
-    SITE_CONFIG.DEMO_MODE ? MOCK_OFFICE_HOURS : []
-  );
-  const [mentorFeedback, setMentorFeedback] = useState<MentorFeedbackRecord[]>(
-    SITE_CONFIG.DEMO_MODE ? MOCK_MENTOR_FEEDBACK : []
-  );
-  const [projectAnnouncements, setProjectAnnouncements] = useState<ProjectAnnouncement[]>(
-    SITE_CONFIG.DEMO_MODE ? MOCK_PROJECT_ANNOUNCEMENTS : []
-  );
-  const [notifications, setNotifications] = useState<InAppNotification[]>(
-    SITE_CONFIG.DEMO_MODE ? MOCK_NOTIFICATIONS : []
-  );
-  const [auditLogs, setAuditLogs] = useState<AuditLogItem[]>(
-    SITE_CONFIG.DEMO_MODE ? MOCK_AUDIT_LOGS : []
-  );
-  const [siteSettings, setSiteSettings] = useState<SiteSettings>(
-    SITE_CONFIG.DEMO_MODE ? MOCK_SITE_SETTINGS : {
-      contact_email: "contact@omnikon.org",
-      conduct_email: "conduct@omnikon.org",
-      twitter_url: "",
-      linkedin_url: "",
-      github_url: "",
-      discord_url: "",
-      ambassador_rewards_config: {
-        bronze_threshold: 10,
-        silver_threshold: 25,
-        gold_threshold: 50,
-        master_threshold: 100
-      },
-      updated_at: new Date().toISOString()
-    }
-  );
-  const [isHydrated, setIsHydrated] = useState(false);
+  const [, setTick] = useState(0);
 
   useEffect(() => {
-    try {
-      const savedRole = localStorage.getItem(STORAGE_KEY_ROLE);
-      if (savedRole) {
-        const normalized = normalizeRole(savedRole);
-        const found = DEMO_PERSONAS.find((p) => p.role === normalized);
-        if (found) setCurrentPersona(found);
-      }
+    const handleUpdate = () => setTick((t) => t + 1);
+    subscribers.add(handleUpdate);
 
-      if (SITE_CONFIG.DEMO_MODE) {
-        const savedProjects = localStorage.getItem(STORAGE_KEY_PROJECTS);
-        if (savedProjects) {
-          setProjects(JSON.parse(savedProjects));
-        }
+    if (!globalStore.isHydrated) {
+      if (typeof window !== "undefined") {
+        try {
+          // Check route path first if on a dashboard page
+          const routeRole = getRoleFromPath(window.location.pathname);
+          const savedRole = sessionStorage.getItem(STORAGE_KEY_ROLE);
 
-        const savedPrs = localStorage.getItem(STORAGE_KEY_PRS);
-        if (savedPrs) {
-          setPullRequests(JSON.parse(savedPrs));
-        }
-
-        const savedNotifs = localStorage.getItem(STORAGE_KEY_NOTIFS);
-        if (savedNotifs) {
-          setNotifications(JSON.parse(savedNotifs));
+          if (routeRole) {
+            globalStore.activeRole = routeRole;
+            persistRole(routeRole);
+          } else if (savedRole) {
+            globalStore.activeRole = normalizeRole(savedRole);
+          }
+        } catch (e) {
+          console.warn("Store hydration notice:", e);
         }
       }
-    } catch (e) {
-      console.warn("Storage hydration notice:", e);
+      globalStore.isHydrated = true;
+      notifySubscribers();
     }
-    setIsHydrated(true);
+
+    return () => {
+      subscribers.delete(handleUpdate);
+    };
   }, []);
+
+  const activeRole = globalStore.activeRole;
+  const personaConfig = PERSONAS[activeRole] || PERSONAS.contributor;
+  const currentPersona =
+    DEMO_PERSONAS.find((p) => p.role === activeRole) || DEMO_PERSONAS[0];
 
   const switchRole = (role: UserRole | string) => {
     const normalized = normalizeRole(role);
-    const persona = DEMO_PERSONAS.find((p) => p.role === normalized) || DEMO_PERSONAS[0];
-    setCurrentPersona(persona);
-    try {
-      localStorage.setItem(STORAGE_KEY_ROLE, normalized);
-    } catch {}
+    if (globalStore.activeRole !== normalized) {
+      globalStore.activeRole = normalized;
+      persistRole(normalized);
+      notifySubscribers();
+    }
+  };
+
+  const syncRoleFromPath = (pathname: string) => {
+    const routeRole = getRoleFromPath(pathname);
+    if (routeRole && globalStore.activeRole !== routeRole) {
+      globalStore.activeRole = routeRole;
+      persistRole(routeRole);
+      notifySubscribers();
+    }
   };
 
   const addProject = (projectData: Omit<Project, "id" | "created_at" | "status">) => {
@@ -235,11 +243,7 @@ export function useAppStore() {
       forks_count: projectData.forks_count || 0,
       mentor_ids: projectData.mentor_ids || [],
     };
-    const updated = [newProject, ...projects];
-    setProjects(updated);
-    try {
-      localStorage.setItem(STORAGE_KEY_PROJECTS, JSON.stringify(updated));
-    } catch {}
+    globalStore.projects = [newProject, ...globalStore.projects];
 
     addNotification({
       title: "Project Submitted",
@@ -256,305 +260,283 @@ export function useAppStore() {
       details_after: { name: newProject.name, repo: newProject.repository_url },
     });
 
+    notifySubscribers();
     return newProject;
   };
 
-  const updateProject = (projectId: string, partial: Partial<Project>) => {
-    const updated = projects.map((p) => (p.id === projectId ? { ...p, ...partial } : p));
-    setProjects(updated);
-    try {
-      localStorage.setItem(STORAGE_KEY_PROJECTS, JSON.stringify(updated));
-    } catch {}
+  const updateProject = (id: string, updates: Partial<Project>) => {
+    globalStore.projects = globalStore.projects.map((p) =>
+      p.id === id ? { ...p, ...updates } : p
+    );
+    notifySubscribers();
   };
 
-  const approveProject = (projectId: string, reviewNotes: string = "") => {
-    const updated = projects.map((p) =>
-      p.id === projectId
-        ? {
-            ...p,
-            status: "approved" as const,
-            admin_review_notes: reviewNotes,
-            reviewed_at: new Date().toISOString(),
-          }
-        : p
+  const approveProject = (id: string, notes?: string) => {
+    globalStore.projects = globalStore.projects.map((p) =>
+      p.id === id ? { ...p, status: "approved" as const } : p
     );
-    setProjects(updated);
-    try {
-      localStorage.setItem(STORAGE_KEY_PROJECTS, JSON.stringify(updated));
-    } catch {}
-
-    const target = projects.find((p) => p.id === projectId);
-    addNotification({
-      title: "Project Approved!",
-      message: `Repository "${target?.name || projectId}" is now approved for OWOC 2026.`,
-      type: "success",
-      role: "project_admin",
-      link: `/projects/${target?.slug || ""}`,
-    });
-
     addAuditLog({
       action: "approve_project",
       target_type: "project",
-      target_id: projectId,
-      details_after: { status: "approved", notes: reviewNotes },
+      target_id: id,
+      details_after: { status: "approved", notes },
     });
+    notifySubscribers();
   };
 
-  const rejectProject = (projectId: string, reason: string = "") => {
-    const updated = projects.map((p) =>
-      p.id === projectId
-        ? {
-            ...p,
-            status: "rejected" as const,
-            admin_review_notes: reason,
-            reviewed_at: new Date().toISOString(),
-          }
-        : p
+  const rejectProject = (id: string, reason?: string) => {
+    globalStore.projects = globalStore.projects.map((p) =>
+      p.id === id ? { ...p, status: "rejected" as const } : p
     );
-    setProjects(updated);
-    try {
-      localStorage.setItem(STORAGE_KEY_PROJECTS, JSON.stringify(updated));
-    } catch {}
-
-    const target = projects.find((p) => p.id === projectId);
-    addNotification({
-      title: "Project Decision Update",
-      message: `Repository "${target?.name || projectId}" was not approved: ${reason || "Does not meet requirements."}`,
-      type: "alert",
-      role: "project_admin",
-      link: "/dashboard/project-admin",
-    });
-
     addAuditLog({
       action: "reject_project",
       target_type: "project",
-      target_id: projectId,
+      target_id: id,
       details_after: { status: "rejected", reason },
     });
+    notifySubscribers();
   };
 
-  const mergePR = (prId: string, qualityBonus: number = 0) => {
-    const targetPR = pullRequests.find((pr) => pr.id === prId);
-    const updated = pullRequests.map((pr) => {
-      if (pr.id === prId) {
-        return {
-          ...pr,
-          status: "merged" as const,
-          quality_bonus: qualityBonus,
-          merged_at: new Date().toISOString(),
-        };
-      }
-      return pr;
-    });
-    setPullRequests(updated);
-    try {
-      localStorage.setItem(STORAGE_KEY_PRS, JSON.stringify(updated));
-    } catch {}
-
-    if (targetPR) {
-      const basePoints = targetPR.points_awarded || (targetPR.difficulty === "Hard" ? 50 : targetPR.difficulty === "Medium" ? 25 : 10);
-      awardPoints({
-        user_id: targetPR.contributor_id,
-        points: basePoints + qualityBonus,
-        reason: `Merged PR #${targetPR.pr_number} on ${targetPR.project_name}${qualityBonus > 0 ? ` (+${qualityBonus} quality bonus)` : ""}`,
-        type: "pr_merge",
-        reference_id: targetPR.id,
-      });
-
-      addNotification({
-        title: "Pull Request Merged!",
-        message: `Your PR #${targetPR.pr_number} was merged. +${basePoints + qualityBonus} points awarded!`,
-        type: "success",
-        role: "contributor",
-        link: "/dashboard/contributor",
-      });
-    }
-  };
-
-  const reviewPR = (prId: string, status: "approved" | "rejected" | "pending", feedback: string, qualityScore: number = 0) => {
-    const updated = pullRequests.map((pr) => {
-      if (pr.id === prId) {
-        return {
-          ...pr,
-          status,
-          mentor_feedback: feedback,
-          quality_bonus: qualityScore,
-        };
-      }
-      return pr;
-    });
-    setPullRequests(updated);
-    try {
-      localStorage.setItem(STORAGE_KEY_PRS, JSON.stringify(updated));
-    } catch {}
-
-    const targetPR = pullRequests.find((pr) => pr.id === prId);
-    if (targetPR) {
-      addNotification({
-        title: `PR Review: ${status.toUpperCase()}`,
-        message: `Mentor reviewed PR #${targetPR.pr_number}: ${feedback.slice(0, 80)}...`,
-        type: status === "approved" ? "success" : "warning",
-        role: "contributor",
-        link: "/dashboard/contributor",
-      });
-    }
-  };
-
-  const addPR = (pr: Omit<PullRequest, "id" | "created_at">) => {
-    const newPR: PullRequest = {
-      ...pr,
+  const addPR = (prData: Omit<PullRequest, "id" | "created_at">) => {
+    const newPr: PullRequest = {
+      ...prData,
       id: `pr-${Date.now()}`,
-      created_at: new Date().toISOString(),
+      created_at: new Date().toISOString().split("T")[0],
     };
-    const updated = [newPR, ...pullRequests];
-    setPullRequests(updated);
-    try {
-      localStorage.setItem(STORAGE_KEY_PRS, JSON.stringify(updated));
-    } catch {}
+    globalStore.pullRequests = [newPr, ...globalStore.pullRequests];
+    notifySubscribers();
+    return newPr;
+  };
+
+  const mergePR = (id: string, awardedPoints?: number) => {
+    const targetPr = globalStore.pullRequests.find((p) => p.id === id);
+    if (!targetPr) return;
+
+    const pts = awardedPoints !== undefined ? awardedPoints : targetPr.points_awarded || 25;
+
+    globalStore.pullRequests = globalStore.pullRequests.map((p) =>
+      p.id === id
+        ? {
+            ...p,
+            status: "merged" as const,
+            points_awarded: pts,
+            merged_at: new Date().toISOString().split("T")[0],
+          }
+        : p
+    );
+
+    awardPoints({
+      user_id: targetPr.contributor_id || "u-contributor-1",
+      user_name: targetPr.contributor_name,
+      pr_id: targetPr.id,
+      pr_title: targetPr.title,
+      project_id: targetPr.project_id,
+      project_name: targetPr.project_name,
+      base_points: pts,
+      quality_bonus: targetPr.quality_score ? targetPr.quality_score * 2 : 0,
+      streak_bonus: 0,
+      awarded_by_role: "project_admin",
+      awarded_by_name: currentPersona.name,
+      reason: `PR Merged: ${targetPr.title}`,
+    });
 
     addNotification({
-      title: "New PR Submitted",
-      message: `PR #${newPR.pr_number} submitted on ${newPR.project_name}.`,
-      type: "info",
-      role: "mentor",
-      link: "/dashboard/mentor#reviews",
+      title: "PR Merged!",
+      message: `Your PR #${targetPr.number || 1} has been merged. +${pts} points awarded!`,
+      type: "success",
+      role: "contributor",
+      link: "/dashboard/contributor",
     });
 
-    return newPR;
+    notifySubscribers();
   };
 
-  const awardPoints = (item: Omit<PointsLedgerItem, "id" | "created_at">) => {
-    const newRecord: PointsLedgerItem = {
-      ...item,
-      id: `pl-${Date.now()}`,
-      awarded_by: item.awarded_by || currentPersona.name,
-      created_at: new Date().toISOString(),
-    };
-    setPointsLedger((prev) => [newRecord, ...prev]);
-  };
+  const reviewPR = (
+    id: string,
+    action: "approve" | "changes_requested" | "approved" | "rejected",
+    param3?: number | string,
+    param4?: number | string
+  ) => {
+    const isApprove = action === "approve" || action === "approved";
+    let qualityScore: number | undefined;
+    let feedbackNote: string | undefined;
 
-  const addNotification = (notif: Omit<InAppNotification, "id" | "is_read" | "created_at" | "user_id"> & { user_id?: string }) => {
-    const newNotif: InAppNotification = {
-      ...notif,
-      id: `notif-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
-      user_id: notif.user_id || "all",
-      is_read: false,
-      created_at: new Date().toISOString(),
-    };
-    setNotifications((prev) => {
-      const updated = [newNotif, ...prev];
-      try {
-        localStorage.setItem(STORAGE_KEY_NOTIFS, JSON.stringify(updated.slice(0, 30)));
-      } catch {}
-      return updated;
-    });
-  };
+    if (typeof param3 === "number") {
+      qualityScore = param3;
+      if (typeof param4 === "string") feedbackNote = param4;
+    } else if (typeof param3 === "string") {
+      feedbackNote = param3;
+      if (typeof param4 === "number") qualityScore = param4;
+    }
 
-  const markNotificationRead = (id: string) => {
-    setNotifications((prev) => {
-      const updated = prev.map((n) => (n.id === id ? { ...n, is_read: true } : n));
-      try {
-        localStorage.setItem(STORAGE_KEY_NOTIFS, JSON.stringify(updated));
-      } catch {}
-      return updated;
-    });
-  };
-
-  const markAllNotificationsRead = () => {
-    setNotifications((prev) => {
-      const updated = prev.map((n) => ({ ...n, is_read: true }));
-      try {
-        localStorage.setItem(STORAGE_KEY_NOTIFS, JSON.stringify(updated));
-      } catch {}
-      return updated;
-    });
-  };
-
-  const addAuditLog = (log: Omit<AuditLogItem, "id" | "admin_id" | "admin_email" | "created_at">) => {
-    const newLog: AuditLogItem = {
-      ...log,
-      id: `al-${Date.now()}`,
-      admin_id: "admin-1",
-      admin_email: currentPersona.email || "organizer@omnikon.org",
-      created_at: new Date().toISOString(),
-    };
-    setAuditLogs((prev) => [newLog, ...prev]);
-  };
-
-  const reviewMentorApplication = (appId: string, status: "approved" | "rejected", notes: string = "") => {
-    setMentorApplications((prev) =>
-      prev.map((app) => (app.id === appId ? { ...app, status, admin_notes: notes, reviewed_at: new Date().toISOString() } : app))
+    globalStore.pullRequests = globalStore.pullRequests.map((p) =>
+      p.id === id
+        ? {
+            ...p,
+            status: isApprove ? "approved" : "review_requested",
+            quality_score: qualityScore !== undefined ? qualityScore : p.quality_score,
+            mentor_notes: feedbackNote || p.mentor_notes,
+          }
+        : p
     );
-    addAuditLog({
-      action: `${status}_mentor_application`,
-      target_type: "mentor_application",
-      target_id: appId,
-      details_after: { status, notes },
-    });
-  };
 
-  const reviewProjectAdminApplication = (appId: string, status: "approved" | "rejected", notes: string = "") => {
-    setProjectAdminApplications((prev) =>
-      prev.map((app) => (app.id === appId ? { ...app, status, admin_notes: notes, reviewed_at: new Date().toISOString() } : app))
-    );
-    addAuditLog({
-      action: `${status}_project_admin_application`,
-      target_type: "project_admin_application",
-      target_id: appId,
-      details_after: { status, notes },
-    });
+    const pr = globalStore.pullRequests.find((p) => p.id === id);
+    if (pr) {
+      addNotification({
+        title: isApprove ? "PR Approved" : "Changes Requested",
+        message: `Mentor reviewed PR: "${pr.title}"`,
+        type: isApprove ? "success" : "info",
+        role: "contributor",
+        link: "/dashboard/contributor",
+      });
+    }
+
+    notifySubscribers();
   };
 
   const addMentorApplication = (app: Omit<MentorApplication, "id" | "status" | "created_at">) => {
     const newApp: MentorApplication = {
       ...app,
-      id: `m-app-${Date.now()}`,
+      id: `ma-${Date.now()}`,
       status: "pending",
       created_at: new Date().toISOString(),
     };
-    setMentorApplications((prev) => [newApp, ...prev]);
+    globalStore.mentorApplications = [newApp, ...globalStore.mentorApplications];
     addNotification({
       title: "Mentor Application Submitted",
-      message: `${app.full_name} applied to be a Technical Mentor.`,
+      message: `${newApp.full_name} applied to be an OWOC Mentor.`,
       type: "info",
       role: "super_admin",
-      link: "/dashboard/admin#approvals",
+      link: "/dashboard/admin",
     });
+    notifySubscribers();
     return newApp;
   };
 
-  const addProjectAdminApplication = (app: Omit<ProjectAdminApplication, "id" | "status" | "created_at">) => {
+  const reviewMentorApplication = (id: string, status: "approved" | "rejected", notes?: string) => {
+    globalStore.mentorApplications = globalStore.mentorApplications.map((a) =>
+      a.id === id
+        ? { ...a, status, admin_notes: notes, reviewed_at: new Date().toISOString() }
+        : a
+    );
+    notifySubscribers();
+  };
+
+  const addProjectAdminApplication = (
+    app: Omit<ProjectAdminApplication, "id" | "status" | "created_at">
+  ) => {
     const newApp: ProjectAdminApplication = {
       ...app,
-      id: `pa-app-${Date.now()}`,
+      id: `paa-${Date.now()}`,
       status: "pending",
       created_at: new Date().toISOString(),
     };
-    setProjectAdminApplications((prev) => [newApp, ...prev]);
+    globalStore.projectAdminApplications = [newApp, ...globalStore.projectAdminApplications];
     addNotification({
-      title: "Project Lead Application",
-      message: `${app.full_name} submitted "${app.project_name}" for maintainer listing.`,
+      title: "Maintainer Application Received",
+      message: `${newApp.project_name || newApp.repository_name} submitted by ${newApp.full_name}`,
       type: "info",
       role: "super_admin",
-      link: "/dashboard/admin#approvals",
+      link: "/dashboard/admin",
     });
+    notifySubscribers();
     return newApp;
   };
 
-  const reviewContributorApplication = (appId: string, status: "accepted" | "declined", reviewMessage: string = "") => {
-    setContributorApplications((prev) =>
-      prev.map((app) => (app.id === appId ? { ...app, status, review_message: reviewMessage, reviewed_at: new Date().toISOString() } : app))
+  const reviewProjectAdminApplication = (
+    id: string,
+    status: "approved" | "rejected",
+    notes?: string
+  ) => {
+    globalStore.projectAdminApplications = globalStore.projectAdminApplications.map((a) =>
+      a.id === id
+        ? { ...a, status, admin_notes: notes, reviewed_at: new Date().toISOString() }
+        : a
     );
+    notifySubscribers();
   };
 
-  const addOfficeHoursSession = (session: Omit<OfficeHoursSession, "id" | "booked_count" | "created_at">) => {
+  const reviewContributorApplication = (
+    id: string,
+    status: "accepted" | "rejected" | "declined",
+    notes?: string
+  ) => {
+    const finalStatus: "accepted" | "declined" =
+      status === "accepted" ? "accepted" : "declined";
+    globalStore.contributorApplications = globalStore.contributorApplications.map((a) =>
+      a.id === id ? { ...a, status: finalStatus, review_message: notes } : a
+    );
+    notifySubscribers();
+  };
+
+  const awardPoints = (
+    item: Omit<
+      PointsLedgerItem,
+      "id" | "awarded_at" | "total_points" | "created_at" | "points" | "type"
+    > & { points?: number; type?: PointsLedgerItem["type"] }
+  ) => {
+    const total =
+      (item.points !== undefined ? item.points : 0) ||
+      ((item.base_points || 0) + (item.quality_bonus || 0) + (item.streak_bonus || 0));
+    const newItem: PointsLedgerItem = {
+      points: total,
+      type: item.type || "pr_merge",
+      ...item,
+      id: `pl-${Date.now()}`,
+      total_points: total,
+      created_at: new Date().toISOString(),
+      awarded_at: new Date().toISOString(),
+    };
+    globalStore.pointsLedger = [newItem, ...globalStore.pointsLedger];
+    notifySubscribers();
+  };
+
+  const addNotification = (notif: Omit<InAppNotification, "id" | "created_at" | "is_read">) => {
+    const newNotif: InAppNotification = {
+      ...notif,
+      id: `notif-${Date.now()}`,
+      created_at: new Date().toISOString(),
+      is_read: false,
+    };
+    globalStore.notifications = [newNotif, ...globalStore.notifications];
+    notifySubscribers();
+  };
+
+  const markNotificationRead = (id: string) => {
+    globalStore.notifications = globalStore.notifications.map((n) =>
+      n.id === id ? { ...n, is_read: true } : n
+    );
+    notifySubscribers();
+  };
+
+  const markAllNotificationsRead = () => {
+    globalStore.notifications = globalStore.notifications.map((n) => ({ ...n, is_read: true }));
+    notifySubscribers();
+  };
+
+  const addAuditLog = (log: Omit<AuditLogItem, "id" | "created_at" | "actor_role" | "actor_name">) => {
+    const newLog: AuditLogItem = {
+      ...log,
+      id: `audit-${Date.now()}`,
+      created_at: new Date().toISOString(),
+      actor_role: activeRole,
+      actor_name: currentPersona.name,
+    };
+    globalStore.auditLogs = [newLog, ...globalStore.auditLogs];
+    notifySubscribers();
+  };
+
+  const addOfficeHoursSession = (
+    session: Omit<OfficeHoursSession, "id" | "booked_count" | "created_at">
+  ) => {
     const newSession: OfficeHoursSession = {
       ...session,
       id: `oh-${Date.now()}`,
       booked_count: 0,
       created_at: new Date().toISOString(),
     };
-    setOfficeHours((prev) => [newSession, ...prev]);
+    globalStore.officeHours = [newSession, ...globalStore.officeHours];
+    notifySubscribers();
   };
 
   const addMentorFeedback = (record: Omit<MentorFeedbackRecord, "id" | "created_at">) => {
@@ -563,7 +545,8 @@ export function useAppStore() {
       id: `mf-${Date.now()}`,
       created_at: new Date().toISOString(),
     };
-    setMentorFeedback((prev) => [newRecord, ...prev]);
+    globalStore.mentorFeedback = [newRecord, ...globalStore.mentorFeedback];
+    notifySubscribers();
   };
 
   const addProjectAnnouncement = (ann: Omit<ProjectAnnouncement, "id" | "created_at">) => {
@@ -572,7 +555,7 @@ export function useAppStore() {
       id: `ann-${Date.now()}`,
       created_at: new Date().toISOString(),
     };
-    setProjectAnnouncements((prev) => [newAnn, ...prev]);
+    globalStore.projectAnnouncements = [newAnn, ...globalStore.projectAnnouncements];
     addNotification({
       title: `Project Update: ${ann.project_name}`,
       message: ann.title,
@@ -580,53 +563,81 @@ export function useAppStore() {
       role: "contributor",
       link: `/projects`,
     });
+    notifySubscribers();
   };
 
   return {
+    activeRole,
     currentPersona,
+    personaConfig,
+    isHydrated: globalStore.isHydrated,
     switchRole,
-    projects,
-    setProjects,
+    syncRoleFromPath,
+    projects: globalStore.projects,
+    setProjects: (projects: Project[] | ((prev: Project[]) => Project[])) => {
+      globalStore.projects = typeof projects === "function" ? projects(globalStore.projects) : projects;
+      notifySubscribers();
+    },
     addProject,
     updateProject,
     approveProject,
     rejectProject,
-    pullRequests,
-    setPullRequests,
+    pullRequests: globalStore.pullRequests,
+    setPullRequests: (prs: PullRequest[] | ((prev: PullRequest[]) => PullRequest[])) => {
+      globalStore.pullRequests = typeof prs === "function" ? prs(globalStore.pullRequests) : prs;
+      notifySubscribers();
+    },
     addPR,
     mergePR,
     reviewPR,
-    mentorApplications,
-    setMentorApplications,
+    mentorApplications: globalStore.mentorApplications,
+    setMentorApplications: (apps: MentorApplication[] | ((prev: MentorApplication[]) => MentorApplication[])) => {
+      globalStore.mentorApplications = typeof apps === "function" ? apps(globalStore.mentorApplications) : apps;
+      notifySubscribers();
+    },
     addMentorApplication,
     reviewMentorApplication,
-    projectAdminApplications,
-    setProjectAdminApplications,
+    projectAdminApplications: globalStore.projectAdminApplications,
+    setProjectAdminApplications: (apps: ProjectAdminApplication[] | ((prev: ProjectAdminApplication[]) => ProjectAdminApplication[])) => {
+      globalStore.projectAdminApplications = typeof apps === "function" ? apps(globalStore.projectAdminApplications) : apps;
+      notifySubscribers();
+    },
     addProjectAdminApplication,
     reviewProjectAdminApplication,
-    contributorApplications,
-    setContributorApplications,
+    contributorApplications: globalStore.contributorApplications,
+    setContributorApplications: (apps: ContributorProjectApplication[] | ((prev: ContributorProjectApplication[]) => ContributorProjectApplication[])) => {
+      globalStore.contributorApplications = typeof apps === "function" ? apps(globalStore.contributorApplications) : apps;
+      notifySubscribers();
+    },
     reviewContributorApplication,
-    pointsLedger,
+    pointsLedger: globalStore.pointsLedger,
     awardPoints,
-    pointsRules,
-    setPointsRules,
-    leaderboardSettings,
-    setLeaderboardSettings,
-    officeHours,
+    pointsRules: globalStore.pointsRules,
+    setPointsRules: (rules: PointsRulesConfig | ((prev: PointsRulesConfig) => PointsRulesConfig)) => {
+      globalStore.pointsRules = typeof rules === "function" ? rules(globalStore.pointsRules) : rules;
+      notifySubscribers();
+    },
+    leaderboardSettings: globalStore.leaderboardSettings,
+    setLeaderboardSettings: (settings: LeaderboardSettings | ((prev: LeaderboardSettings) => LeaderboardSettings)) => {
+      globalStore.leaderboardSettings = typeof settings === "function" ? settings(globalStore.leaderboardSettings) : settings;
+      notifySubscribers();
+    },
+    officeHours: globalStore.officeHours,
     addOfficeHoursSession,
-    mentorFeedback,
+    mentorFeedback: globalStore.mentorFeedback,
     addMentorFeedback,
-    projectAnnouncements,
+    projectAnnouncements: globalStore.projectAnnouncements,
     addProjectAnnouncement,
-    notifications,
+    notifications: globalStore.notifications,
     addNotification,
     markNotificationRead,
     markAllNotificationsRead,
-    auditLogs,
+    auditLogs: globalStore.auditLogs,
     addAuditLog,
-    siteSettings,
-    setSiteSettings,
-    isHydrated,
+    siteSettings: globalStore.siteSettings,
+    setSiteSettings: (settings: SiteSettings | ((prev: SiteSettings) => SiteSettings)) => {
+      globalStore.siteSettings = typeof settings === "function" ? settings(globalStore.siteSettings) : settings;
+      notifySubscribers();
+    },
   };
 }

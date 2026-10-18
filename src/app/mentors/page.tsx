@@ -44,7 +44,7 @@ export default function MentorsPage() {
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
-                href="/dashboard/mentor"
+                href="/apply/mentor"
                 className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-gradient-to-r from-red-primary to-red-bright text-white text-xs font-bold shadow-red-glow hover:shadow-red-glow-lg transition-all flex items-center justify-center gap-2"
               >
                 <span>Apply to be a Mentor</span>
@@ -100,15 +100,13 @@ export default function MentorsPage() {
                     <span>{mentor.project}</span>
                   </Link>
 
-                  <a
-                    href={`https://github.com/${mentor.github}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="p-2 rounded-lg bg-surface-2 text-text-secondary hover:text-white hover:bg-red-primary/10 transition-colors"
-                    aria-label={`${mentor.name}'s GitHub Profile`}
+                  <span
+                    title="Sample profile (not a real link)"
+                    className="p-2 rounded-lg bg-surface-2 text-text-secondary/60 cursor-not-allowed"
+                    aria-label={`${mentor.name}'s profile`}
                   >
                     <ExternalLink className="w-3.5 h-3.5" />
-                  </a>
+                  </span>
                 </div>
               </div>
             ))}
@@ -125,7 +123,7 @@ export default function MentorsPage() {
           </p>
           <div className="mt-6">
             <Link
-              href="/dashboard/mentor"
+              href="/apply/mentor"
               className="px-6 py-3 rounded-xl bg-red-primary hover:bg-red-bright text-white text-xs font-bold shadow-red-glow transition-all inline-flex items-center gap-2"
             >
               <span>Apply to be a Mentor</span>

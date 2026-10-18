@@ -1,22 +1,36 @@
 "use client";
 
-import React from "react";
-import { AlertCircle } from "lucide-react";
+import React, { useState } from "react";
+import { AlertCircle, X } from "lucide-react";
 import { SITE_CONFIG } from "@/lib/site-config";
 import { SEASON_LABEL, SEASON_SHORT, PHASES } from "@/lib/season";
 
 export function DemoModeBanner() {
-  if (!SITE_CONFIG.DEMO_MODE) return null;
+  const [dismissed, setDismissed] = useState(false);
+  if (!SITE_CONFIG.DEMO_MODE || dismissed) return null;
 
   return (
     <aside
+      data-testid="demo-mode-banner"
       aria-label="Demo mode notice"
-      className="bg-gradient-to-r from-red-950/90 via-black to-red-950/90 border-b border-red-primary/30 text-red-200/90 text-xs font-mono py-1.5 px-4 text-center flex items-center justify-center gap-2 shadow-sm"
+      className="bg-gradient-to-r from-red-950/90 via-black to-red-950/90 border-b border-red-primary/30 text-red-200/90 text-xs font-mono py-1.5 px-4 text-center flex items-center justify-between sm:justify-center gap-2 shadow-sm relative"
     >
-      <AlertCircle className="w-3.5 h-3.5 text-red-bright flex-shrink-0" />
-      <span>
-        <strong className="text-white">Demo mode active:</strong> all names, numbers, and projects shown are sample preview data.
-      </span>
+      <div className="flex items-center justify-center gap-2 flex-grow">
+        <AlertCircle className="w-3.5 h-3.5 text-red-bright flex-shrink-0" />
+        <span>
+          <strong className="text-white">Demo mode active:</strong> all names, numbers, and projects shown are sample preview data.
+        </span>
+      </div>
+      <button
+        type="button"
+        onClick={() => setDismissed(true)}
+        aria-label="Dismiss demo mode notice"
+        data-testid="dismiss-demo-banner"
+        className="ml-2 text-text-muted hover:text-white p-0.5 rounded transition-colors sm:absolute sm:right-4 focus:outline-none"
+        title="Dismiss notice"
+      >
+        <X className="w-3.5 h-3.5" />
+      </button>
     </aside>
   );
 }

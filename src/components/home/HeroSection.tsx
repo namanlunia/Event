@@ -20,6 +20,8 @@ import {
   DURATION_COPY,
   getHeroStatusBadge,
   getHeroCountdown,
+  getPrimaryCta,
+  isBeforeCodingPeriod,
 } from "@/lib/season";
 import { getProgramStats } from "@/lib/dataService";
 import { SITE_CONFIG } from "@/lib/site-config";
@@ -31,6 +33,8 @@ export default function HeroSection() {
 
   const heroStatus = getHeroStatusBadge();
   const countdownText = getHeroCountdown();
+  const primaryCta = getPrimaryCta();
+  const isBeforeCoding = isBeforeCodingPeriod();
   const stats = getProgramStats();
   const isDemoMode = SITE_CONFIG.DEMO_MODE;
 
@@ -87,29 +91,41 @@ export default function HeroSection() {
         {/* Subtitle */}
         <p className="mt-8 text-base sm:text-lg lg:text-xl text-text-secondary max-w-3xl mx-auto leading-relaxed">
           Omnikon Winter of Code is a high-octane open source mentorship program.
-          Contribute to production-grade repositories, collaborate with veteran
-          engineers, climb the live leaderboard, and earn verifiable credentials.
+          Contribute to real open-source repositories, collaborate with experienced
+          mentors, climb the leaderboard, and earn verifiable credentials.
         </p>
 
         {/* Call to Actions */}
         <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-          <button
-            id="register-now-btn"
-            onClick={() => setRegisterModalOpen(true)}
-            className="px-8 py-4 rounded-xl bg-gradient-to-r from-red-primary to-red-bright text-white font-bold text-sm shadow-red-glow hover:shadow-red-glow-lg transition-all duration-300 transform hover:-translate-y-1 flex items-center gap-2 group relative overflow-hidden"
-          >
-            <span className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl" />
-            <Flame className="w-4 h-4" />
-            <span>Register Now — Free</span>
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </button>
+          {primaryCta.disabled ? (
+            <button
+              id="register-now-btn"
+              disabled
+              title={primaryCta.tooltip}
+              className="px-8 py-4 rounded-xl bg-surface-2 border border-white/10 text-text-muted font-bold text-sm flex items-center gap-2 cursor-not-allowed opacity-80"
+            >
+              <Calendar className="w-4 h-4 text-red-bright" />
+              <span>{primaryCta.text}</span>
+            </button>
+          ) : (
+            <button
+              id="register-now-btn"
+              onClick={() => setRegisterModalOpen(true)}
+              className="px-8 py-4 rounded-xl bg-gradient-to-r from-red-primary to-red-bright text-white font-bold text-sm shadow-red-glow hover:shadow-red-glow-lg transition-all duration-300 transform hover:-translate-y-1 flex items-center gap-2 group relative overflow-hidden"
+            >
+              <span className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl" />
+              <Flame className="w-4 h-4" />
+              <span>{primaryCta.text}</span>
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </button>
+          )}
 
           <Link
             href="/projects"
             className="px-8 py-4 rounded-xl bg-surface-1 border border-white/10 hover:border-red-primary/50 text-text-primary hover:text-white font-semibold text-sm transition-all duration-300 hover:bg-white/[0.04] flex items-center gap-2 group"
           >
             <Code2 className="w-4 h-4 text-red-bright" />
-            <span>Explore Projects</span>
+            <span>{isBeforeCoding ? "Browse Projects" : "Solve Issues"}</span>
           </Link>
 
           <Link

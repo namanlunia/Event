@@ -15,6 +15,7 @@ import {
   FolderGit2,
   ShieldCheck,
 } from "lucide-react";
+import { getActiveContributors } from "@/lib/dataService";
 import {
   MOCK_PRS,
   MOCK_BADGES,
@@ -46,12 +47,34 @@ export default function ContributorDashboard() {
     year: "numeric",
   });
 
+  const myPrs = isDemoMode ? MOCK_PRS : [];
+  const mergedPrs = myPrs.filter((p) => p.status === "merged");
+  const basePrPoints = mergedPrs.reduce(
+    (acc, pr) => acc + (pr.points_awarded || 0) + (pr.quality_bonus || 0),
+    0
+  );
+  const streakDays = isDemoMode ? 14 : 0;
+  const streakBonus = streakDays >= 7 ? 15 : 0;
+  const totalPoints = isDemoMode ? basePrPoints + streakBonus : 0;
+  const totalPrs = mergedPrs.length;
+
+  // Derive rank strictly from same dataset as leaderboard
+  const allContributors = getActiveContributors();
+  const sortedContributors = [...allContributors].sort(
+    (a, b) => (b.points || 0) - (a.points || 0)
+  );
+  const myRankIdx = sortedContributors.findIndex(
+    (c) => c.full_name === currentPersona.name || c.username === "aaravcode"
+  );
+  const currentRank = isDemoMode && myRankIdx !== -1 ? `#${myRankIdx + 1}` : isDemoMode ? "#1" : "Standby";
+
+  // Points Progression chart matching exact merged PR timeline and streak
   const weeklyData = isDemoMode
     ? [
-        { week: "Week 1", points: 280, prs: 2 },
-        { week: "Week 2", points: 540, prs: 4 },
-        { week: "Week 3", points: 890, prs: 6 },
-        { week: "Week 4", points: 1240, prs: 8 },
+        { week: "Week 1", points: 65, prs: 1 }, // PR #42 merged (+65 pts)
+        { week: "Week 2", points: 95, prs: 2 }, // PR #78 merged (+30 pts)
+        { week: "Week 3", points: 105, prs: 3 }, // PR #15 merged (+10 pts)
+        { week: "Week 4", points: 120, prs: 3 }, // +15 streak bonus, final 120 pts
       ]
     : [
         { week: "Week 1", points: 0, prs: 0 },
@@ -59,11 +82,6 @@ export default function ContributorDashboard() {
         { week: "Week 3", points: 0, prs: 0 },
         { week: "Week 4", points: 0, prs: 0 },
       ];
-
-  const totalPoints = isDemoMode ? 1240 : 0;
-  const totalPrs = isDemoMode ? MOCK_PRS.length : 0;
-  const currentRank = isDemoMode ? "#1" : "Standby";
-  const streakDays = isDemoMode ? 12 : 0;
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto">
@@ -201,7 +219,7 @@ export default function ContributorDashboard() {
 
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={weeklyData}>
+              <AreaChart data={weeklyData} margin={{ top: 10, right: 15, left: 0, bottom: 0 }}>
                 <defs>
                   <linearGradient id="redGradient" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#E11D2E" stopOpacity={0.4} />
@@ -214,8 +232,10 @@ export default function ContributorDashboard() {
                   fontSize={10}
                   tickLine={false}
                 />
-                <YAxis stroke="#71717A" fontSize={10} tickLine={false} />
+                <YAxis width={40} stroke="#71717A" fontSize={10} tickLine={false} />
                 <Tooltip
+                  allowEscapeViewBox={{ x: false, y: false }}
+                  wrapperStyle={{ zIndex: 50, outline: "none" }}
                   contentStyle={{
                     backgroundColor: "#111114",
                     border: "1px solid rgba(225,29,46,0.4)",
@@ -382,8 +402,20 @@ export default function ContributorDashboard() {
                         <span>{pr.status}</span>
                       </span>
                     </td>
-                    <td className="py-4 px-6 text-right font-black text-sm text-red-bright">
-                      +{pr.points_awarded + pr.quality_bonus} pts
+                    <td className="py-4 px-6 text-right font-mono">
+                      {pr.status === "merged" ? (
+                        <span className="font-black text-sm text-red-bright">
+                          +{pr.points_awarded + pr.quality_bonus} pts
+                        </span>
+                      ) : pr.status === "approved" ? (
+                        <span className="text-text-muted font-normal text-xs italic">
+                          +{pr.points_awarded} pts (pending merge)
+                        </span>
+                      ) : (
+                        <span className="text-text-muted font-normal text-xs">
+                          {pr.points_awarded ? `+${pr.points_awarded} pts` : "—"}
+                        </span>
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -428,7 +460,14 @@ export default function ContributorDashboard() {
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
           {MOCK_BADGES.map((b) => {
-            const isUnlocked = isDemoMode ? b.unlocked : false;
+            let isUnlocked = false;
+            if (isDemoMode) {
+              if (b.code === "first_pr") isUnlocked = mergedPrs.length >= 1;
+              else if (b.code === "streak_7") isUnlocked = streakDays >= 7;
+              else if (b.code === "code_warrior_10") isUnlocked = mergedPrs.length >= 10;
+              else if (b.code === "top_contributor") isUnlocked = myRankIdx !== -1 ? myRankIdx < 5 : true;
+              else isUnlocked = Boolean(b.unlocked);
+            }
             return (
               <div
                 key={b.id}

@@ -1,43 +1,26 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import {
-  Flame,
   MessageSquare,
-  ArrowRight,
-  CheckCircle2,
 } from "lucide-react";
+import BrandLogo from "@/components/brand/BrandLogo";
 import { COPYRIGHT_YEAR } from "@/lib/season";
 import { SITE_CONFIG } from "@/lib/site-config";
 
 export default function Footer() {
-  const [email, setEmail] = useState("");
-  const [subscribed, setSubscribed] = useState(false);
-
-  const handleSubscribe = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (email) {
-      setSubscribed(true);
-      setEmail("");
-    }
-  };
-
   return (
     <footer className="relative bg-[#050505] border-t border-white/10 z-10 pt-16 pb-12 overflow-hidden">
       {/* Subtle crimson background glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-24 bg-red-primary/10 blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-white/10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-white/10">
           {/* Brand Info */}
-          <div className="lg:col-span-2 space-y-4">
+          <div className="md:col-span-2 lg:col-span-2 space-y-4">
             <Link href="/" className="flex items-center gap-3 group">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-red-primary to-red-deep p-[1px] shadow-red-glow-sm">
-                <div className="w-full h-full bg-[#0B0B0D] rounded-xl flex items-center justify-center">
-                  <Flame className="w-5 h-5 text-red-bright" />
-                </div>
-              </div>
+              <BrandLogo />
               <span className="font-heading font-black text-xl text-white">
                 OWOC
               </span>
@@ -117,7 +100,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="/leaderboard" className="text-text-secondary hover:text-white transition-colors">
-                  Live Leaderboard
+                  Leaderboard
                 </Link>
               </li>
               <li>
@@ -180,41 +163,6 @@ export default function Footer() {
                 </Link>
               </li>
             </ul>
-          </div>
-
-          {/* Newsletter / Updates */}
-          <div className="space-y-3">
-            <h4 className="text-xs font-mono uppercase tracking-wider text-red-bright font-bold">
-              Stay Informed
-            </h4>
-            <p className="text-xs text-text-secondary leading-relaxed">
-              Subscribe for weekly sprint announcements, workshop links, and bonus point challenges.
-            </p>
-            {subscribed ? (
-              <div className="flex items-center gap-2 p-2.5 rounded-lg bg-green-500/10 border border-green-500/30 text-xs text-green-400">
-                <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
-                <span>You are subscribed to OWOC updates!</span>
-              </div>
-            ) : (
-              <form onSubmit={handleSubscribe} className="space-y-2">
-                <div className="relative">
-                  <input
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email"
-                    className="w-full bg-surface-1 border border-white/10 rounded-lg px-3 py-2 text-xs text-white placeholder-text-muted focus:outline-none focus:border-red-primary/60"
-                  />
-                  <button
-                    type="submit"
-                    className="absolute right-1 top-1 bottom-1 px-2.5 bg-red-primary hover:bg-red-bright text-white rounded-md flex items-center justify-center transition-colors"
-                  >
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              </form>
-            )}
           </div>
         </div>
 

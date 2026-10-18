@@ -39,7 +39,7 @@ export const MOCK_PROJECTS: Project[] = [
     tagline: "High-throughput real-time computer vision inference engine for edge devices",
     description:
       "WinterVision Core is an open-source inference optimizer built in Rust and C++ that compiles PyTorch and ONNX models directly into zero-copy, highly pipelined neural execution graphs for autonomous robotics and embedded vision.",
-    repository_url: "https://github.com/omnikon/wintervision-core",
+    repository_url: "",
     tech_stack: ["Rust", "C++", "PyTorch", "ONNX", "CUDA"],
     difficulty: "Advanced",
     domain: "AI/ML",
@@ -61,16 +61,16 @@ export const MOCK_PROJECTS: Project[] = [
   },
   {
     id: "proj-2",
-    name: "Solana WinterPay SDK",
-    slug: "solana-winterpay-sdk",
-    tagline: "Micro-payment protocol and SDK for decentralized compute credits on Solana",
+    name: "OpenPay Web3 SDK",
+    slug: "openpay-web3-sdk",
+    tagline: "Micro-payment protocol and SDK for decentralized compute credits",
     description:
-      "A developer-first TypeScript and Rust SDK providing sub-second settlement for AI agent micropayments, streaming subscriptions, and state channel liquidity on Solana Devnet and Mainnet.",
-    repository_url: "https://github.com/omnikon/winterpay-solana",
-    tech_stack: ["Solana", "Rust", "Anchor", "TypeScript", "Web3.js"],
+      "A developer-first TypeScript and Rust SDK providing sub-second settlement for AI agent micropayments, streaming subscriptions, and state channel liquidity across Web3 protocols.",
+    repository_url: "",
+    tech_stack: ["Rust", "Anchor", "TypeScript", "Web3.js"],
     difficulty: "Intermediate",
     domain: "Web3",
-    organization: "Solana Collective",
+    organization: "OpenPay Protocol",
     status: "approved",
     maintainer_id: "user-m3",
     maintainer_name: "Kaelen Voss",
@@ -91,7 +91,7 @@ export const MOCK_PROJECTS: Project[] = [
     tagline: "Lightweight eBPF-powered service mesh and observability sidecar for Kubernetes",
     description:
       "Nexus injects zero-overhead kernel probes to trace L7 HTTP/gRPC telemetry, enforce cryptographically verified mutual TLS, and trigger automated canary rollbacks across multi-cluster Kubernetes fleets.",
-    repository_url: "https://github.com/omnikon/nexus-mesh",
+    repository_url: "",
     tech_stack: ["Go", "eBPF", "Kubernetes", "gRPC", "Prometheus"],
     difficulty: "Advanced",
     domain: "Cloud & DevOps",
@@ -116,7 +116,7 @@ export const MOCK_PROJECTS: Project[] = [
     tagline: "Futuristic dark-mode component library with physics-based spring animations",
     description:
       "A complete React 19 and Tailwind CSS design system featuring accessible glassmorphic primitives, dynamic canvas shaders, and micro-interactions optimized for next-generation developer tooling.",
-    repository_url: "https://github.com/omnikon/omniui-react",
+    repository_url: "",
     tech_stack: ["TypeScript", "React", "Tailwind CSS", "Framer Motion", "Radix UI"],
     difficulty: "Beginner",
     domain: "Full-Stack",
@@ -141,7 +141,7 @@ export const MOCK_PROJECTS: Project[] = [
     tagline: "Autonomous static analysis agent for discovering smart contract vulnerabilities",
     description:
       "Sentinel parses Solidity ASTs and LLVM bytecodes, executing symbolic taint analysis to discover reentrancy vulnerabilities, logic bugs, and unchecked arithmetic before deployment.",
-    repository_url: "https://github.com/omnikon/sentinel-shield",
+    repository_url: "",
     tech_stack: ["Python", "Solidity", "Rust", "LLVM", "Z3 Solver"],
     difficulty: "Advanced",
     domain: "Security",
@@ -166,7 +166,7 @@ export const MOCK_PROJECTS: Project[] = [
     tagline: "Cross-platform biometric tracking with offline-first synchronization and Apple HealthKit integration",
     description:
       "PulseFit is an open-source React Native + Kotlin multiplatform fitness telemetry app engineered for athletic performance telemetry, peer challenges, and local-first SQLite sync.",
-    repository_url: "https://github.com/omnikon/pulsefit-native",
+    repository_url: "",
     tech_stack: ["React Native", "TypeScript", "Kotlin", "Swift", "SQLite"],
     difficulty: "Beginner",
     domain: "Mobile",
@@ -191,7 +191,7 @@ export const MOCK_PROJECTS: Project[] = [
     tagline: "A statically-typed, memory-safe systems language targeting WebAssembly & RISC-V",
     description:
       "CryoLang introduces compile-time capability checking and region-based memory management without garbage collection pauses, ideal for operating system kernels and game engines.",
-    repository_url: "https://github.com/omnikon/cryolang",
+    repository_url: "",
     tech_stack: ["Rust", "LLVM", "WebAssembly", "RISC-V"],
     difficulty: "Advanced",
     domain: "Full-Stack",
@@ -216,7 +216,7 @@ export const MOCK_PROJECTS: Project[] = [
     tagline: "Distributed columnar time-series storage engine for IoT telemetry and sensor networks",
     description:
       "AetherDB compresses telemetry streams using Gorilla and Roaring Bitmaps, executing SQL-compatible analytical window aggregations at millions of data points per second.",
-    repository_url: "https://github.com/omnikon/aether-db",
+    repository_url: "",
     tech_stack: ["Go", "C++", "Apache Arrow", "gRPC", "Prometheus"],
     difficulty: "Intermediate",
     domain: "Cloud & DevOps",
@@ -250,10 +250,10 @@ export const MOCK_CONTRIBUTORS: UserProfile[] = [
     college_name: "IIT Delhi",
     year_of_study: "3rd Year",
     skills: ["Rust", "C++", "PyTorch", "Linux", "WebAssembly"],
-    linkedin_url: "https://linkedin.com/in/aaravpatel",
-    twitter_url: "https://twitter.com/aaravpatel",
+    linkedin_url: "",
+    twitter_url: "",
     created_at: "2026-10-02",
-    points: 1240,
+    points: 120,
     rank: 1,
     streak_days: 14,
   },
@@ -270,10 +270,10 @@ export const MOCK_CONTRIBUTORS: UserProfile[] = [
     college_name: "BITS Pilani",
     year_of_study: "4th Year",
     skills: ["TypeScript", "React", "Next.js", "Node.js", "Tailwind CSS"],
-    linkedin_url: "https://linkedin.com/in/ananyasharma",
-    twitter_url: "https://twitter.com/ananyadev",
+    linkedin_url: "",
+    twitter_url: "",
     created_at: "2026-10-03",
-    points: 1115,
+    points: 105,
     rank: 2,
     streak_days: 12,
   },
@@ -291,7 +291,7 @@ export const MOCK_CONTRIBUTORS: UserProfile[] = [
     year_of_study: "2nd Year",
     skills: ["Go", "Kubernetes", "Docker", "gRPC", "PostgreSQL"],
     created_at: "2026-10-04",
-    points: 980,
+    points: 90,
     rank: 3,
     streak_days: 9,
   },
@@ -309,7 +309,7 @@ export const MOCK_CONTRIBUTORS: UserProfile[] = [
     year_of_study: "3rd Year",
     skills: ["Solidity", "Rust", "EVM", "Foundry", "Python"],
     created_at: "2026-10-06",
-    points: 875,
+    points: 75,
     rank: 4,
     streak_days: 8,
   },
@@ -327,7 +327,7 @@ export const MOCK_CONTRIBUTORS: UserProfile[] = [
     year_of_study: "4th Year",
     skills: ["React Native", "TypeScript", "Kotlin", "Swift", "GraphQL"],
     created_at: "2026-10-07",
-    points: 820,
+    points: 60,
     rank: 5,
     streak_days: 11,
   },
@@ -345,7 +345,7 @@ export const MOCK_CONTRIBUTORS: UserProfile[] = [
     year_of_study: "3rd Year",
     skills: ["Python", "PyTorch", "Hugging Face", "CUDA", "FastAPI"],
     created_at: "2026-10-08",
-    points: 760,
+    points: 45,
     rank: 6,
     streak_days: 6,
   }
@@ -454,7 +454,7 @@ export const MOCK_PRS: PullRequest[] = [
     contributor_name: "Aarav Patel",
     contributor_avatar: "",
     pr_number: 42,
-    pr_url: "https://github.com/omnikon/wintervision-core/pull/42",
+    pr_url: "",
     title: "feat(pipeline): Zero-copy ring buffer for AVX-512 tensor conversion",
     difficulty: "Hard",
     points_awarded: 50,
@@ -472,7 +472,7 @@ export const MOCK_PRS: PullRequest[] = [
     contributor_name: "Ananya Sharma",
     contributor_avatar: "",
     pr_number: 78,
-    pr_url: "https://github.com/omnikon/omniui-react/pull/78",
+    pr_url: "",
     title: "fix(a11y): Radix Dialog focus trap & aria-describedby announcement",
     difficulty: "Medium",
     points_awarded: 25,
@@ -490,7 +490,7 @@ export const MOCK_PRS: PullRequest[] = [
     contributor_name: "Rohan Deshmukh",
     contributor_avatar: "",
     pr_number: 29,
-    pr_url: "https://github.com/omnikon/nexus-mesh/pull/29",
+    pr_url: "",
     title: "chore(k8s): Reconcile loop exponential backoff for ephemeral ingress",
     difficulty: "Medium",
     points_awarded: 25,
@@ -502,12 +502,12 @@ export const MOCK_PRS: PullRequest[] = [
   {
     id: "pr-104",
     project_id: "proj-2",
-    project_name: "Solana WinterPay SDK",
+    project_name: "OpenPay Web3 SDK",
     contributor_id: "c-4",
     contributor_name: "Diya Menon",
     contributor_avatar: "",
     pr_number: 15,
-    pr_url: "https://github.com/omnikon/winterpay-solana/pull/15",
+    pr_url: "",
     title: "feat(anchor): Account rent-exemption validation helper",
     difficulty: "Easy",
     points_awarded: 10,
@@ -547,8 +547,7 @@ export const MOCK_BADGES: Badge[] = [
     description: "Successfully merged 10+ pull requests across projects",
     icon: "ShieldAlert",
     tier: "Gold",
-    unlocked: true,
-    unlocked_at: "2026-12-10",
+    unlocked: false,
   },
   {
     id: "b-4",
@@ -673,50 +672,50 @@ export const MOCK_FAQS: FAQItem[] = [
   {
     category: "Points & Rewards",
     question: "What rewards and certificates do participants receive?",
-    answer: "All contributors who merge at least 1 approved PR receive a cryptographically verified Digital Certificate of Participation. Top 100 contributors receive official OWOC Winter Swag Boxes, custom hoodies, and direct referral opportunities with partner tech firms.",
+    answer: "All contributors who merge at least 1 approved PR receive a cryptographically verified Digital Certificate of Participation. Top 100 contributors receive official OWOC Winter Swag Boxes, custom hoodies, and recognition across community channels.",
   }
 ];
 
 export const MOCK_SPONSORS: Sponsor[] = [
   {
     id: "sp-1",
-    name: "Omnikon Technologies",
+    name: "Sample Partner A",
     tier: "Alpha Title",
     logo: "",
-    website: "https://omnikon.org",
-    description: "Title partner powering cloud compute, mentorship platforms, and global developer programs."
+    website: "",
+    description: "Sample partner supporting open-source student mentorship and community workshops."
   },
   {
     id: "sp-2",
-    name: "Solana Foundation",
+    name: "Sample Partner B",
     tier: "Alpha Title",
     logo: "",
-    website: "https://solana.com",
-    description: "Supporting high-performance decentralized systems, Web3 grants, and bounty tracks."
+    website: "",
+    description: "Sample partner supporting high-performance systems and developer tooling."
   },
   {
     id: "sp-3",
-    name: "Vercel Cloud",
+    name: "Sample Partner C",
     tier: "Crimson Partner",
     logo: "",
-    website: "https://vercel.com",
-    description: "Empowering developers to build and deploy high-performance modern web platforms."
+    website: "",
+    description: "Sample partner empowering student developers to build modern web platforms."
   },
   {
     id: "sp-4",
-    name: "Supabase",
+    name: "Sample Partner D",
     tier: "Crimson Partner",
     logo: "",
-    website: "https://supabase.com",
-    description: "The open source Firebase alternative powering database, auth, and real-time state."
+    website: "",
+    description: "Sample partner supporting open-source databases and developer tooling."
   },
   {
     id: "sp-5",
-    name: "GitHub Education",
+    name: "Sample Partner E",
     tier: "Community Supporter",
     logo: "",
-    website: "https://github.com",
-    description: "Providing developer packs, student credits, and Git workshop toolkits."
+    website: "",
+    description: "Sample community partner supporting student workshops and university chapters."
   }
 ];
 
@@ -740,7 +739,7 @@ export const MOCK_MENTOR_APPLICATIONS: MentorApplication[] = [
     full_name: "Dr. Kavita Shenoy",
     email: "kavita.shenoy@example.edu",
     github_username: "kshenoy-ai",
-    linkedin_url: "https://linkedin.com/in/kshenoy-ai",
+    linkedin_url: "",
     bio: "Senior Researcher in compiler optimization and edge acceleration. 8+ years experience guiding graduate research.",
     expertise_domains: ["AI/ML", "Rust", "CUDA"],
     weekly_availability_hours: 6,
@@ -754,7 +753,7 @@ export const MOCK_MENTOR_APPLICATIONS: MentorApplication[] = [
     full_name: "Marcus Vance",
     email: "marcus.v@cloudscale.io",
     github_username: "mvance-dev",
-    linkedin_url: "https://linkedin.com/in/marcusvance",
+    linkedin_url: "",
     bio: "Staff Infrastructure Engineer. Maintained high-throughput Kubernetes operators and Envoy proxies.",
     expertise_domains: ["Cloud & DevOps", "Go", "Security"],
     weekly_availability_hours: 4,
@@ -772,7 +771,7 @@ export const MOCK_PROJECT_ADMIN_APPLICATIONS: ProjectAdminApplication[] = [
     email: "rohan@hypercache.org",
     github_username: "rohank-sys",
     project_name: "HyperCache Distributed KV",
-    repo_url: "https://github.com/hypercache/hypercache-engine",
+    repo_url: "",
     project_desc: "Distributed in-memory cache leveraging RDMA and io_uring with microsecond latency.",
     domain: "Cloud & DevOps",
     tech_stack: ["Rust", "C++", "Linux", "gRPC"],
@@ -786,7 +785,7 @@ export const MOCK_PROJECT_ADMIN_APPLICATIONS: ProjectAdminApplication[] = [
     email: "sarah@aegis-sec.io",
     github_username: "sjenkins-sec",
     project_name: "Aegis Zero-Trust Proxy",
-    repo_url: "https://github.com/aegis-sec/aegis-proxy",
+    repo_url: "",
     project_desc: "Identity-aware zero trust reverse proxy with automated mTLS rotation and eBPF observability.",
     domain: "Security",
     tech_stack: ["Go", "eBPF", "Kubernetes", "TLS"],
@@ -811,12 +810,12 @@ export const MOCK_CONTRIBUTOR_APPLICATIONS: ContributorProjectApplication[] = [
   {
     id: "ca-2",
     project_id: "proj-2",
-    project_name: "Solana WinterPay SDK",
+    project_name: "OpenPay Web3 SDK",
     contributor_id: "u-c2",
     contributor_name: "Zara Chen",
     github_username: "zarachen-web3",
-    message: "Active in Solana Anchor ecosystem. Want to help construct client-side state channels.",
-    plan: "Write integration tests with Solana localnet and construct off-chain payment channels.",
+    message: "Active in open-source Web3 ecosystem. Want to help construct client-side state channels.",
+    plan: "Write integration tests with localnet and construct off-chain payment channels.",
     status: "pending",
     applied_at: "2026-10-17T12:00:00Z"
   }
@@ -847,7 +846,7 @@ export const MOCK_POINTS_LEDGER: PointsLedgerItem[] = [
     id: "pl-3",
     user_id: "c-2",
     points: 50,
-    reason: "Merged PR #28: Solana Anchor state channel tests",
+    reason: "Merged PR #28: Anchor state channel tests",
     type: "pr_merge",
     reference_id: "pr-2",
     awarded_by: "user-m2",
@@ -883,7 +882,7 @@ export const MOCK_OFFICE_HOURS: OfficeHoursSession[] = [
     session_date: "2026-12-06",
     start_time: "17:00",
     end_time: "18:00",
-    meeting_url: "https://meet.google.com/owoc-mentor-simd",
+    meeting_url: "",
     max_attendees: 15,
     booked_count: 8,
     created_at: "2026-10-16T09:00:00Z"
@@ -898,7 +897,7 @@ export const MOCK_OFFICE_HOURS: OfficeHoursSession[] = [
     session_date: "2026-12-08",
     start_time: "19:00",
     end_time: "20:00",
-    meeting_url: "https://meet.google.com/owoc-mentor-cuda",
+    meeting_url: "",
     max_attendees: 12,
     booked_count: 5,
     created_at: "2026-10-16T11:00:00Z"
@@ -926,7 +925,7 @@ export const MOCK_MENTOR_FEEDBACK: MentorFeedbackRecord[] = [
     contributor_id: "c-1",
     contributor_name: "Aarav Patel",
     is_private: true,
-    feedback_text: "Strong technical candidate for next cohort maintainer invite.",
+    feedback_text: "Strong technical candidate for next season maintainer invite.",
     quality_rating: 5,
     created_at: "2026-12-05T16:25:00Z"
   }
@@ -1020,10 +1019,10 @@ export const MOCK_AUDIT_LOGS: AuditLogItem[] = [
 export const MOCK_SITE_SETTINGS: SiteSettings = {
   contact_email: "contact@omnikon.org",
   conduct_email: "conduct@omnikon.org",
-  twitter_url: "https://x.com/omnikon_owoc",
-  linkedin_url: "https://linkedin.com/company/omnikon",
+  twitter_url: "",
+  linkedin_url: "",
   github_url: "https://github.com/namanlunia/Event",
-  discord_url: "https://discord.gg/owoc",
+  discord_url: "",
   ambassador_rewards_config: {
     bronze_threshold: 10,
     silver_threshold: 25,

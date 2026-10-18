@@ -166,15 +166,25 @@ export default function SponsorsPage() {
                     </p>
                   </div>
 
-                  <a
-                    href={sponsor.website}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-xs font-mono text-red-bright hover:underline flex items-center gap-1.5 pt-4 border-t border-white/5"
-                  >
-                    <span>Visit Partner Website</span>
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </a>
+                  {sponsor.website ? (
+                    <a
+                      href={sponsor.website}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-xs font-mono text-red-bright hover:underline flex items-center gap-1.5 pt-4 border-t border-white/5"
+                    >
+                      <span>Visit Partner Website</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                  ) : (
+                    <div
+                      title="Sample partner (not a real link)"
+                      className="text-xs font-mono text-text-muted flex items-center justify-between pt-4 border-t border-white/5"
+                    >
+                      <span>Sample partner</span>
+                      <span className="text-[10px] px-2 py-0.5 rounded bg-surface-2 text-text-muted">Not active</span>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

@@ -190,7 +190,7 @@ export default function ContactPage() {
                         Campus Ambassador Referral Queries
                       </option>
                       <option value="Sponsorship & Partnership">
-                        Corporate Sponsorship & Bounties
+                        Corporate Sponsorship & Track Support
                       </option>
                     </select>
                   </div>

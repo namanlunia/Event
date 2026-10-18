@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   ShieldAlert,
   FolderGit2,
@@ -39,7 +40,7 @@ import {
 import RoleGuard from "@/components/auth/RoleGuard";
 import { useAppStore } from "@/lib/store";
 import { SITE_CONFIG } from "@/lib/site-config";
-import { SEASON_LABEL, SEASON_SHORT, PHASES, EVENT_START, EVENT_END, formatDateRange } from "@/lib/season";
+import { SEASON_LABEL, SEASON_SHORT, PHASES, EVENT_START, EVENT_END, formatDateRange, getCurrentPhase, daysUntilCodingStart } from "@/lib/season";
 import { SampleBadge } from "@/components/visual/DemoModeBanner";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import StatusBadge from "@/components/ui/status-badge";
@@ -62,9 +63,11 @@ import {
 
 export default function SuperAdminDashboardPage() {
   return (
-    <RoleGuard allowedRoles={["super_admin"]}>
-      <SuperAdminDashboardContent />
-    </RoleGuard>
+    <Suspense fallback={<div className="p-8 text-neutral-400">Loading admin dashboard...</div>}>
+      <RoleGuard allowedRoles={["super_admin"]}>
+        <SuperAdminDashboardContent />
+      </RoleGuard>
+    </Suspense>
   );
 }
 
@@ -92,9 +95,10 @@ function SuperAdminDashboardContent() {
   } = useAppStore();
 
   const isDemo = SITE_CONFIG.DEMO_MODE;
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-  // Active Main Tab
-  const [activeTab, setActiveTab] = useState<
+  type AdminTab =
     | "overview"
     | "approvals"
     | "users"
@@ -106,8 +110,41 @@ function SuperAdminDashboardContent() {
     | "certificates"
     | "season"
     | "logs"
-    | "exports"
-  >("overview");
+    | "exports";
+
+  const [activeTab, setActiveTab] = useState<AdminTab>("overview");
+
+  useEffect(() => {
+    let tabParam = searchParams?.get("tab");
+    if (tabParam === "points") tabParam = "rules";
+    if (tabParam === "sponsors") tabParam = "content";
+    if (tabParam === "audit") tabParam = "logs";
+
+    const validTabs: AdminTab[] = [
+      "overview",
+      "approvals",
+      "users",
+      "projects",
+      "rules",
+      "leaderboard",
+      "badges",
+      "content",
+      "certificates",
+      "season",
+      "logs",
+      "exports",
+    ];
+
+    if (tabParam && validTabs.includes(tabParam as AdminTab)) {
+      setActiveTab(tabParam as AdminTab);
+    }
+  }, [searchParams]);
+
+  const handleTabChange = (newTab: AdminTab) => {
+    setActiveTab(newTab);
+    const queryTab = newTab === "rules" ? "points" : newTab === "content" ? "sponsors" : newTab === "logs" ? "audit" : newTab;
+    router.push(`/dashboard/admin?tab=${queryTab}`, { scroll: false });
+  };
 
   // Approvals Sub-Tab
   const [approvalsTab, setApprovalsTab] = useState<"projects" | "mentors" | "ambassadors" | "project_admins">("projects");
@@ -230,11 +267,11 @@ function SuperAdminDashboardContent() {
 
   // Content Management: Sponsors State
   const [sponsors, setSponsors] = useState([
-    { id: "sp-1", name: "Omnikon Technologies", tier: "Alpha Title", confirmed: true },
-    { id: "sp-2", name: "Solana Foundation", tier: "Alpha Title", confirmed: true },
-    { id: "sp-3", name: "Vercel Cloud", tier: "Crimson Partner", confirmed: true },
-    { id: "sp-4", name: "Supabase", tier: "Crimson Partner", confirmed: true },
-    { id: "sp-5", name: "GitHub Education", tier: "Community Supporter", confirmed: false },
+    { id: "sp-1", name: "Sample Partner A", tier: "Alpha Title", confirmed: true },
+    { id: "sp-2", name: "Sample Partner B", tier: "Alpha Title", confirmed: true },
+    { id: "sp-3", name: "Sample Partner C", tier: "Crimson Partner", confirmed: true },
+    { id: "sp-4", name: "Sample Partner D", tier: "Crimson Partner", confirmed: true },
+    { id: "sp-5", name: "Sample Partner E", tier: "Community Supporter", confirmed: false },
   ]);
 
   // Badges Definitions
@@ -260,10 +297,11 @@ function SuperAdminDashboardContent() {
   ];
 
   const roleDistributionData = [
-    { name: "Contributors", value: 1420, color: "#EF4444" },
-    { name: "Mentors", value: 85, color: "#3B82F6" },
-    { name: "Project Admins", value: 42, color: "#10B981" },
-    { name: "Ambassadors", value: 110, color: "#F59E0B" },
+    { role: "Contributors", count: 1420, color: "#EF4444" },
+    { role: "Mentors", count: 85, color: "#3B82F6" },
+    { role: "Project Admins", count: 42, color: "#10B981" },
+    { role: "Ambassadors", count: 105, color: "#F59E0B" },
+    { role: "Admins", count: 5, color: "#8B5CF6" },
   ];
 
   const domainBreakdownData = [
@@ -280,6 +318,10 @@ function SuperAdminDashboardContent() {
 
   const totalPendingApprovals =
     pendingProjects.length + pendingMentors.length + pendingProjectAdmins.length;
+
+  const currentPhase = getCurrentPhase();
+  const displayPhase = currentPhase || PHASES[0];
+  const daysToSprint = daysUntilCodingStart();
 
   // Actions
   const handleApproveProject = (id: string) => {
@@ -392,7 +434,7 @@ function SuperAdminDashboardContent() {
         addAuditLog({
           action: "bulk_issue_certificates",
           target_type: "certificates",
-          target_id: "cohort_2026",
+          target_id: "season_2026",
           details_after: { issued_count: 128 },
         });
         showToast("128 Certificates successfully generated and verified!");
@@ -514,7 +556,7 @@ function SuperAdminDashboardContent() {
               OWOC {SEASON_LABEL} Organizer Console
             </h1>
             <p className="text-xs text-text-secondary mt-0.5">
-              Full administrative authority over cohort phases, approvals, points rules, and audits.
+              Full administrative authority over season phases, approvals, points rules, and audits.
             </p>
           </div>
         </div>
@@ -563,7 +605,7 @@ function SuperAdminDashboardContent() {
         ].map((tab) => (
           <button
             key={tab.id}
-            onClick={() => setActiveTab(tab.id as typeof activeTab)}
+            onClick={() => handleTabChange(tab.id as AdminTab)}
             className={`px-3.5 py-2.5 rounded-t-xl transition-colors font-bold whitespace-nowrap flex items-center gap-2 ${
               activeTab === tab.id
                 ? "bg-surface-1 border-t-2 border-red-bright text-white"
@@ -634,24 +676,26 @@ function SuperAdminDashboardContent() {
           <div className="p-6 rounded-3xl bg-gradient-to-r from-red-primary/10 via-surface-1 to-surface-1 border border-red-primary/30 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
               <span className="text-[10px] font-mono text-red-bright uppercase font-bold tracking-widest block">
-                ACTIVE PROGRAM TIMELINE
+                {currentPhase ? "ACTIVE PROGRAM TIMELINE" : "UPCOMING PROGRAM TIMELINE"}
               </span>
               <h3 className="font-heading font-black text-xl text-white mt-1">
-                {PHASES[0].name}
+                {displayPhase.name}
               </h3>
               <p className="text-xs text-text-secondary mt-1">
-                {PHASES[0].description} (Running {PHASES[0].startDate} to {PHASES[0].endDate})
+                {displayPhase.description} (Running {formatDateRange(displayPhase)})
               </p>
             </div>
 
             <div className="flex items-center gap-3 font-mono">
               <div className="p-3 rounded-xl bg-surface-2 border border-white/10 text-center min-w-20">
-                <span className="text-lg font-black text-white block">43</span>
+                <span className="text-lg font-black text-white block">
+                  {daysToSprint > 0 ? daysToSprint : 0}
+                </span>
                 <span className="text-[9px] text-text-muted uppercase">Days to Sprint</span>
               </div>
               <div className="p-3 rounded-xl bg-surface-2 border border-white/10 text-center min-w-20">
                 <span className="text-lg font-black text-red-bright block">{SEASON_LABEL}</span>
-                <span className="text-[9px] text-text-muted uppercase">Cohort</span>
+                <span className="text-[9px] text-text-muted uppercase">Season</span>
               </div>
             </div>
           </div>
@@ -660,12 +704,17 @@ function SuperAdminDashboardContent() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Registration Growth Chart */}
             <div className="glass-card p-6 rounded-3xl border border-white/10 space-y-3">
-              <h4 className="font-heading font-bold text-sm text-white">
-                Cumulative Registrations Growth
-              </h4>
+              <div className="flex items-center justify-between">
+                <h4 className="font-heading font-bold text-sm text-white">
+                  Cumulative Registrations Growth
+                </h4>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-surface-2 text-text-muted border border-white/5">
+                  Sample projection
+                </span>
+              </div>
               <div className="h-56 w-full">
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={registrationTimelineData}>
+                  <AreaChart data={registrationTimelineData} margin={{ top: 10, right: 15, left: 0, bottom: 0 }}>
                     <defs>
                       <linearGradient id="regGrad" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor="#EF4444" stopOpacity={0.4} />
@@ -673,26 +722,65 @@ function SuperAdminDashboardContent() {
                       </linearGradient>
                     </defs>
                     <XAxis dataKey="date" stroke="#666" tick={{ fill: "#888", fontSize: 11 }} />
-                    <YAxis stroke="#666" tick={{ fill: "#888", fontSize: 11 }} />
-                    <Tooltip contentStyle={{ backgroundColor: "#0B0B0D", borderRadius: "10px" }} />
+                    <YAxis width={40} stroke="#666" tick={{ fill: "#888", fontSize: 11 }} />
+                    <Tooltip
+                      allowEscapeViewBox={{ x: false, y: false }}
+                      wrapperStyle={{ zIndex: 50, outline: "none" }}
+                      contentStyle={{ backgroundColor: "#0B0B0D", borderRadius: "10px" }}
+                    />
                     <Area type="monotone" dataKey="count" stroke="#EF4444" fill="url(#regGrad)" />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
             </div>
 
-            {/* User Roles Breakdown */}
+            {/* Stakeholders by Role Breakdown */}
             <div className="glass-card p-6 rounded-3xl border border-white/10 space-y-3">
-              <h4 className="font-heading font-bold text-sm text-white">
-                Stakeholders by Role Distribution
-              </h4>
+              <div className="flex items-center justify-between">
+                <h4 className="font-heading font-bold text-sm text-white">
+                  Stakeholders by Role Distribution
+                </h4>
+                <span className="text-[10px] font-mono text-text-muted">
+                  Total Users: {isDemo ? 1657 : 0}
+                </span>
+              </div>
               <div className="h-56 w-full">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={domainBreakdownData}>
-                    <XAxis dataKey="domain" stroke="#666" tick={{ fill: "#888", fontSize: 11 }} />
-                    <YAxis stroke="#666" tick={{ fill: "#888", fontSize: 11 }} />
-                    <Tooltip contentStyle={{ backgroundColor: "#0B0B0D", borderRadius: "10px" }} />
+                  <BarChart data={roleDistributionData} margin={{ top: 10, right: 15, left: 0, bottom: 0 }}>
+                    <XAxis dataKey="role" stroke="#666" tick={{ fill: "#888", fontSize: 10 }} />
+                    <YAxis width={40} stroke="#666" tick={{ fill: "#888", fontSize: 11 }} />
+                    <Tooltip
+                      allowEscapeViewBox={{ x: false, y: false }}
+                      wrapperStyle={{ zIndex: 50, outline: "none" }}
+                      contentStyle={{ backgroundColor: "#0B0B0D", borderRadius: "10px" }}
+                    />
                     <Bar dataKey="count" fill="#EF4444" radius={[6, 6, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            {/* Projects by Domain (Kept Separate) */}
+            <div className="glass-card p-6 rounded-3xl border border-white/10 space-y-3 lg:col-span-2">
+              <div className="flex items-center justify-between">
+                <h4 className="font-heading font-bold text-sm text-white">
+                  Projects by Domain
+                </h4>
+                <span className="text-[10px] font-mono text-text-muted">
+                  {projects.length} Total Repositories
+                </span>
+              </div>
+              <div className="h-56 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={domainBreakdownData} margin={{ top: 10, right: 15, left: 0, bottom: 0 }}>
+                    <XAxis dataKey="domain" stroke="#666" tick={{ fill: "#888", fontSize: 11 }} />
+                    <YAxis width={40} stroke="#666" tick={{ fill: "#888", fontSize: 11 }} />
+                    <Tooltip
+                      allowEscapeViewBox={{ x: false, y: false }}
+                      wrapperStyle={{ zIndex: 50, outline: "none" }}
+                      contentStyle={{ backgroundColor: "#0B0B0D", borderRadius: "10px" }}
+                    />
+                    <Bar dataKey="count" fill="#3B82F6" radius={[6, 6, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -776,15 +864,25 @@ function SuperAdminDashboardContent() {
                         </span>
                       </div>
                       <p className="text-text-secondary">{p.tagline || p.description}</p>
-                      <a
-                        href={p.repository_url}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-[11px] font-mono text-red-bright hover:underline flex items-center gap-1"
-                      >
-                        <span>{p.repository_url}</span>
-                        <ExternalLink className="w-3 h-3" />
-                      </a>
+                      {p.repository_url ? (
+                        <a
+                          href={p.repository_url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-[11px] font-mono text-red-bright hover:underline flex items-center gap-1"
+                        >
+                          <span>{p.repository_url}</span>
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      ) : (
+                        <span
+                          title="Sample repository (not a real link)"
+                          className="text-[11px] font-mono text-text-muted/60 flex items-center gap-1 cursor-not-allowed"
+                        >
+                          <span>Sample repository (not a real link)</span>
+                          <ExternalLink className="w-3 h-3" />
+                        </span>
+                      )}
                     </div>
 
                     <div className="flex items-center gap-2 flex-shrink-0">
@@ -887,16 +985,25 @@ function SuperAdminDashboardContent() {
                         <span className="text-[11px] font-mono text-text-muted">@{pa.github_username}</span>
                       </div>
                       <div className="text-white font-mono">Project: {pa.project_name}</div>
-                      <p className="text-text-secondary">{pa.project_desc}</p>
-                      <a
-                        href={pa.repo_url}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-[11px] font-mono text-red-bright hover:underline flex items-center gap-1"
-                      >
-                        <span>{pa.repo_url}</span>
-                        <ExternalLink className="w-3 h-3" />
-                      </a>
+                      {pa.repo_url ? (
+                        <a
+                          href={pa.repo_url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-[11px] font-mono text-red-bright hover:underline flex items-center gap-1"
+                        >
+                          <span>{pa.repo_url}</span>
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      ) : (
+                        <span
+                          title="Sample repository (not a real link)"
+                          className="text-[11px] font-mono text-text-muted/60 flex items-center gap-1 cursor-not-allowed"
+                        >
+                          <span>Sample repository (not a real link)</span>
+                          <ExternalLink className="w-3 h-3" />
+                        </span>
+                      )}
                     </div>
 
                     <div className="flex items-center gap-2 flex-shrink-0">
@@ -1257,7 +1364,7 @@ function SuperAdminDashboardContent() {
               <div>
                 <span className="font-bold text-white">Suspicious User (@sus-botnet)</span>
                 <p className="text-text-muted mt-0.5">
-                  Anomaly: 6 pull requests merged within 4 minutes on repository "Solana SDK".
+                  Anomaly: 6 pull requests merged within 4 minutes on repository "OpenPay SDK".
                 </p>
               </div>
 
@@ -1351,7 +1458,7 @@ function SuperAdminDashboardContent() {
         <div className="glass-card p-6 sm:p-8 rounded-3xl border border-white/10 max-w-2xl space-y-6">
           <div>
             <span className="text-[10px] font-mono uppercase text-red-bright font-bold tracking-wider">
-              END-OF-COHORT ACCREDITATION
+              END-OF-SEASON ACCREDITATION
             </span>
             <h2 className="font-heading font-black text-2xl text-white mt-1">
               Certificates Issuance Engine
@@ -1364,7 +1471,7 @@ function SuperAdminDashboardContent() {
 
           <div className="p-4 rounded-2xl bg-surface-1 border border-white/10 space-y-2 text-xs font-mono">
             <div className="flex justify-between items-center">
-              <span className="text-text-muted">Target Cohort:</span>
+              <span className="text-text-muted">Target Season:</span>
               <span className="text-white font-bold">{SEASON_SHORT} (Dec 2026)</span>
             </div>
             <div className="flex justify-between items-center">

@@ -160,15 +160,25 @@ export default function ProjectDetailPage() {
 
             {/* Actions */}
             <div className="flex flex-col sm:flex-row items-center gap-3">
-              <a
-                href={project.repository_url}
-                target="_blank"
-                rel="noreferrer"
-                className="w-full sm:w-auto px-5 py-3 rounded-xl bg-surface-1 border border-white/10 hover:border-red-primary/50 text-white text-xs font-semibold flex items-center justify-center gap-2 transition-colors"
-              >
-                <ExternalLink className="w-4 h-4 text-red-bright" />
-                <span>GitHub Repository</span>
-              </a>
+              {project.repository_url ? (
+                <a
+                  href={project.repository_url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="w-full sm:w-auto px-5 py-3 rounded-xl bg-surface-1 border border-white/10 hover:border-red-primary/50 text-white text-xs font-semibold flex items-center justify-center gap-2 transition-colors"
+                >
+                  <ExternalLink className="w-4 h-4 text-red-bright" />
+                  <span>GitHub Repository</span>
+                </a>
+              ) : (
+                <span
+                  title="Sample repository (not a real link)"
+                  className="w-full sm:w-auto px-5 py-3 rounded-xl bg-surface-1 border border-white/10 opacity-70 cursor-not-allowed text-white text-xs font-semibold flex items-center justify-center gap-2"
+                >
+                  <ExternalLink className="w-4 h-4 text-red-bright" />
+                  <span>GitHub Repository</span>
+                </span>
+              )}
 
               <button
                 onClick={() => {
@@ -364,15 +374,13 @@ export default function ProjectDetailPage() {
                         <div className="text-[10px] text-text-muted">{m.role}</div>
                       </div>
                     </div>
-                    <a
-                      href={`https://github.com/${m.github}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-text-muted hover:text-white"
-                      aria-label={`${m.name}'s GitHub Profile`}
+                    <span
+                      title="Sample profile (not a real link)"
+                      className="text-text-muted/60 cursor-not-allowed"
+                      aria-label={`${m.name}'s profile`}
                     >
                       <ExternalLink className="w-3.5 h-3.5" />
-                    </a>
+                    </span>
                   </div>
                 ))}
               </div>

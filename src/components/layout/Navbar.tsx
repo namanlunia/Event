@@ -4,25 +4,20 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  ChevronDown,
   Menu,
   X,
   Terminal,
-  Flame,
-  Check,
 } from "lucide-react";
-import { DEMO_PERSONAS, useAppStore } from "@/lib/store";
-
+import BrandLogo from "@/components/brand/BrandLogo";
+import { useAppStore } from "@/lib/store";
 import { SEASON_LABEL } from "@/lib/season";
 import { DemoModeBanner } from "@/components/visual/DemoModeBanner";
-import { SITE_CONFIG } from "@/lib/site-config";
 
 export default function Navbar() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [roleDropdownOpen, setRoleDropdownOpen] = useState(false);
-  const { currentPersona, switchRole } = useAppStore();
+  const { personaConfig } = useAppStore();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -52,18 +47,10 @@ export default function Navbar() {
       }`}
     >
       <DemoModeBanner />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <div className="w-full px-6 lg:px-10 h-20 flex items-center justify-between gap-4">
         {/* Brand Logo */}
-        <Link href="/" className="flex items-center gap-3 group">
-          <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-red-primary to-red-deep p-[1px] shadow-red-glow-sm transition-transform duration-300 group-hover:scale-105">
-            <div className="w-full h-full bg-[#0B0B0D] rounded-xl flex items-center justify-center relative overflow-hidden">
-              <span className="absolute inset-0 bg-red-glow/20 blur-sm"></span>
-              {/* Geometric Ice & Fire Icon */}
-              <div className="relative flex items-center justify-center">
-                <Flame className="w-5 h-5 text-red-bright animate-pulse" />
-              </div>
-            </div>
-          </div>
+        <Link href="/" className="flex items-center gap-3 group flex-shrink-0">
+          <BrandLogo priority />
           <div className="flex flex-col">
             <div className="flex items-center gap-1.5">
               <span className="font-heading font-black tracking-tight text-xl text-white group-hover:text-red-bright transition-colors">
@@ -79,15 +66,15 @@ export default function Navbar() {
           </div>
         </Link>
 
-        {/* Desktop Navigation Links */}
-        <nav className="hidden lg:flex items-center gap-1 xl:gap-2">
+        {/* Desktop Navigation Links (All 8 items on single row, no wrap) */}
+        <nav className="hidden min-[1180px]:flex items-center justify-center gap-1 xl:gap-2 flex-grow mx-2">
           {navLinks.map((link) => {
             const isActive = pathname === link.href;
             return (
               <Link
                 key={link.name}
                 href={link.href}
-                className={`px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
+                className={`px-2.5 xl:px-3 py-2 text-sm font-medium rounded-lg whitespace-nowrap transition-all duration-200 ${
                   isActive
                     ? "text-white bg-white/5 border border-red-primary/40 shadow-red-glow-sm"
                     : "text-text-secondary hover:text-white hover:bg-white/[0.04]"
@@ -99,83 +86,20 @@ export default function Navbar() {
           })}
         </nav>
 
-        {/* Right Action Section: Role Persona Switcher & Dashboard Access */}
-        <div className="hidden md:flex items-center gap-3">
-          {/* Quick Persona Switcher Modal/Dropdown (DEMO_MODE ONLY) */}
-          {SITE_CONFIG.DEMO_MODE && (
-            <div className="relative">
-              <button
-                onClick={() => setRoleDropdownOpen(!roleDropdownOpen)}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-1 border border-white/10 hover:border-red-primary/40 transition-colors text-xs font-mono text-text-secondary hover:text-white"
-                title="Test the platform as different stakeholders"
-              >
-                <div className="w-2 h-2 rounded-full bg-red-bright animate-ping"></div>
-                <span>Role:</span>
-                <span className="text-red-bright font-bold capitalize">
-                  {currentPersona.role.replace("_", " ")}
-                </span>
-                <ChevronDown className="w-3.5 h-3.5" />
-              </button>
-
-              {roleDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-72 bg-surface-1/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
-                  <div className="px-3 py-2 border-b border-white/10 mb-1">
-                    <p className="text-xs font-mono text-red-bright uppercase font-bold tracking-wider">
-                      Instant Persona Switcher
-                    </p>
-                    <p className="text-[11px] text-text-muted">
-                      Test role-based access & dashboards
-                    </p>
-                  </div>
-                  <div className="space-y-1">
-                    {DEMO_PERSONAS.map((persona) => {
-                      const isSelected = currentPersona.role === persona.role;
-                      return (
-                        <button
-                          key={persona.role}
-                          onClick={() => {
-                            switchRole(persona.role);
-                            setRoleDropdownOpen(false);
-                          }}
-                          className={`w-full flex items-center justify-between p-2 rounded-lg text-left transition-colors ${
-                            isSelected
-                              ? "bg-red-primary/15 border border-red-primary/40 text-white"
-                              : "hover:bg-white/5 text-text-secondary hover:text-white"
-                          }`}
-                        >
-                          <div className="flex items-center gap-2.5">
-                            <div className="w-7 h-7 rounded-full bg-surface-2 border border-white/20 flex items-center justify-center font-bold text-white text-[10px]">
-                              {persona.name.charAt(0)}
-                            </div>
-                            <div>
-                              <div className="text-xs font-semibold">{persona.name}</div>
-                              <div className="text-[10px] text-text-muted font-mono">
-                                {persona.title}
-                              </div>
-                            </div>
-                          </div>
-                          {isSelected && <Check className="w-4 h-4 text-red-bright" />}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-
+        {/* Right Action Section: Register & Dashboard Access */}
+        <div className="hidden min-[1180px]:flex items-center gap-3 flex-shrink-0">
           {/* Register Link */}
           <Link
             href="/register"
-            className="px-3 py-1.5 text-xs font-mono text-text-secondary hover:text-white transition-colors"
+            className="px-3 py-1.5 text-xs font-mono text-text-secondary hover:text-white transition-colors whitespace-nowrap"
           >
             Register
           </Link>
 
           {/* Direct Dashboard Link based on active Persona */}
           <Link
-            href={currentPersona.dashboardUrl}
-            className="flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg bg-red-primary hover:bg-red-bright text-white shadow-red-glow-sm hover:shadow-red-glow transition-all duration-200"
+            href={personaConfig.dashboardRoute}
+            className="flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg bg-red-primary hover:bg-red-bright text-white shadow-red-glow-sm hover:shadow-red-glow transition-all duration-200 whitespace-nowrap"
           >
             <Terminal className="w-3.5 h-3.5" />
             <span>Dashboard</span>
@@ -183,9 +107,9 @@ export default function Navbar() {
         </div>
 
         {/* Mobile Hamburger Toggle */}
-        <div className="flex lg:hidden items-center gap-2">
+        <div className="flex min-[1180px]:hidden items-center gap-2 flex-shrink-0">
           <Link
-            href={currentPersona.dashboardUrl}
+            href={personaConfig.dashboardRoute}
             className="p-2 text-xs font-mono rounded-lg bg-red-primary text-white"
           >
             Dashboard
@@ -202,57 +126,40 @@ export default function Navbar() {
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-surface-1/95 backdrop-blur-xl border-b border-white/10 px-4 py-6 space-y-4">
+        <div className="min-[1180px]:hidden bg-surface-1/95 backdrop-blur-xl border-b border-white/10 px-6 py-6 space-y-4 max-h-[calc(100vh-5rem)] overflow-y-auto">
           <div className="space-y-1">
             {navLinks.map((link) => (
               <Link
                 key={link.name}
                 href={link.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className={`block px-3 py-2.5 rounded-lg text-sm font-medium ${
+                className={`block px-3 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap ${
                   pathname === link.href
-                    ? "bg-red-primary/10 text-red-bright border-l-2 border-red-bright"
-                    : "text-text-secondary hover:text-white"
+                    ? "bg-red-primary/10 text-red-bright border-l-2 border-red-bright font-bold"
+                    : "text-text-secondary hover:text-white hover:bg-white/5"
                 }`}
               >
                 {link.name}
               </Link>
             ))}
+          </div>
+
+          <div className="pt-4 border-t border-white/10 flex flex-col gap-2">
             <Link
               href="/register"
               onClick={() => setMobileMenuOpen(false)}
-              className="block px-3 py-2.5 rounded-lg text-sm font-medium text-text-secondary hover:text-white"
+              className="w-full text-center py-2.5 text-xs font-mono rounded-lg border border-white/10 text-white hover:bg-white/5 transition-colors"
             >
-              Register & Apply
+              Register for OWOC
+            </Link>
+            <Link
+              href={personaConfig.dashboardRoute}
+              onClick={() => setMobileMenuOpen(false)}
+              className="w-full text-center py-2.5 text-xs font-semibold rounded-lg bg-red-primary hover:bg-red-bright text-white shadow-red-glow-sm transition-colors"
+            >
+              Open {personaConfig.roleLabel} Dashboard
             </Link>
           </div>
-
-          {SITE_CONFIG.DEMO_MODE && (
-            <div className="pt-4 border-t border-white/10">
-              <p className="text-xs font-mono text-text-muted uppercase mb-2">
-                Select Demo Persona
-              </p>
-              <div className="grid grid-cols-2 gap-2">
-                {DEMO_PERSONAS.map((p) => (
-                  <button
-                    key={p.role}
-                    onClick={() => {
-                      switchRole(p.role);
-                      setMobileMenuOpen(false);
-                    }}
-                    className={`p-2 rounded-lg text-left text-xs border ${
-                      currentPersona.role === p.role
-                        ? "border-red-bright bg-red-primary/10 text-white"
-                        : "border-white/5 bg-surface-2 text-text-secondary"
-                    }`}
-                  >
-                    <div className="font-bold">{p.name.split(" ")[0]}</div>
-                    <div className="text-[10px] text-text-muted">{p.role}</div>
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
       )}
     </header>

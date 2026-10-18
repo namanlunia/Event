@@ -18,6 +18,7 @@ import {
   getPhaseStatus,
   formatDateRange,
   getCurrentPhase,
+  isBeforeCodingPeriod,
 } from "@/lib/season";
 
 export const metadata = {
@@ -29,6 +30,7 @@ export const metadata = {
 export default function TimelinePage() {
   const currentPhase = getCurrentPhase();
   const isBeforeProgram = !currentPhase && getPhaseStatus(PHASES[0]) === "upcoming";
+  const isBeforeCoding = isBeforeCodingPeriod();
 
   // Milestones mapped to each centralized phase
   const phaseMilestones: Record<number, string[]> = {
@@ -111,7 +113,7 @@ export default function TimelinePage() {
               href="/projects"
               className="w-full md:w-auto px-5 py-2.5 rounded-xl bg-red-primary hover:bg-red-bright text-white text-xs font-semibold shadow-red-glow transition-all text-center"
             >
-              Solve Issues
+              {isBeforeCoding ? "Browse Projects" : "Solve Issues"}
             </Link>
             <Link
               href="/leaderboard"

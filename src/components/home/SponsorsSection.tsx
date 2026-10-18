@@ -28,7 +28,7 @@ export default function SponsorsSection() {
               Become a Founding Sponsor
             </h2>
             <p className="mt-4 text-sm sm:text-base text-text-secondary">
-              OWOC {SEASON_LABEL} is open for partnership. Sponsors receive prominent placement, access to top talent, and direct bounty pipelines.
+              OWOC {SEASON_LABEL} is open for partnership. Sponsors receive prominent placement, community recognition, and direct connections to passionate student builders.
             </p>
           </div>
 
@@ -61,7 +61,7 @@ export default function SponsorsSection() {
             Supported by Leading Tech Innovators
           </h2>
           <p className="mt-4 text-sm sm:text-base text-text-secondary">
-            Our partners provide infrastructure, bounties, cloud credits, and direct interview pipelines for top performers.
+            Our partners provide workshop resources, technical mentorship, and tooling support for student builders.
           </p>
           {isDemoMode && (
             <div className="mt-4 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-yellow-400/10 border border-yellow-400/20 text-xs text-yellow-400">
@@ -79,27 +79,47 @@ export default function SponsorsSection() {
               </span>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-              {alphaSponsors.map((sponsor) => (
-                <a
-                  key={sponsor.id}
-                  href={sponsor.website}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="glass-card p-6 rounded-2xl flex items-center justify-between border border-red-primary/30 hover:border-red-bright shadow-red-glow-sm hover:shadow-red-glow transition-all group"
-                >
-                  <div>
-                    <h3 className="font-heading font-bold text-lg text-white group-hover:text-red-bright transition-colors">
-                      {sponsor.name}
-                    </h3>
-                    <p className="text-xs text-text-muted mt-1 max-w-xs">
-                      {sponsor.description}
-                    </p>
+              {alphaSponsors.map((sponsor) =>
+                sponsor.website ? (
+                  <a
+                    key={sponsor.id}
+                    href={sponsor.website}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="glass-card p-6 rounded-2xl flex items-center justify-between border border-red-primary/30 hover:border-red-bright shadow-red-glow-sm hover:shadow-red-glow transition-all group"
+                  >
+                    <div>
+                      <h3 className="font-heading font-bold text-lg text-white group-hover:text-red-bright transition-colors">
+                        {sponsor.name}
+                      </h3>
+                      <p className="text-xs text-text-muted mt-1 max-w-xs">
+                        {sponsor.description}
+                      </p>
+                    </div>
+                    <div className="p-2 rounded-lg bg-surface-2 group-hover:bg-red-primary/20 text-text-muted group-hover:text-red-bright transition-colors">
+                      <ArrowUpRight className="w-4 h-4" />
+                    </div>
+                  </a>
+                ) : (
+                  <div
+                    key={sponsor.id}
+                    title="Sample partner (not a real link)"
+                    className="glass-card p-6 rounded-2xl flex items-center justify-between border border-red-primary/30 shadow-red-glow-sm cursor-default"
+                  >
+                    <div>
+                      <h3 className="font-heading font-bold text-lg text-white">
+                        {sponsor.name}
+                      </h3>
+                      <p className="text-xs text-text-muted mt-1 max-w-xs">
+                        {sponsor.description}
+                      </p>
+                    </div>
+                    <span className="text-[10px] font-mono text-text-muted px-2 py-0.5 rounded bg-surface-2">
+                      Sample
+                    </span>
                   </div>
-                  <div className="p-2 rounded-lg bg-surface-2 group-hover:bg-red-primary/20 text-text-muted group-hover:text-red-bright transition-colors">
-                    <ArrowUpRight className="w-4 h-4" />
-                  </div>
-                </a>
-              ))}
+                )
+              )}
             </div>
           </div>
         )}
@@ -107,25 +127,45 @@ export default function SponsorsSection() {
         {/* Crimson & Community Tier */}
         {(crimsonSponsors.length > 0 || communitySponsors.length > 0) && (
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-4xl mx-auto mb-12">
-            {[...crimsonSponsors, ...communitySponsors].map((sponsor) => (
-              <a
-                key={sponsor.id}
-                href={sponsor.website}
-                target="_blank"
-                rel="noreferrer"
-                className="glass-card p-4 rounded-xl flex items-center justify-between border border-white/10 hover:border-red-primary/40 transition-colors group"
-              >
-                <div>
-                  <span className="text-[10px] font-mono text-text-muted block">
-                    {sponsor.tier}
-                  </span>
-                  <span className="text-sm font-semibold text-white group-hover:text-red-bright transition-colors">
-                    {sponsor.name}
+            {[...crimsonSponsors, ...communitySponsors].map((sponsor) =>
+              sponsor.website ? (
+                <a
+                  key={sponsor.id}
+                  href={sponsor.website}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="glass-card p-4 rounded-xl flex items-center justify-between border border-white/10 hover:border-red-primary/40 transition-colors group"
+                >
+                  <div>
+                    <span className="text-[10px] font-mono text-text-muted block">
+                      {sponsor.tier}
+                    </span>
+                    <span className="text-sm font-semibold text-white group-hover:text-red-bright transition-colors">
+                      {sponsor.name}
+                    </span>
+                  </div>
+                  <ArrowUpRight className="w-3.5 h-3.5 text-text-muted group-hover:text-white transition-colors" />
+                </a>
+              ) : (
+                <div
+                  key={sponsor.id}
+                  title="Sample partner (not a real link)"
+                  className="glass-card p-4 rounded-xl flex items-center justify-between border border-white/10 cursor-default"
+                >
+                  <div>
+                    <span className="text-[10px] font-mono text-text-muted block">
+                      {sponsor.tier}
+                    </span>
+                    <span className="text-sm font-semibold text-white">
+                      {sponsor.name}
+                    </span>
+                  </div>
+                  <span className="text-[9px] font-mono text-text-muted px-1.5 py-0.5 rounded bg-surface-2">
+                    Sample
                   </span>
                 </div>
-                <ArrowUpRight className="w-3.5 h-3.5 text-text-muted group-hover:text-white transition-colors" />
-              </a>
-            ))}
+              )
+            )}
           </div>
         )}
 

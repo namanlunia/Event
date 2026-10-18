@@ -160,7 +160,7 @@ export function getMentors() {
         domain: "Web3 & Distributed Ledgers",
         github: "kaelenvoss",
         bio: "Developer tooling and smart contract safety on modern protocols.",
-        project: "Solana WinterPay SDK",
+        project: "OpenPay Web3 SDK",
         projectId: "proj-2",
       },
       {

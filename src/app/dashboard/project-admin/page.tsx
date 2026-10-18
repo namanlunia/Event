@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   FolderGit2,
   GitPullRequest,
@@ -36,6 +37,7 @@ import StatusBadge from "@/components/ui/status-badge";
 import DataTable, { Column } from "@/components/ui/data-table";
 import ConfirmDialog from "@/components/ui/confirm-dialog";
 import { Project, Issue, PullRequest, ContributorProjectApplication, ProjectDomain, ProjectDifficulty } from "@/types";
+import { getCurrentPhase, CODING_PHASE, formatDateRange, PHASES } from "@/lib/season";
 import {
   ResponsiveContainer,
   AreaChart,
@@ -47,9 +49,11 @@ import {
 
 export default function ProjectAdminDashboardPage() {
   return (
-    <RoleGuard allowedRoles={["project_admin", "super_admin"]}>
-      <ProjectAdminDashboardContent />
-    </RoleGuard>
+    <Suspense fallback={<div className="p-8 text-neutral-400">Loading project admin dashboard...</div>}>
+      <RoleGuard allowedRoles={["project_admin", "super_admin"]}>
+        <ProjectAdminDashboardContent />
+      </RoleGuard>
+    </Suspense>
   );
 }
 
@@ -72,9 +76,28 @@ function ProjectAdminDashboardContent() {
   } = useAppStore();
 
   const isDemo = SITE_CONFIG.DEMO_MODE;
+  const currentPhase = getCurrentPhase();
+  const codingPeriodDates = formatDateRange(CODING_PHASE);
+  const phaseStatusBadge = currentPhase
+    ? `Phase ${currentPhase.id} Active`
+    : `Phase 1 Starts ${new Date(`${PHASES[0].startDate}T00:00:00`).toLocaleDateString("en-US", { month: "short", day: "numeric" })}`;
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-  // Selected Active Tab
-  const [activeTab, setActiveTab] = useState<"overview" | "projects" | "submit" | "applications" | "issues" | "prs" | "announcements">("overview");
+  type AdminTab = "overview" | "projects" | "submit" | "applications" | "issues" | "prs" | "announcements";
+  const [activeTab, setActiveTab] = useState<AdminTab>("overview");
+
+  useEffect(() => {
+    const tabParam = searchParams?.get("tab") as AdminTab | null;
+    if (tabParam && ["overview", "projects", "submit", "applications", "issues", "prs", "announcements"].includes(tabParam)) {
+      setActiveTab(tabParam);
+    }
+  }, [searchParams]);
+
+  const handleTabChange = (newTab: AdminTab) => {
+    setActiveTab(newTab);
+    router.push(`/dashboard/project-admin?tab=${newTab}`, { scroll: false });
+  };
 
   // Selected Project for Deep Dive Tabbed View
   const [selectedProjectId, setSelectedProjectId] = useState<string>(projects[0]?.id || "");
@@ -356,7 +379,7 @@ function ProjectAdminDashboardContent() {
       {/* Navigation Tabs Bar */}
       <div className="flex border-b border-white/10 gap-2 overflow-x-auto pb-1 text-xs font-mono">
         <button
-          onClick={() => setActiveTab("overview")}
+          onClick={() => handleTabChange("overview")}
           className={`px-4 py-2.5 rounded-t-xl transition-colors font-bold whitespace-nowrap flex items-center gap-2 ${
             activeTab === "overview"
               ? "bg-surface-1 border-t-2 border-red-bright text-white"
@@ -368,7 +391,7 @@ function ProjectAdminDashboardContent() {
         </button>
 
         <button
-          onClick={() => setActiveTab("projects")}
+          onClick={() => handleTabChange("projects")}
           className={`px-4 py-2.5 rounded-t-xl transition-colors font-bold whitespace-nowrap flex items-center gap-2 ${
             activeTab === "projects"
               ? "bg-surface-1 border-t-2 border-red-bright text-white"
@@ -380,7 +403,7 @@ function ProjectAdminDashboardContent() {
         </button>
 
         <button
-          onClick={() => setActiveTab("submit")}
+          onClick={() => handleTabChange("submit")}
           className={`px-4 py-2.5 rounded-t-xl transition-colors font-bold whitespace-nowrap flex items-center gap-2 ${
             activeTab === "submit"
               ? "bg-surface-1 border-t-2 border-red-bright text-white"
@@ -392,7 +415,7 @@ function ProjectAdminDashboardContent() {
         </button>
 
         <button
-          onClick={() => setActiveTab("applications")}
+          onClick={() => handleTabChange("applications")}
           className={`px-4 py-2.5 rounded-t-xl transition-colors font-bold whitespace-nowrap flex items-center gap-2 ${
             activeTab === "applications"
               ? "bg-surface-1 border-t-2 border-red-bright text-white"
@@ -404,7 +427,7 @@ function ProjectAdminDashboardContent() {
         </button>
 
         <button
-          onClick={() => setActiveTab("issues")}
+          onClick={() => handleTabChange("issues")}
           className={`px-4 py-2.5 rounded-t-xl transition-colors font-bold whitespace-nowrap flex items-center gap-2 ${
             activeTab === "issues"
               ? "bg-surface-1 border-t-2 border-red-bright text-white"
@@ -416,7 +439,7 @@ function ProjectAdminDashboardContent() {
         </button>
 
         <button
-          onClick={() => setActiveTab("prs")}
+          onClick={() => handleTabChange("prs")}
           className={`px-4 py-2.5 rounded-t-xl transition-colors font-bold whitespace-nowrap flex items-center gap-2 ${
             activeTab === "prs"
               ? "bg-surface-1 border-t-2 border-red-bright text-white"
@@ -428,7 +451,7 @@ function ProjectAdminDashboardContent() {
         </button>
 
         <button
-          onClick={() => setActiveTab("announcements")}
+          onClick={() => handleTabChange("announcements")}
           className={`px-4 py-2.5 rounded-t-xl transition-colors font-bold whitespace-nowrap flex items-center gap-2 ${
             activeTab === "announcements"
               ? "bg-surface-1 border-t-2 border-red-bright text-white"
@@ -510,20 +533,20 @@ function ProjectAdminDashboardContent() {
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="font-heading font-bold text-lg text-white">
-                  Pull Request Velocity (December 2026)
+                  Pull Request Velocity ({codingPeriodDates})
                 </h3>
                 <p className="text-xs text-text-secondary">
                   Tracking submissions and code review throughput across the coding sprint.
                 </p>
               </div>
               <span className="text-[11px] font-mono text-red-bright uppercase font-bold px-2 py-0.5 rounded bg-red-primary/10 border border-red-primary/30">
-                Phase 3 Active
+                {phaseStatusBadge}
               </span>
             </div>
 
             <div className="h-64 w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={prActivityData}>
+                <AreaChart data={prActivityData} margin={{ top: 10, right: 15, left: 0, bottom: 0 }}>
                   <defs>
                     <linearGradient id="prGrad" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="#EF4444" stopOpacity={0.4} />
@@ -531,8 +554,10 @@ function ProjectAdminDashboardContent() {
                     </linearGradient>
                   </defs>
                   <XAxis dataKey="date" stroke="#666" tick={{ fill: "#888", fontSize: 11 }} />
-                  <YAxis stroke="#666" tick={{ fill: "#888", fontSize: 11 }} />
+                  <YAxis width={40} stroke="#666" tick={{ fill: "#888", fontSize: 11 }} />
                   <Tooltip
+                    allowEscapeViewBox={{ x: false, y: false }}
+                    wrapperStyle={{ zIndex: 50, outline: "none" }}
                     contentStyle={{
                       backgroundColor: "#0B0B0D",
                       borderColor: "rgba(255,255,255,0.1)",
@@ -616,15 +641,25 @@ function ProjectAdminDashboardContent() {
                     </h3>
                     <StatusBadge status={selectedProject.status} />
                   </div>
-                  <a
-                    href={selectedProject.repository_url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-xs font-mono text-text-muted hover:text-red-bright flex items-center gap-1 mt-1"
-                  >
-                    <span>{selectedProject.repository_url}</span>
-                    <ExternalLink className="w-3 h-3" />
-                  </a>
+                  {selectedProject.repository_url ? (
+                    <a
+                      href={selectedProject.repository_url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-xs font-mono text-text-muted hover:text-red-bright flex items-center gap-1 mt-1"
+                    >
+                      <span>{selectedProject.repository_url}</span>
+                      <ExternalLink className="w-3 h-3" />
+                    </a>
+                  ) : (
+                    <span
+                      title="Sample repository (not a real link)"
+                      className="text-xs font-mono text-text-muted/60 flex items-center gap-1 mt-1 cursor-not-allowed"
+                    >
+                      <span>Sample repository (not a real link)</span>
+                      <ExternalLink className="w-3 h-3" />
+                    </span>
+                  )}
                 </div>
 
                 <div className="flex items-center gap-2">
@@ -752,14 +787,23 @@ function ProjectAdminDashboardContent() {
                             Difficulty: {i.difficulty} ({i.points} pts) · Status: {i.status}
                           </div>
                         </div>
-                        <a
-                          href={i.issue_url}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="p-2 rounded-lg bg-surface-1 border border-white/10 hover:text-white text-text-muted"
-                        >
-                          <ExternalLink className="w-3.5 h-3.5" />
-                        </a>
+                        {i.issue_url ? (
+                          <a
+                            href={i.issue_url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="p-2 rounded-lg bg-surface-1 border border-white/10 hover:text-white text-text-muted"
+                          >
+                            <ExternalLink className="w-3.5 h-3.5" />
+                          </a>
+                        ) : (
+                          <span
+                            title="Sample issue (not a real link)"
+                            className="p-2 rounded-lg bg-surface-1 border border-white/10 text-text-muted/60 cursor-not-allowed"
+                          >
+                            <ExternalLink className="w-3.5 h-3.5" />
+                          </span>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -800,14 +844,23 @@ function ProjectAdminDashboardContent() {
                               Approve & Merge (+Pts)
                             </button>
                           )}
-                          <a
-                            href={pr.pr_url}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="p-2 rounded-lg bg-surface-1 border border-white/10 text-text-muted hover:text-white"
-                          >
-                            <ExternalLink className="w-3.5 h-3.5" />
-                          </a>
+                          {pr.pr_url ? (
+                            <a
+                              href={pr.pr_url}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="p-2 rounded-lg bg-surface-1 border border-white/10 text-text-muted hover:text-white"
+                            >
+                              <ExternalLink className="w-3.5 h-3.5" />
+                            </a>
+                          ) : (
+                            <span
+                              title="Sample pull request (not a real link)"
+                              className="p-2 rounded-lg bg-surface-1 border border-white/10 text-text-muted/60 cursor-not-allowed"
+                            >
+                              <ExternalLink className="w-3.5 h-3.5" />
+                            </span>
+                          )}
                         </div>
                       </div>
                     ))}
@@ -894,7 +947,7 @@ function ProjectAdminDashboardContent() {
               Submit Open-Source Repository
             </h2>
             <p className="text-xs text-text-secondary mt-1">
-              Onboard your codebase for the OWOC 2026 cohort. Submissions are reviewed by organizers.
+              Onboard your codebase for the OWOC 2026 season. Submissions are reviewed by organizers.
             </p>
           </div>
 
@@ -1219,14 +1272,23 @@ function ProjectAdminDashboardContent() {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <a
-                    href={i.issue_url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="p-2 rounded-xl bg-surface-2 text-text-muted hover:text-white"
-                  >
-                    <ExternalLink className="w-4 h-4" />
-                  </a>
+                  {i.issue_url ? (
+                    <a
+                      href={i.issue_url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="p-2 rounded-xl bg-surface-2 text-text-muted hover:text-white"
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                    </a>
+                  ) : (
+                    <span
+                      title="Sample issue (not a real link)"
+                      className="p-2 rounded-xl bg-surface-2 text-text-muted/60 cursor-not-allowed"
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                    </span>
+                  )}
                 </div>
               </div>
             ))}
@@ -1275,14 +1337,23 @@ function ProjectAdminDashboardContent() {
                       Mark Merged-Valid
                     </button>
                   )}
-                  <a
-                    href={pr.pr_url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="p-2 rounded-xl bg-surface-2 text-text-muted hover:text-white"
-                  >
-                    <ExternalLink className="w-4 h-4" />
-                  </a>
+                  {pr.pr_url ? (
+                    <a
+                      href={pr.pr_url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="p-2 rounded-xl bg-surface-2 text-text-muted hover:text-white"
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                    </a>
+                  ) : (
+                    <span
+                      title="Sample pull request (not a real link)"
+                      className="p-2 rounded-xl bg-surface-2 text-text-muted/60 cursor-not-allowed"
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                    </span>
+                  )}
                 </div>
               </div>
             ))}

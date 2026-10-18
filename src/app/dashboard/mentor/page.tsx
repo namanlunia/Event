@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   Users,
   GitPullRequest,
@@ -45,9 +46,11 @@ import {
 
 export default function MentorDashboardPage() {
   return (
-    <RoleGuard allowedRoles={["mentor", "super_admin"]}>
-      <MentorDashboardContent />
-    </RoleGuard>
+    <Suspense fallback={<div className="p-8 text-neutral-400">Loading mentor dashboard...</div>}>
+      <RoleGuard allowedRoles={["mentor", "super_admin"]}>
+        <MentorDashboardContent />
+      </RoleGuard>
+    </Suspense>
   );
 }
 
@@ -66,7 +69,23 @@ function MentorDashboardContent() {
   } = useAppStore();
 
   const isDemo = SITE_CONFIG.DEMO_MODE;
-  const [activeTab, setActiveTab] = useState<"overview" | "mentees" | "reviews" | "office-hours" | "feedback" | "resources">("overview");
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  type MentorTab = "overview" | "mentees" | "reviews" | "office-hours" | "feedback" | "resources" | "guide";
+  const [activeTab, setActiveTab] = useState<MentorTab>("overview");
+
+  useEffect(() => {
+    const tabParam = searchParams?.get("tab") as MentorTab | null;
+    if (tabParam && ["overview", "mentees", "reviews", "office-hours", "feedback", "resources", "guide"].includes(tabParam)) {
+      setActiveTab(tabParam);
+    }
+  }, [searchParams]);
+
+  const handleTabChange = (newTab: MentorTab) => {
+    setActiveTab(newTab);
+    router.push(`/dashboard/mentor?tab=${newTab}`, { scroll: false });
+  };
 
   // Inactivity threshold (configurable N days, default 3)
   const [inactivityDaysThreshold, setInactivityDaysThreshold] = useState(3);
@@ -103,8 +122,8 @@ function MentorDashboardContent() {
     },
     {
       id: "res-2",
-      title: "Solana Anchor State Channel Architecture",
-      url: "https://www.anchor-lang.com/",
+      title: "Web3 State Channel Architecture",
+      url: "/rules",
       desc: "Reference implementation for sub-second payment settlement pipelines.",
       category: "Architecture",
     },
@@ -145,7 +164,7 @@ function MentorDashboardContent() {
           id: "m-2",
           name: "Zara Chen",
           github: "zarachen-web3",
-          project: "Solana WinterPay SDK",
+          project: "OpenPay Web3 SDK",
           prsCount: 2,
           points: 150,
           lastActivityDate: "2026-10-12",
@@ -301,7 +320,7 @@ function MentorDashboardContent() {
       {/* Tabs Navigation */}
       <div className="flex border-b border-white/10 gap-2 overflow-x-auto pb-1 text-xs font-mono">
         <button
-          onClick={() => setActiveTab("overview")}
+          onClick={() => handleTabChange("overview")}
           className={`px-4 py-2.5 rounded-t-xl transition-colors font-bold whitespace-nowrap flex items-center gap-2 ${
             activeTab === "overview"
               ? "bg-surface-1 border-t-2 border-red-bright text-white"
@@ -313,7 +332,7 @@ function MentorDashboardContent() {
         </button>
 
         <button
-          onClick={() => setActiveTab("mentees")}
+          onClick={() => handleTabChange("mentees")}
           className={`px-4 py-2.5 rounded-t-xl transition-colors font-bold whitespace-nowrap flex items-center gap-2 ${
             activeTab === "mentees"
               ? "bg-surface-1 border-t-2 border-red-bright text-white"
@@ -325,7 +344,7 @@ function MentorDashboardContent() {
         </button>
 
         <button
-          onClick={() => setActiveTab("reviews")}
+          onClick={() => handleTabChange("reviews")}
           className={`px-4 py-2.5 rounded-t-xl transition-colors font-bold whitespace-nowrap flex items-center gap-2 ${
             activeTab === "reviews"
               ? "bg-surface-1 border-t-2 border-red-bright text-white"
@@ -337,7 +356,7 @@ function MentorDashboardContent() {
         </button>
 
         <button
-          onClick={() => setActiveTab("office-hours")}
+          onClick={() => handleTabChange("office-hours")}
           className={`px-4 py-2.5 rounded-t-xl transition-colors font-bold whitespace-nowrap flex items-center gap-2 ${
             activeTab === "office-hours"
               ? "bg-surface-1 border-t-2 border-red-bright text-white"
@@ -349,7 +368,7 @@ function MentorDashboardContent() {
         </button>
 
         <button
-          onClick={() => setActiveTab("feedback")}
+          onClick={() => handleTabChange("feedback")}
           className={`px-4 py-2.5 rounded-t-xl transition-colors font-bold whitespace-nowrap flex items-center gap-2 ${
             activeTab === "feedback"
               ? "bg-surface-1 border-t-2 border-red-bright text-white"
@@ -361,7 +380,7 @@ function MentorDashboardContent() {
         </button>
 
         <button
-          onClick={() => setActiveTab("resources")}
+          onClick={() => handleTabChange("resources")}
           className={`px-4 py-2.5 rounded-t-xl transition-colors font-bold whitespace-nowrap flex items-center gap-2 ${
             activeTab === "resources"
               ? "bg-surface-1 border-t-2 border-red-bright text-white"
@@ -386,7 +405,7 @@ function MentorDashboardContent() {
               <div className="text-2xl font-black text-white font-mono">
                 <AnimatedCounter to={projects.length} />
               </div>
-              <div className="text-[10px] text-text-muted mt-1">WinterVision Core, Solana SDK</div>
+              <div className="text-[10px] text-text-muted mt-1">WinterVision Core, OpenPay SDK</div>
             </div>
 
             <div className="glass-card p-5 rounded-2xl border border-white/10">
@@ -442,7 +461,7 @@ function MentorDashboardContent() {
 
               <div className="h-60 w-full">
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={menteeVelocityData}>
+                  <AreaChart data={menteeVelocityData} margin={{ top: 10, right: 15, left: 0, bottom: 0 }}>
                     <defs>
                       <linearGradient id="mentorGrad" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor="#EF4444" stopOpacity={0.4} />
@@ -450,8 +469,10 @@ function MentorDashboardContent() {
                       </linearGradient>
                     </defs>
                     <XAxis dataKey="week" stroke="#666" tick={{ fill: "#888", fontSize: 11 }} />
-                    <YAxis stroke="#666" tick={{ fill: "#888", fontSize: 11 }} />
+                    <YAxis width={40} stroke="#666" tick={{ fill: "#888", fontSize: 11 }} />
                     <Tooltip
+                      allowEscapeViewBox={{ x: false, y: false }}
+                      wrapperStyle={{ zIndex: 50, outline: "none" }}
                       contentStyle={{
                         backgroundColor: "#0B0B0D",
                         borderColor: "rgba(255,255,255,0.1)",
@@ -494,7 +515,7 @@ function MentorDashboardContent() {
                     Mentor Certificate of Honor
                   </h4>
                   <p className="text-[11px] text-text-secondary leading-snug">
-                    Issued to verified technical mentors upon completion of the OWOC 2026 cohort on{" "}
+                    Issued to verified technical mentors upon completion of the OWOC 2026 season on{" "}
                     <strong className="text-white">December 31, 2026</strong>.
                   </p>
                 </div>
@@ -660,14 +681,23 @@ function MentorDashboardContent() {
                       <Star className="w-3.5 h-3.5" />
                       <span>Review & Grade</span>
                     </button>
-                    <a
-                      href={pr.pr_url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="p-2 rounded-xl bg-surface-2 text-text-muted hover:text-white border border-white/5"
-                    >
-                      <ExternalLink className="w-4 h-4" />
-                    </a>
+                    {pr.pr_url ? (
+                      <a
+                        href={pr.pr_url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="p-2 rounded-xl bg-surface-2 text-text-muted hover:text-white border border-white/5"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                      </a>
+                    ) : (
+                      <span
+                        title="Sample pull request (not a real link)"
+                        className="p-2 rounded-xl bg-surface-2 text-text-muted/60 border border-white/5 cursor-not-allowed"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                      </span>
+                    )}
                   </div>
                 </div>
               ))
@@ -867,15 +897,25 @@ function MentorDashboardContent() {
                   <h3 className="font-heading font-bold text-sm text-white mt-1">{res.title}</h3>
                   <p className="text-xs text-text-secondary">{res.desc}</p>
                 </div>
-                <a
-                  href={res.url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-xs font-mono text-red-bright hover:underline flex items-center gap-1 pt-2 border-t border-white/5"
-                >
-                  <span>Open Resource</span>
-                  <ExternalLink className="w-3 h-3" />
-                </a>
+                {res.url ? (
+                  <a
+                    href={res.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-xs font-mono text-red-bright hover:underline flex items-center gap-1 pt-2 border-t border-white/5"
+                  >
+                    <span>Open Resource</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                ) : (
+                  <span
+                    title="Sample resource (not a real link)"
+                    className="text-xs font-mono text-text-muted/60 flex items-center gap-1 pt-2 border-t border-white/5 cursor-not-allowed"
+                  >
+                    <span>Sample Resource</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </span>
+                )}
               </div>
             ))}
           </div>
@@ -902,10 +942,20 @@ function MentorDashboardContent() {
               <div className="p-3 rounded-xl bg-surface-1 border border-white/5 space-y-1">
                 <div className="text-text-muted">Contributor: <span className="text-white">{selectedPR.contributor_name}</span></div>
                 <div className="text-text-muted">Difficulty: <span className="text-white">{selectedPR.difficulty}</span></div>
-                <a href={selectedPR.pr_url} target="_blank" rel="noreferrer" className="text-red-bright hover:underline flex items-center gap-1 text-[11px] mt-1">
-                  <span>Inspect diff on GitHub</span>
-                  <ExternalLink className="w-3 h-3" />
-                </a>
+                {selectedPR.pr_url ? (
+                  <a href={selectedPR.pr_url} target="_blank" rel="noreferrer" className="text-red-bright hover:underline flex items-center gap-1 text-[11px] mt-1">
+                    <span>Inspect diff on GitHub</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                ) : (
+                  <span
+                    title="Sample pull request (not a real link)"
+                    className="text-text-muted/60 flex items-center gap-1 text-[11px] mt-1 cursor-not-allowed"
+                  >
+                    <span>Sample pull request (not a real link)</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </span>
+                )}
               </div>
 
               {/* Quality Score Stars */}
