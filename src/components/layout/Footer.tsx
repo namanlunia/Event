@@ -3,9 +3,9 @@
 import React from "react";
 import Link from "next/link";
 import {
-  Flame,
   MessageSquare,
 } from "lucide-react";
+import BrandLogo from "@/components/brand/BrandLogo";
 import { COPYRIGHT_YEAR } from "@/lib/season";
 import { SITE_CONFIG } from "@/lib/site-config";
 
@@ -20,11 +20,7 @@ export default function Footer() {
           {/* Brand Info */}
           <div className="md:col-span-2 lg:col-span-2 space-y-4">
             <Link href="/" className="flex items-center gap-3 group">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-red-primary to-red-deep p-[1px] shadow-red-glow-sm">
-                <div className="w-full h-full bg-[#0B0B0D] rounded-xl flex items-center justify-center">
-                  <Flame className="w-5 h-5 text-red-bright" />
-                </div>
-              </div>
+              <BrandLogo />
               <span className="font-heading font-black text-xl text-white">
                 OWOC
               </span>

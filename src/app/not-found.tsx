@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
-import { Flame, ArrowLeft, Home, Code2, Trophy } from "lucide-react";
+import { Home, Code2, Trophy } from "lucide-react";
+import BrandLogo from "@/components/brand/BrandLogo";
 
 export default function NotFound() {
   return (
@@ -9,8 +10,8 @@ export default function NotFound() {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[350px] bg-red-primary/15 blur-[120px] rounded-full pointer-events-none" />
 
       <div className="max-w-md w-full glass-card p-8 sm:p-12 rounded-3xl border border-white/10 text-center relative z-10 shadow-2xl">
-        <div className="w-14 h-14 rounded-2xl bg-surface-2 border border-red-primary/30 flex items-center justify-center mx-auto mb-6 shadow-red-glow-sm">
-          <Flame className="w-7 h-7 text-red-bright animate-pulse" />
+        <div className="flex justify-center mb-6">
+          <BrandLogo size="lg" />
         </div>
 
         <div className="font-heading font-black text-6xl sm:text-7xl text-transparent bg-clip-text bg-gradient-to-r from-white via-red-bright to-red-primary mb-2">

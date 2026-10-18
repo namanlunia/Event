@@ -7,8 +7,8 @@ import {
   Menu,
   X,
   Terminal,
-  Flame,
 } from "lucide-react";
+import BrandLogo from "@/components/brand/BrandLogo";
 import { useAppStore } from "@/lib/store";
 import { SEASON_LABEL } from "@/lib/season";
 import { DemoModeBanner } from "@/components/visual/DemoModeBanner";
@@ -50,15 +50,7 @@ export default function Navbar() {
       <div className="w-full px-6 lg:px-10 h-20 flex items-center justify-between gap-4">
         {/* Brand Logo */}
         <Link href="/" className="flex items-center gap-3 group flex-shrink-0">
-          <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-red-primary to-red-deep p-[1px] shadow-red-glow-sm transition-transform duration-300 group-hover:scale-105">
-            <div className="w-full h-full bg-[#0B0B0D] rounded-xl flex items-center justify-center relative overflow-hidden">
-              <span className="absolute inset-0 bg-red-glow/20 blur-sm"></span>
-              {/* Geometric Ice & Fire Icon */}
-              <div className="relative flex items-center justify-center">
-                <Flame className="w-5 h-5 text-red-bright animate-pulse" />
-              </div>
-            </div>
-          </div>
+          <BrandLogo priority />
           <div className="flex flex-col">
             <div className="flex items-center gap-1.5">
               <span className="font-heading font-black tracking-tight text-xl text-white group-hover:text-red-bright transition-colors">

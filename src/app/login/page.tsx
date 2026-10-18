@@ -4,12 +4,12 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  Flame,
   ArrowRight,
   Sparkles,
   Calendar,
   Lock,
 } from "lucide-react";
+import BrandLogo from "@/components/brand/BrandLogo";
 import { useAppStore, PERSONAS_LIST } from "@/lib/store";
 import { StandardRole } from "@/types";
 import { SITE_CONFIG } from "@/lib/site-config";
@@ -55,11 +55,7 @@ export default function LoginPage() {
       <div className="max-w-md w-full glass-card p-8 sm:p-10 rounded-3xl border border-white/10 shadow-2xl relative z-10">
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2 mb-4 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-primary to-red-deep p-[1px] shadow-red-glow-sm">
-              <div className="w-full h-full bg-[#0B0B0D] rounded-xl flex items-center justify-center">
-                <Flame className="w-5 h-5 text-red-bright" />
-              </div>
-            </div>
+            <BrandLogo />
             <span className="font-heading font-black text-2xl text-white">
               OWOC
             </span>

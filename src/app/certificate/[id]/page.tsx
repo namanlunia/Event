@@ -11,9 +11,9 @@ import {
   Printer,
   ShieldCheck,
   CheckCircle2,
-  Flame,
   AlertCircle,
 } from "lucide-react";
+import BrandLogo from "@/components/brand/BrandLogo";
 import { getCertificateById } from "@/lib/dataService";
 import { SITE_CONFIG } from "@/lib/site-config";
 import { SampleBadge } from "@/components/visual/DemoModeBanner";
@@ -136,9 +136,7 @@ export default function CertificateDetailPage() {
           <div className="text-center max-w-2xl mx-auto space-y-6">
             {/* Header Brand */}
             <div className="flex items-center justify-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-red-primary flex items-center justify-center shadow-red-glow">
-                <Flame className="w-6 h-6 text-white" />
-              </div>
+              <BrandLogo />
               <div className="text-left">
                 <div className="font-heading font-black text-xl text-white tracking-tight">
                   OWOC {SEASON_LABEL}
