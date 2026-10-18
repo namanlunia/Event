@@ -17,35 +17,35 @@ export default function HowItWorks() {
       step: "01",
       title: "Register & Connect GitHub",
       description:
-        "Authenticate using your GitHub account. Select your skill tags, college, and join the OWOC community Discord.",
+        "Authenticate using your GitHub account. Select your skill tags, college, and join the OWOC community channels.",
       icon: <UserCheck className="w-5 h-5 text-red-bright" />,
     },
     {
       step: "02",
       title: "Discover Repositories",
       description:
-        "Browse 120+ verified open-source projects across AI, Web3, Systems & Cloud. Filter by your preferred tech stack.",
+        "Browse vetted open-source projects across AI, Web3, Systems & Cloud. Filter by your preferred tech stack.",
       icon: <Search className="w-5 h-5 text-red-bright" />,
     },
     {
       step: "03",
       title: "Claim Issues & Ship Code",
       description:
-        "Find issues labeled 'Good First Issue' or 'OWOC'. Maintainers assign the issue, and mentors provide architectural guidance.",
+        "Find issues labeled 'Good First Issue' or 'OWOC'. Maintainers assign the issue, and mentors provide feedback on pull requests.",
       icon: <GitBranch className="w-5 h-5 text-red-bright" />,
     },
     {
       step: "04",
       title: "Earn Points & Multipliers",
       description:
-        "Merged PRs earn 10 to 50 points based on difficulty, plus up to 15 bonus points for clean test coverage and active streaks.",
+        "Merged PRs earn 10 to 50 points based on difficulty, plus bonus points for clean test coverage and active contribution streaks.",
       icon: <Flame className="w-5 h-5 text-red-bright" />,
     },
     {
       step: "05",
-      title: "Win Verifiable Credentials",
+      title: "Earn Verifiable Credentials",
       description:
-        "Climb the live podium, unlock milestone achievement badges, and receive a cryptographically signed certificate of excellence.",
+        "Climb the live standings, unlock milestone achievement badges, and receive a verifiable certificate with a unique QR code.",
       icon: <Award className="w-5 h-5 text-red-bright" />,
     },
   ];

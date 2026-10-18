@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 import { Mail, MessageSquare, Send, CheckCircle2, MapPin, Clock } from "lucide-react";
 
+import { SITE_CONFIG } from "@/lib/site-config";
+
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
   const [formData, setFormData] = useState({
@@ -48,10 +50,10 @@ export default function ContactPage() {
                 Direct queries to organizing chairs:
               </p>
               <a
-                href="mailto:contact@owoc.omnikon.org"
-                className="font-mono text-xs text-red-bright hover:underline block"
+                href={`mailto:${SITE_CONFIG.CONTACT_EMAIL}`}
+                className="font-mono text-xs text-red-bright hover:underline block break-all"
               >
-                contact@owoc.omnikon.org
+                {SITE_CONFIG.CONTACT_EMAIL}
               </a>
             </div>
 
@@ -60,19 +62,27 @@ export default function ContactPage() {
                 <MessageSquare className="w-5 h-5" />
               </div>
               <h3 className="font-heading font-bold text-base text-white">
-                Discord Community
+                Community Workspace
               </h3>
               <p className="text-xs text-text-muted">
-                Fastest response for technical queries:
+                {SITE_CONFIG.SOCIAL_LINKS.discord
+                  ? "Real-time support and technical discussions:"
+                  : "Program discussions & technical support:"}
               </p>
-              <a
-                href="https://discord.gg/omnikon"
-                target="_blank"
-                rel="noreferrer"
-                className="font-mono text-xs text-red-bright hover:underline block"
-              >
-                discord.gg/omnikon
-              </a>
+              {SITE_CONFIG.SOCIAL_LINKS.discord ? (
+                <a
+                  href={SITE_CONFIG.SOCIAL_LINKS.discord}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="font-mono text-xs text-red-bright hover:underline block"
+                >
+                  Join Discord Server
+                </a>
+              ) : (
+                <span className="font-mono text-xs text-text-secondary block">
+                  Discord invites provided upon program kickoff
+                </span>
+              )}
             </div>
 
             <div className="glass-card p-6 rounded-2xl border border-white/10 space-y-3">
@@ -134,7 +144,7 @@ export default function ContactPage() {
                         onChange={(e) =>
                           setFormData({ ...formData, name: e.target.value })
                         }
-                        placeholder="e.g. Aarav Patel"
+                        placeholder="e.g. Alex Chen"
                         className="w-full bg-surface-1 border border-white/10 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-red-primary/60"
                       />
                     </div>

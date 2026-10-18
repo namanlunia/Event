@@ -21,6 +21,9 @@ import {
 } from "lucide-react";
 import { DEMO_PERSONAS, useAppStore } from "@/lib/store";
 import { UserRole } from "@/types";
+import AvatarDisplay from "@/components/visual/AvatarDisplay";
+import { SITE_CONFIG } from "@/lib/site-config";
+import { PHASES } from "@/lib/season";
 
 export default function DashboardLayout({
   children,
@@ -32,24 +35,24 @@ export default function DashboardLayout({
   const [roleDropdownOpen, setRoleDropdownOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
 
+  const codingStartDate = new Date(`${PHASES[2].startDate}T00:00:00`).toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+
   const notifications = [
     {
       id: "n-1",
-      title: "PR #42 Merged!",
-      desc: "Dr. Aris Thorne merged your AVX-512 PR with +15 quality bonus points.",
-      time: "2 hours ago",
+      title: "Welcome to OWOC",
+      desc: "Registration is open. Browse repositories and prepare for the coding sprint.",
+      time: "Recent",
     },
     {
       id: "n-2",
-      title: "Sprint 3 Reminder",
-      desc: "Weekly sprint bonus ends Sunday at midnight UTC.",
-      time: "5 hours ago",
-    },
-    {
-      id: "n-3",
-      title: "New Badge Unlocked",
-      desc: "You unlocked 'Code Centurion' for 10+ merged PRs.",
-      time: "1 day ago",
+      title: "Coding Sprint Notice",
+      desc: `Coding sprint begins ${codingStartDate}.`,
+      time: "Upcoming",
     },
   ];
 
@@ -59,7 +62,7 @@ export default function DashboardLayout({
       { name: "Browse Projects", href: "/projects", icon: <Layers className="w-4 h-4" /> },
       { name: "Live Leaderboard", href: "/leaderboard", icon: <Award className="w-4 h-4" /> },
       { name: "Points & Rules", href: "/rules", icon: <BookOpen className="w-4 h-4" /> },
-      { name: "My Certificate", href: "/certificate/OWOC-2024-C-9821", icon: <Award className="w-4 h-4" /> },
+      { name: "Verify Certificate", href: "/certificate", icon: <Award className="w-4 h-4" /> },
     ],
     ambassador: [
       { name: "Ambassador Overview", href: "/dashboard/ambassador", icon: <LayoutDashboard className="w-4 h-4" /> },

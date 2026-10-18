@@ -9,6 +9,7 @@ import {
   AlertTriangle,
   ArrowRight,
 } from "lucide-react";
+import { SEASON_LABEL } from "@/lib/season";
 
 export const metadata = {
   title: "Rules & Points Matrix — Omnikon Winter of Code",
@@ -84,7 +85,7 @@ export default function RulesPage() {
             Rules & Points System
           </h1>
           <p className="mt-4 text-sm sm:text-base text-text-secondary leading-relaxed">
-            The scoring system for OWOC 2024–25 is engineered to reward code quality, architectural depth, and continuous developer discipline.
+            The scoring system for OWOC {SEASON_LABEL} is engineered to reward code quality, architectural depth, and continuous developer discipline.
           </p>
         </div>
 

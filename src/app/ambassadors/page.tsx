@@ -1,66 +1,35 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
 import {
   Sparkles,
   Trophy,
-  Gift,
   Users,
   ArrowRight,
   Flame,
   CheckCircle2,
   Building2,
+  UserCheck,
 } from "lucide-react";
-import { MOCK_AMBASSADORS } from "@/data/mockDatabase";
-
-export const metadata = {
-  title: "Campus Ambassador Program — Omnikon Winter of Code",
-  description:
-    "Lead open source culture at your university campus, organize bootcamps, and unlock tiered merchandise and leadership certificates.",
-};
+import { getCampusAmbassadors } from "@/lib/dataService";
+import { SITE_CONFIG } from "@/lib/site-config";
+import { SampleBadge } from "@/components/visual/DemoModeBanner";
+import AvatarDisplay from "@/components/visual/AvatarDisplay";
+import { SEASON_LABEL } from "@/lib/season";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export default function AmbassadorsPage() {
-  const tiers = [
-    {
-      tier: "Bronze Tier",
-      referrals: "25+ Registrations",
-      rewards: [
-        "Official Campus Ambassador Certificate",
-        "OWOC Winter Holographic Sticker Pack",
-        "Listed on official OWOC website",
-      ],
-      color: "border-amber-700/40 text-amber-500",
-    },
-    {
-      tier: "Silver Tier",
-      referrals: "50+ Registrations",
-      rewards: [
-        "OWOC Official Winter Developer T-Shirt",
-        "Embroidered Winter Beanie",
-        "Fast-track Contributor Issue Allocation",
-      ],
-      color: "border-slate-400 text-slate-300",
-    },
-    {
-      tier: "Gold Tier",
-      referrals: "100+ Registrations",
-      rewards: [
-        "Premium Heavyweight OWOC Winter Hoodie",
-        "Official Letter of Recommendation from Omnikon Foundation",
-        "Dedicated College Spotlight feature on OWOC socials",
-      ],
-      color: "border-yellow-500/50 text-yellow-400",
-    },
-    {
-      tier: "Master Ambassador",
-      referrals: "150+ Registrations",
-      rewards: [
-        "Full Winter Swag Kit & Custom Backpack",
-        "Exclusive Sponsor Interview Fast-track Pipeline",
-        "Direct Invitation to OWOC Core Organizing Council",
-      ],
-      color: "border-red-primary text-red-bright shadow-red-glow-sm",
-    },
-  ];
+  const ambassadors = getCampusAmbassadors();
+  const isDemoMode = SITE_CONFIG.DEMO_MODE;
+  const rewards = SITE_CONFIG.AMBASSADOR_REWARDS;
+
+  const tierColors: Record<string, string> = {
+    "Bronze Tier": "border-amber-700/40 text-amber-500",
+    "Silver Tier": "border-slate-400 text-slate-300",
+    "Gold Tier": "border-yellow-500/50 text-yellow-400",
+    "Diamond Tier": "border-red-primary text-red-bright shadow-red-glow-sm",
+  };
 
   return (
     <div className="relative pt-32 pb-24 min-h-screen">
@@ -75,47 +44,57 @@ export default function AmbassadorsPage() {
             Campus Ambassador Program
           </h1>
           <p className="mt-4 text-sm sm:text-base text-text-secondary leading-relaxed">
-            Represent Omnikon Winter of Code at your university. Conduct Git workshops, guide freshman builders, and climb the university rankings.
+            Represent Omnikon Winter of Code at your university. Conduct Git workshops, guide freshman builders, and foster open source culture on campus.
           </p>
           <div className="mt-8 flex justify-center gap-4">
             <Link
               href="/dashboard/ambassador"
-              className="px-6 py-3 rounded-xl bg-red-primary hover:bg-red-bright text-white text-xs font-semibold shadow-red-glow transition-all"
+              className="px-6 py-3 rounded-xl bg-gradient-to-r from-red-primary to-red-bright text-white text-xs font-bold shadow-red-glow transition-all flex items-center gap-2"
             >
-              Access Ambassador Portal
+              <span>Become a Campus Ambassador</span>
+              <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
         </div>
 
-        {/* Gamified Reward Tiers */}
+        {/* Gamified Reward Tiers from Config */}
         <div className="mb-20">
           <div className="text-center max-w-2xl mx-auto mb-12">
             <h2 className="font-heading font-black text-2xl sm:text-4xl text-white">
-              Tiered Perks & Rewards
+              Tiered Recognition & Credentials
             </h2>
             <p className="mt-2 text-xs sm:text-sm text-text-secondary">
-              Unlock exclusive winter swag and leadership credentials as your campus network expands.
+              Unlock official credentials and leadership citations as your campus community expands.
             </p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {tiers.map((t) => (
+            {rewards.map((tier) => (
               <div
-                key={t.tier}
-                className={`glass-card p-6 rounded-2xl border ${t.color} flex flex-col justify-between`}
+                key={tier.tier}
+                className={`glass-card p-6 rounded-2xl border flex flex-col justify-between group transition-all ${
+                  tierColors[tier.tier] || "border-white/10"
+                }`}
               >
                 <div>
-                  <span className="text-[11px] font-mono uppercase font-bold block mb-1">
-                    {t.tier}
-                  </span>
-                  <div className="font-heading font-bold text-lg text-white mb-4">
-                    {t.referrals}
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="font-mono text-xs font-bold uppercase tracking-wider">
+                      {tier.tier}
+                    </span>
+                    <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-surface-2 border border-white/5">
+                      {tier.referrals}
+                    </span>
                   </div>
-                  <ul className="space-y-2.5">
-                    {t.rewards.map((r) => (
-                      <li key={r} className="flex items-start gap-2 text-xs text-text-secondary">
+
+                  <h3 className="font-heading font-bold text-xl text-white mb-4">
+                    {tier.tier}
+                  </h3>
+
+                  <ul className="space-y-2.5 text-xs text-text-secondary">
+                    {tier.perks.map((reward) => (
+                      <li key={reward} className="flex items-start gap-2">
                         <CheckCircle2 className="w-3.5 h-3.5 text-red-bright flex-shrink-0 mt-0.5" />
-                        <span>{r}</span>
+                        <span>{reward}</span>
                       </li>
                     ))}
                   </ul>
@@ -125,51 +104,82 @@ export default function AmbassadorsPage() {
           </div>
         </div>
 
-        {/* Top Ambassadors Leaderboard */}
-        <div className="mb-16">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h2 className="font-heading font-black text-2xl text-white">
-                Top Campus Champions
-              </h2>
-              <p className="text-xs text-text-secondary">
-                Leading student organizers for the 2024–25 winter season.
-              </p>
+        {/* Campus Champions: Only rendered when real verified ambassadors exist or in Demo Mode */}
+        {isDemoMode && ambassadors.length > 0 ? (
+          <div className="mb-16">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <div className="flex items-center gap-2">
+                  <h2 className="font-heading font-black text-2xl text-white">
+                    Sample Campus Champions
+                  </h2>
+                  <SampleBadge />
+                </div>
+                <p className="text-xs text-text-secondary">
+                  Illustrative ambassador rankings for {SEASON_LABEL}.
+                </p>
+              </div>
+              <Link
+                href="/leaderboard"
+                className="text-xs font-mono text-red-bright hover:underline"
+              >
+                View Full Standings →
+              </Link>
             </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {ambassadors.map((amb) => (
+                <div
+                  key={amb.id}
+                  className="glass-card p-6 rounded-2xl border border-white/10 hover:border-red-primary/40 group text-center"
+                >
+                  <div className="inline-block px-2.5 py-0.5 rounded-full bg-surface-2 border border-white/5 text-[10px] font-mono text-red-bright font-bold mb-3">
+                    Rank #{amb.rank}
+                  </div>
+                  <div className="my-2">
+                    <AvatarDisplay
+                      name={amb.full_name}
+                      size="lg"
+                      className="mx-auto border-2 border-white/10 group-hover:border-red-bright transition-colors"
+                    />
+                  </div>
+                  <h3 className="font-heading font-bold text-base text-white group-hover:text-red-bright transition-colors mt-2">
+                    {amb.full_name}
+                  </h3>
+                  <p className="text-xs text-text-muted mb-2">{amb.college_name}</p>
+                  <div className="p-2 rounded-lg bg-surface-2 border border-white/5 font-mono text-xs text-white">
+                    <AnimatedCounter
+                      value={amb.referrals_count}
+                      fallbackText="0"
+                      className="font-bold text-red-bright"
+                    />{" "}
+                    referrals
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : (
+          /* Honest Empty State / Call to Action */
+          <div className="glass-card p-10 sm:p-14 rounded-3xl border border-white/10 text-center max-w-2xl mx-auto shadow-2xl mb-16">
+            <div className="w-16 h-16 rounded-2xl bg-surface-2 border border-red-primary/30 flex items-center justify-center mx-auto mb-6 shadow-red-glow-sm">
+              <UserCheck className="w-8 h-8 text-red-bright" />
+            </div>
+            <h2 className="font-heading font-bold text-2xl text-white mb-3">
+              Be the First Ambassador for Your University
+            </h2>
+            <p className="text-sm text-text-secondary leading-relaxed mb-8 max-w-lg mx-auto">
+              Campus Ambassador applications for {SEASON_LABEL} are currently open. Represent OWOC at your college, receive promotional materials, and gain verifiable student leadership credentials.
+            </p>
             <Link
-              href="/leaderboard"
-              className="text-xs font-mono text-red-bright hover:underline"
+              href="/dashboard/ambassador"
+              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-gradient-to-r from-red-primary to-red-bright text-white text-xs font-bold shadow-red-glow hover:shadow-red-glow-lg transition-all"
             >
-              View Full Standings →
+              <span>Apply as Campus Ambassador</span>
+              <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {MOCK_AMBASSADORS.map((amb) => (
-              <div
-                key={amb.id}
-                className="glass-card p-6 rounded-2xl border border-white/10 hover:border-red-primary/40 group text-center"
-              >
-                <div className="inline-block px-2.5 py-0.5 rounded-full bg-surface-2 border border-white/5 text-[10px] font-mono text-red-bright font-bold mb-3">
-                  Rank #{amb.rank}
-                </div>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={amb.avatar_url}
-                  alt={amb.full_name}
-                  className="w-16 h-16 rounded-full mx-auto object-cover border-2 border-white/10 group-hover:border-red-bright transition-colors mb-3"
-                />
-                <h3 className="font-heading font-bold text-base text-white group-hover:text-red-bright transition-colors">
-                  {amb.full_name}
-                </h3>
-                <p className="text-xs text-text-muted mb-2">{amb.college_name}</p>
-                <div className="p-2 rounded-lg bg-surface-2 border border-white/5 font-mono text-xs text-white">
-                  <span className="text-red-bright font-bold">{amb.referrals_count}</span> referrals
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );
