@@ -8,18 +8,17 @@ import {
   Award,
   CheckCircle2,
   ArrowRight,
-  ExternalLink,
+  QrCode,
+  FileCheck,
 } from "lucide-react";
+import { SITE_CONFIG } from "@/lib/site-config";
+import { SampleBadge } from "@/components/visual/DemoModeBanner";
+import { MOCK_SAMPLE_CERTIFICATE } from "@/lib/demo-data";
 
 export default function CertificateLookupPage() {
   const router = useRouter();
   const [certId, setCertId] = useState("");
-
-  const samples = [
-    { id: "OWOC-2024-C-9821", name: "Aarav Patel", role: "Contributor (Rank #1)" },
-    { id: "OWOC-2024-M-5401", name: "Dr. Aris Thorne", role: "Technical Mentor" },
-    { id: "OWOC-2024-A-1102", name: "Kabir Sen", role: "Master Ambassador" },
-  ];
+  const isDemoMode = SITE_CONFIG.DEMO_MODE;
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,13 +34,13 @@ export default function CertificateLookupPage() {
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-primary/10 border border-red-primary/30 text-xs font-mono text-red-bright uppercase mb-3">
             <ShieldCheck className="w-3.5 h-3.5" />
-            <span>Digital Credential Registry</span>
+            <span>Official Credential Registry</span>
           </div>
           <h1 className="font-heading font-black text-4xl sm:text-6xl text-white tracking-tight">
             Verify OWOC Certificate
           </h1>
           <p className="mt-4 text-sm sm:text-base text-text-secondary leading-relaxed max-w-xl mx-auto">
-            Every certificate issued by the Omnikon Foundation is backed by a unique identification code and cryptographic verification hash.
+            Every certificate has a unique ID and QR code you can verify on this site. Enter a certificate credential ID below to inspect the issued record.
           </p>
         </div>
 
@@ -49,7 +48,7 @@ export default function CertificateLookupPage() {
         <div className="glass-card p-8 rounded-3xl border border-white/10 shadow-2xl max-w-2xl mx-auto mb-12">
           <form onSubmit={handleSearch} className="space-y-4">
             <label className="text-xs font-mono text-text-muted block">
-              Enter Certificate Unique ID (UID)
+              Enter Certificate Credential ID
             </label>
             <div className="flex flex-col sm:flex-row gap-3">
               <div className="relative flex-grow">
@@ -59,7 +58,7 @@ export default function CertificateLookupPage() {
                   required
                   value={certId}
                   onChange={(e) => setCertId(e.target.value)}
-                  placeholder="e.g. OWOC-2024-C-9821"
+                  placeholder="e.g. OWOC-2026-C-9821"
                   className="w-full pl-10 pr-4 py-3 bg-surface-1 border border-white/10 rounded-xl text-sm font-mono text-white placeholder-text-muted focus:outline-none focus:border-red-primary/60 uppercase"
                 />
               </div>
@@ -73,25 +72,25 @@ export default function CertificateLookupPage() {
             </div>
           </form>
 
-          {/* Quick Sample Links */}
-          <div className="mt-6 pt-6 border-t border-white/5 space-y-2">
-            <span className="text-xs font-mono text-text-muted block">
-              Try Sample Verified Credentials:
-            </span>
-            <div className="flex flex-wrap gap-2">
-              {samples.map((s) => (
-                <button
-                  key={s.id}
-                  onClick={() => router.push(`/certificate/${s.id}`)}
-                  className="px-3 py-1.5 rounded-lg bg-surface-2 border border-white/5 text-[11px] font-mono text-text-secondary hover:text-white hover:border-red-primary/40 transition-colors flex items-center gap-1.5"
-                >
-                  <Award className="w-3.5 h-3.5 text-red-bright" />
-                  <span>{s.id}</span>
-                  <span className="text-text-muted">({s.name})</span>
-                </button>
-              ))}
+          {/* Quick Demo Preview Link if in Demo Mode */}
+          {isDemoMode && (
+            <div className="mt-6 pt-6 border-t border-white/5 space-y-2">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-mono text-text-muted">
+                  Demo Mode Sample Credential:
+                </span>
+                <SampleBadge />
+              </div>
+              <button
+                onClick={() => router.push(`/certificate/${MOCK_SAMPLE_CERTIFICATE.id}`)}
+                className="px-3 py-1.5 rounded-lg bg-surface-2 border border-white/5 text-[11px] font-mono text-text-secondary hover:text-white hover:border-red-primary/40 transition-colors flex items-center gap-1.5"
+              >
+                <Award className="w-3.5 h-3.5 text-red-bright" />
+                <span>{MOCK_SAMPLE_CERTIFICATE.id}</span>
+                <span className="text-text-muted">({MOCK_SAMPLE_CERTIFICATE.recipient_name})</span>
+              </button>
             </div>
-          </div>
+          )}
         </div>
 
         {/* Verification Architecture features */}
@@ -101,34 +100,34 @@ export default function CertificateLookupPage() {
               <ShieldCheck className="w-5 h-5" />
             </div>
             <h3 className="font-heading font-bold text-sm text-white mb-1">
-              Cryptographic Hash
+              Unique ID Verification
             </h3>
             <p className="text-xs text-text-muted">
-              Tamper-proof SHA-256 verification hash generated at issuance.
+              Every certificate carries an individual serial ID recorded in our registry.
             </p>
           </div>
 
           <div className="glass-card p-6 rounded-2xl border border-white/5">
             <div className="w-10 h-10 rounded-xl bg-red-primary/10 text-red-bright mx-auto flex items-center justify-center mb-3">
-              <CheckCircle2 className="w-5 h-5" />
+              <QrCode className="w-5 h-5" />
             </div>
             <h3 className="font-heading font-bold text-sm text-white mb-1">
-              Public Ledger Lookup
+              Scannable QR Code
             </h3>
             <p className="text-xs text-text-muted">
-              Instantly verifiable by employers, universities, and partners.
+              Scan the QR code to load and verify the digital record directly on this website.
             </p>
           </div>
 
           <div className="glass-card p-6 rounded-2xl border border-white/5">
             <div className="w-10 h-10 rounded-xl bg-red-primary/10 text-red-bright mx-auto flex items-center justify-center mb-3">
-              <Award className="w-5 h-5" />
+              <FileCheck className="w-5 h-5" />
             </div>
             <h3 className="font-heading font-bold text-sm text-white mb-1">
-              Print & Vector PDF
+              Printable PDF Credential
             </h3>
             <p className="text-xs text-text-muted">
-              High-resolution export with scannable QR verification code.
+              High-resolution digital certificate export for resumes and portfolios.
             </p>
           </div>
         </div>

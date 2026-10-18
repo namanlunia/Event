@@ -8,6 +8,7 @@ import TimelinePreview from "@/components/home/TimelinePreview";
 import SponsorsSection from "@/components/home/SponsorsSection";
 import TestimonialsSection from "@/components/home/TestimonialsSection";
 import FAQSection from "@/components/home/FAQSection";
+import { AboutThisSeasonNotice } from "@/components/visual/DemoModeBanner";
 
 export default function HomePage() {
   return (
@@ -33,8 +34,11 @@ export default function HomePage() {
       {/* Ecosystem sponsors & backers */}
       <SponsorsSection />
 
-      {/* Verified participant testimonials */}
+      {/* Participant testimonials */}
       <TestimonialsSection />
+
+      {/* "About this season" — honest transparency notice */}
+      <AboutThisSeasonNotice />
 
       {/* Frequently asked questions */}
       <FAQSection />

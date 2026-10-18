@@ -1,0 +1,10 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#050505"/>
+  <circle cx="600" cy="315" r="300" fill="#DC2626" fill-opacity="0.12" filter="blur(100px)"/>
+  <rect x="40" y="40" width="1120" height="550" rx="24" stroke="rgba(255,255,255,0.08)" stroke-width="2"/>
+  <rect x="540" y="140" width="120" height="120" rx="28" fill="#DC2626" fill-opacity="0.2" stroke="#EF4444" stroke-width="2"/>
+  <path d="M600 175C602 185 610 191 617 197C624 203 628 212 628 221C628 236 615 248 600 248C585 248 572 236 572 221C572 216 574 211 577 206C580 201 584 199 587 199C587 194 583 191 583 186C583 181 588 178 592 175C596 172 598 173 600 175Z" fill="#EF4444"/>
+  <text x="600" y="340" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="54" fill="#FFFFFF" text-anchor="middle" letter-spacing="-1">OWOC 2026–27</text>
+  <text x="600" y="390" font-family="system-ui, -apple-system, sans-serif" font-weight="600" font-size="24" fill="#EF4444" text-anchor="middle" letter-spacing="2">OMNIKON WINTER OF CODE</text>
+  <text x="600" y="440" font-family="system-ui, -apple-system, sans-serif" font-weight="400" font-size="18" fill="#888888" text-anchor="middle">Inaugural Open-Source Mentorship Program</text>
+</svg>

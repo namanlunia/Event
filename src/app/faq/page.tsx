@@ -3,7 +3,7 @@
 import React, { useState, useMemo } from "react";
 import Link from "next/link";
 import { HelpCircle, ChevronDown, Search, ArrowRight, MessageSquare } from "lucide-react";
-import { MOCK_FAQS } from "@/data/mockDatabase";
+import { getFAQItems } from "@/lib/dataService";
 
 export default function FAQPage() {
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -11,9 +11,10 @@ export default function FAQPage() {
   const [openIdx, setOpenIdx] = useState<number | null>(0);
 
   const categories = ["All", "General", "Contributors", "Mentors", "Ambassadors", "Points & Rewards"];
+  const allFaqs = getFAQItems();
 
   const filteredFaqs = useMemo(() => {
-    return MOCK_FAQS.filter((f) => {
+    return allFaqs.filter((f) => {
       const matchesCategory = selectedCategory === "All" || f.category === selectedCategory;
       const matchesSearch =
         f.question.toLowerCase().includes(searchQuery.toLowerCase()) ||

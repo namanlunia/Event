@@ -3,7 +3,13 @@
 import React from "react";
 import Link from "next/link";
 import { Calendar, CheckCircle2, Clock, ArrowRight } from "lucide-react";
-import { MOCK_TIMELINE } from "@/data/mockDatabase";
+import {
+  PHASES,
+  SEASON_LABEL,
+  DURATION_COPY,
+  getPhaseStatus,
+  formatDateRange,
+} from "@/lib/season";
 
 export default function TimelinePreview() {
   return (
@@ -16,10 +22,10 @@ export default function TimelinePreview() {
               <span>Program Schedule</span>
             </div>
             <h2 className="font-heading font-black text-3xl sm:text-5xl text-white tracking-tight">
-              OWOC 2024–25 Timeline
+              OWOC {SEASON_LABEL} Timeline
             </h2>
             <p className="mt-3 text-sm sm:text-base text-text-secondary max-w-xl">
-              Stay synchronized with sprint dates, evaluation freezes, and certificate releases.
+              {DURATION_COPY.full}. Stay synchronized with sprint dates, evaluation freezes, and certificate releases.
             </p>
           </div>
 
@@ -33,22 +39,23 @@ export default function TimelinePreview() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-          {MOCK_TIMELINE.map((step) => {
-            const isActive = step.status === "active";
-            const isCompleted = step.status === "completed";
+          {PHASES.map((phase) => {
+            const status = getPhaseStatus(phase);
+            const isCurrent = status === "current";
+            const isCompleted = status === "completed";
 
             return (
               <div
-                key={step.title}
+                key={phase.id}
                 className={`glass-card p-5 rounded-2xl flex flex-col justify-between border transition-all duration-300 relative ${
-                  isActive
+                  isCurrent
                     ? "border-red-bright/70 bg-surface-1/90 shadow-red-glow"
                     : isCompleted
-                    ? "border-white/10 opacity-80"
-                    : "border-white/5 opacity-60"
+                    ? "border-white/10 opacity-75"
+                    : "border-white/5 opacity-50"
                 }`}
               >
-                {isActive && (
+                {isCurrent && (
                   <div className="absolute -top-3 right-4 px-2 py-0.5 rounded-full bg-red-primary text-[10px] font-mono text-white font-bold flex items-center gap-1 shadow-red-glow-sm">
                     <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
                     <span>CURRENT PHASE</span>
@@ -57,27 +64,31 @@ export default function TimelinePreview() {
 
                 <div>
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-xs font-mono text-red-bright font-bold">
-                      {step.date}
+                    <span
+                      className={`text-xs font-mono font-bold ${
+                        isCurrent ? "text-red-bright" : isCompleted ? "text-green-400" : "text-text-muted"
+                      }`}
+                    >
+                      {formatDateRange(phase)}
                     </span>
                     {isCompleted ? (
                       <CheckCircle2 className="w-4 h-4 text-green-500" />
-                    ) : isActive ? (
+                    ) : isCurrent ? (
                       <Clock className="w-4 h-4 text-red-bright animate-spin" />
                     ) : (
                       <span className="w-2 h-2 rounded-full bg-text-muted" />
                     )}
                   </div>
                   <h3 className="font-heading font-bold text-sm text-white mb-2">
-                    {step.title}
+                    {phase.name}
                   </h3>
                   <p className="text-xs text-text-muted leading-relaxed line-clamp-3">
-                    {step.description}
+                    {phase.description}
                   </p>
                 </div>
 
                 <div className="mt-4 pt-3 border-t border-white/5 text-[11px] font-mono text-text-secondary">
-                  {step.badge}
+                  Phase {phase.id}
                 </div>
               </div>
             );

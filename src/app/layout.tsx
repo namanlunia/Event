@@ -4,6 +4,14 @@ import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import EmberSnowCanvas from "@/components/visual/EmberSnowCanvas";
+import {
+  SEASON_LABEL,
+  SEASON_SHORT,
+  DURATION_COPY,
+  EVENT_MONTH_LABEL,
+  formatDuration,
+  CODING_DAYS,
+} from "@/lib/season";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -23,26 +31,34 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
+import { SITE_CONFIG } from "@/lib/site-config";
+
 export const metadata: Metadata = {
-  title: "OWOC — Omnikon Winter of Code 2024-2025",
+  title: `OWOC — Omnikon Winter of Code ${SEASON_LABEL}`,
   description:
-    "Omnikon Winter of Code (OWOC) is a premier month-long open source program where developers, mentors, and campus ambassadors collaborate on high-impact projects during winter.",
+    `Omnikon Winter of Code (${SEASON_SHORT}) is a month-long program running through ${EVENT_MONTH_LABEL}, with a ${formatDuration(CODING_DAYS)} coding period where developers, mentors, and campus ambassadors collaborate on high-impact projects during winter.`,
   keywords: [
     "OWOC",
-    "Omnikon",
+    SITE_CONFIG.ORG_NAME,
     "Winter of Code",
     "Open Source",
-    "GSSoC",
-    "GSOC",
     "Student Developers",
+    "Mentorship",
     "Hackathon",
   ],
-  authors: [{ name: "Omnikon Foundation" }],
+  authors: [{ name: SITE_CONFIG.ORG_NAME }],
   openGraph: {
-    title: "OWOC — Omnikon Winter of Code",
-    description: "Empowering developers to forge open-source innovation under winter skies.",
+    title: `OWOC — Omnikon Winter of Code ${SEASON_LABEL}`,
+    description: `Empowering developers to forge open-source innovation under winter skies during ${SEASON_SHORT}. ${DURATION_COPY.full}.`,
     type: "website",
     siteName: "OWOC",
+    images: ["/og-image.png"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `OWOC — Omnikon Winter of Code ${SEASON_LABEL}`,
+    description: `Empowering developers to forge open-source innovation under winter skies during ${SEASON_SHORT}. ${DURATION_COPY.full}.`,
+    images: ["/og-image.png"],
   },
 };
 

@@ -13,6 +13,9 @@ import {
 } from "lucide-react";
 import { DEMO_PERSONAS, useAppStore } from "@/lib/store";
 
+import { SEASON_LABEL } from "@/lib/season";
+import { DemoModeBanner } from "@/components/visual/DemoModeBanner";
+
 export default function Navbar() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
@@ -47,6 +50,7 @@ export default function Navbar() {
           : "bg-transparent border-b border-white/5"
       }`}
     >
+      <DemoModeBanner />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
         {/* Brand Logo */}
         <Link href="/" className="flex items-center gap-3 group">
@@ -65,7 +69,7 @@ export default function Navbar() {
                 OWOC
               </span>
               <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded bg-red-primary/15 text-red-bright border border-red-primary/30">
-                2024-25
+                {SEASON_LABEL}
               </span>
             </div>
             <span className="text-[11px] text-text-muted tracking-wider uppercase font-medium">

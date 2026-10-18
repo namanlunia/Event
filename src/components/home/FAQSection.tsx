@@ -3,11 +3,11 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { ChevronDown, HelpCircle, ArrowRight } from "lucide-react";
-import { MOCK_FAQS } from "@/data/mockDatabase";
+import { getFAQItems } from "@/lib/dataService";
 
 export default function FAQSection() {
   const [openIdx, setOpenIdx] = useState<number | null>(0);
-  const featuredFaqs = MOCK_FAQS.slice(0, 5);
+  const featuredFaqs = getFAQItems().slice(0, 5);
 
   const toggle = (idx: number) => {
     setOpenIdx(openIdx === idx ? null : idx);

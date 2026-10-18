@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import {
   Flame,
@@ -14,47 +14,35 @@ import {
   Trophy,
   Calendar,
 } from "lucide-react";
+import {
+  SEASON_LABEL,
+  SEASON_SHORT,
+  DURATION_COPY,
+  getHeroStatusBadge,
+  getHeroCountdown,
+} from "@/lib/season";
+import { getProgramStats } from "@/lib/dataService";
+import { SITE_CONFIG } from "@/lib/site-config";
 
-const STATS = [
-  { label: "Merged PRs", value: 4800, suffix: "+" },
-  { label: "Student Builders", value: 2500, suffix: "+" },
-  { label: "Open Repositories", value: 120, suffix: "+" },
-  { label: "Verified Certs", value: 1800, suffix: "+" },
-];
-
-function AnimatedCounter({ target, suffix }: { target: number; suffix: string }) {
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    let start = 0;
-    const duration = 2000;
-    const increment = target / (duration / 16);
-    const timer = setInterval(() => {
-      start += increment;
-      if (start >= target) {
-        setCount(target);
-        clearInterval(timer);
-      } else {
-        setCount(Math.floor(start));
-      }
-    }, 16);
-    return () => clearInterval(timer);
-  }, [target]);
-
-  return (
-    <span className="stat-number font-heading font-black text-2xl sm:text-3xl text-white tabular-nums">
-      {count.toLocaleString()}{suffix}
-    </span>
-  );
-}
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export default function HeroSection() {
   const [registerModalOpen, setRegisterModalOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const heroStatus = getHeroStatusBadge();
+  const countdownText = getHeroCountdown();
+  const stats = getProgramStats();
+  const isDemoMode = SITE_CONFIG.DEMO_MODE;
+
+  // Build stat rows only when DEMO_MODE or when real data exists
+  const statItems = [
+    { label: "Merged PRs", value: stats.mergedPrs, suffix: "+" },
+    { label: "Student Builders", value: stats.studentBuilders, suffix: "+" },
+    { label: "Open Repositories", value: stats.openRepositories, suffix: "+" },
+    { label: "Participating Colleges", value: stats.participatingColleges, suffix: "+" },
+  ];
+
+  const hasStats = isDemoMode || statItems.some((s) => s.value > 0);
 
   return (
     <section className="relative pt-32 pb-24 md:pt-44 md:pb-32 overflow-hidden">
@@ -67,16 +55,25 @@ export default function HeroSection() {
       <div className="absolute inset-0 bg-grid-pattern opacity-30 pointer-events-none" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        {/* Top Status Pill */}
-        <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-surface-1/90 border border-red-primary/30 backdrop-blur-md mb-8 shadow-red-glow-sm animate-pulse-slow">
-          <span className="flex h-2 w-2 rounded-full bg-red-bright animate-ping" />
-          <span className="text-xs font-mono uppercase tracking-wider text-red-bright font-bold">
-            OWOC 2024–25 Season Active
-          </span>
-          <span className="text-text-muted">|</span>
-          <span className="text-xs text-text-secondary">
-            Coding Sprint 3 in Progress
-          </span>
+        {/* Top Status Pill & Dynamic Countdown */}
+        <div className="flex flex-wrap items-center justify-center gap-3 mb-8">
+          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-surface-1/90 border border-red-primary/30 backdrop-blur-md shadow-red-glow-sm animate-pulse-slow">
+            <span className="flex h-2 w-2 rounded-full bg-red-bright animate-ping" />
+            <span className="text-xs font-mono uppercase tracking-wider text-red-bright font-bold">
+              {SEASON_SHORT}
+            </span>
+            <span className="text-text-muted">|</span>
+            <span className="text-xs text-text-secondary font-medium">
+              {heroStatus.text}
+            </span>
+          </div>
+
+          {countdownText && (
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-primary/10 border border-red-primary/30 text-xs font-mono text-red-bright">
+              <Calendar className="w-3.5 h-3.5" />
+              <span>{countdownText}</span>
+            </div>
+          )}
         </div>
 
         {/* Main Headline */}
@@ -112,7 +109,7 @@ export default function HeroSection() {
             className="px-8 py-4 rounded-xl bg-surface-1 border border-white/10 hover:border-red-primary/50 text-text-primary hover:text-white font-semibold text-sm transition-all duration-300 hover:bg-white/[0.04] flex items-center gap-2 group"
           >
             <Code2 className="w-4 h-4 text-red-bright" />
-            <span>Explore 120+ Projects</span>
+            <span>Explore Projects</span>
           </Link>
 
           <Link
@@ -124,39 +121,43 @@ export default function HeroSection() {
           </Link>
         </div>
 
-        {/* Live Stats Counter Row */}
-        <div className="mt-16 pt-10 border-t border-white/5">
-          <p className="text-xs font-mono uppercase tracking-widest text-text-muted mb-8">
-            Program Statistics — Updated Live
-          </p>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
-            {STATS.map((stat) => (
-              <div
-                key={stat.label}
-                className="glass-card p-5 rounded-2xl border border-white/5 hover:border-red-primary/30 text-center group"
-              >
-                <div className="text-xs font-mono text-text-muted mb-1">
-                  {stat.label}
+        {/* Stats Counter Row — only shown when there is real data or demo mode */}
+        {hasStats && (
+          <div className="mt-16 pt-10 border-t border-white/5">
+            <p className="text-xs font-mono uppercase tracking-widest text-text-muted mb-8">
+              {isDemoMode ? (
+                <>Program Statistics — <span className="text-yellow-400">Sample Data</span></>
+              ) : (
+                "Program Statistics — Live"
+              )}
+            </p>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+              {statItems.map((stat) => (
+                <div
+                  key={stat.label}
+                  className="glass-card p-5 rounded-2xl border border-white/5 hover:border-red-primary/30 text-center group"
+                >
+                  <div className="text-xs font-mono text-text-muted mb-1">
+                    {stat.label}
+                  </div>
+                  <AnimatedCounter
+                    value={stat.value}
+                    suffix={stat.value > 0 ? stat.suffix : ""}
+                    className="font-heading font-black text-2xl sm:text-3xl text-white"
+                  />
                 </div>
-                {mounted ? (
-                  <AnimatedCounter target={stat.value} suffix={stat.suffix} />
-                ) : (
-                  <span className="stat-number font-heading font-black text-2xl sm:text-3xl text-white">
-                    {stat.value.toLocaleString()}{stat.suffix}
-                  </span>
-                )}
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Quick Trust Badges Row */}
         <div className="mt-12 flex flex-wrap items-center justify-center gap-4 text-xs text-text-muted">
           {[
-            { icon: <GitPullRequest className="w-3.5 h-3.5 text-red-bright" />, text: "Production-grade PRs only" },
-            { icon: <Users className="w-3.5 h-3.5 text-red-bright" />, text: "1-on-1 mentor guidance" },
-            { icon: <Shield className="w-3.5 h-3.5 text-red-bright" />, text: "Blockchain-verifiable certificates" },
-            { icon: <Calendar className="w-3.5 h-3.5 text-red-bright" />, text: "8-week winter cohort" },
+            { icon: <GitPullRequest className="w-3.5 h-3.5 text-red-bright" />, text: "Real open-source projects" },
+            { icon: <Users className="w-3.5 h-3.5 text-red-bright" />, text: "Mentor support from maintainers" },
+            { icon: <Shield className="w-3.5 h-3.5 text-red-bright" />, text: "Verifiable certificates" },
+            { icon: <Calendar className="w-3.5 h-3.5 text-red-bright" />, text: DURATION_COPY.hero },
             { icon: <Sparkles className="w-3.5 h-3.5 text-red-bright" />, text: "Merit-based gamification" },
           ].map(({ icon, text }) => (
             <div
@@ -191,7 +192,7 @@ export default function HeroSection() {
               </h3>
             </div>
             <p className="text-xs text-text-secondary mb-6">
-              Select the role that best fits your goals for Omnikon Winter of Code 2024–25.
+              Select the role that best fits your goals for Omnikon Winter of Code {SEASON_LABEL}.
             </p>
 
             <div className="space-y-3">
@@ -218,7 +219,7 @@ export default function HeroSection() {
                   href: "/dashboard/ambassador",
                   icon: <Sparkles className="w-5 h-5" />,
                   title: "Apply as Campus Ambassador",
-                  desc: "Represent OWOC in your college, track referrals, and unlock custom swag kits.",
+                  desc: "Represent OWOC in your college, track referrals, and unlock exclusive rewards.",
                 },
               ].map((opt) => (
                 <Link
