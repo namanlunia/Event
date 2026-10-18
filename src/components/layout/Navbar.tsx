@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  ChevronDown,
   Menu,
   X,
   Terminal,
@@ -19,7 +18,6 @@ export default function Navbar() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [moreDropdownOpen, setMoreDropdownOpen] = useState(false);
   const { personaConfig } = useAppStore();
 
   useEffect(() => {
@@ -30,21 +28,16 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const primaryNavLinks = [
+  const navLinks = [
     { name: "Home", href: "/" },
     { name: "Projects", href: "/projects" },
     { name: "Leaderboard", href: "/leaderboard" },
     { name: "Timeline", href: "/timeline" },
     { name: "Mentors", href: "/mentors" },
     { name: "Ambassadors", href: "/ambassadors" },
-  ];
-
-  const moreNavLinks = [
     { name: "Rules & Points", href: "/rules" },
     { name: "Verify Cert", href: "/certificate" },
   ];
-
-  const isMoreActive = moreNavLinks.some((l) => pathname === l.href);
 
   return (
     <header
@@ -55,9 +48,9 @@ export default function Navbar() {
       }`}
     >
       <DemoModeBanner />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <div className="w-full px-6 lg:px-10 h-20 flex items-center justify-between gap-4">
         {/* Brand Logo */}
-        <Link href="/" className="flex items-center gap-3 group">
+        <Link href="/" className="flex items-center gap-3 group flex-shrink-0">
           <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-red-primary to-red-deep p-[1px] shadow-red-glow-sm transition-transform duration-300 group-hover:scale-105">
             <div className="w-full h-full bg-[#0B0B0D] rounded-xl flex items-center justify-center relative overflow-hidden">
               <span className="absolute inset-0 bg-red-glow/20 blur-sm"></span>
@@ -82,15 +75,15 @@ export default function Navbar() {
           </div>
         </Link>
 
-        {/* Desktop Navigation Links */}
-        <nav className="hidden lg:flex items-center gap-1 xl:gap-2">
-          {primaryNavLinks.map((link) => {
+        {/* Desktop Navigation Links (All 8 items on single row, no wrap) */}
+        <nav className="hidden min-[1180px]:flex items-center justify-center gap-1 xl:gap-2 flex-grow mx-2">
+          {navLinks.map((link) => {
             const isActive = pathname === link.href;
             return (
               <Link
                 key={link.name}
                 href={link.href}
-                className={`px-3 py-2 text-sm font-medium rounded-lg whitespace-nowrap transition-all duration-200 ${
+                className={`px-2.5 xl:px-3 py-2 text-sm font-medium rounded-lg whitespace-nowrap transition-all duration-200 ${
                   isActive
                     ? "text-white bg-white/5 border border-red-primary/40 shadow-red-glow-sm"
                     : "text-text-secondary hover:text-white hover:bg-white/[0.04]"
@@ -100,51 +93,14 @@ export default function Navbar() {
               </Link>
             );
           })}
-
-          {/* More Dropdown (Rules & Points, Verify Cert) */}
-          <div className="relative">
-            <button
-              onClick={() => setMoreDropdownOpen(!moreDropdownOpen)}
-              className={`flex items-center gap-1 px-3 py-2 text-sm font-medium rounded-lg whitespace-nowrap transition-all duration-200 ${
-                isMoreActive
-                  ? "text-white bg-white/5 border border-red-primary/40 shadow-red-glow-sm"
-                  : "text-text-secondary hover:text-white hover:bg-white/[0.04]"
-              }`}
-            >
-              <span>More</span>
-              <ChevronDown className="w-3.5 h-3.5" />
-            </button>
-
-            {moreDropdownOpen && (
-              <div className="absolute left-0 mt-2 w-44 bg-surface-1/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl p-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
-                {moreNavLinks.map((link) => {
-                  const isActive = pathname === link.href;
-                  return (
-                    <Link
-                      key={link.name}
-                      href={link.href}
-                      onClick={() => setMoreDropdownOpen(false)}
-                      className={`block px-3 py-2 text-xs font-medium rounded-lg whitespace-nowrap transition-colors ${
-                        isActive
-                          ? "bg-red-primary/15 text-red-bright font-bold"
-                          : "text-text-secondary hover:text-white hover:bg-white/5"
-                      }`}
-                    >
-                      {link.name}
-                    </Link>
-                  );
-                })}
-              </div>
-            )}
-          </div>
         </nav>
 
         {/* Right Action Section: Register & Dashboard Access */}
-        <div className="hidden md:flex items-center gap-3">
+        <div className="hidden min-[1180px]:flex items-center gap-3 flex-shrink-0">
           {/* Register Link */}
           <Link
             href="/register"
-            className="px-3 py-1.5 text-xs font-mono text-text-secondary hover:text-white transition-colors"
+            className="px-3 py-1.5 text-xs font-mono text-text-secondary hover:text-white transition-colors whitespace-nowrap"
           >
             Register
           </Link>
@@ -152,7 +108,7 @@ export default function Navbar() {
           {/* Direct Dashboard Link based on active Persona */}
           <Link
             href={personaConfig.dashboardRoute}
-            className="flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg bg-red-primary hover:bg-red-bright text-white shadow-red-glow-sm hover:shadow-red-glow transition-all duration-200"
+            className="flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg bg-red-primary hover:bg-red-bright text-white shadow-red-glow-sm hover:shadow-red-glow transition-all duration-200 whitespace-nowrap"
           >
             <Terminal className="w-3.5 h-3.5" />
             <span>Dashboard</span>
@@ -160,7 +116,7 @@ export default function Navbar() {
         </div>
 
         {/* Mobile Hamburger Toggle */}
-        <div className="flex lg:hidden items-center gap-2">
+        <div className="flex min-[1180px]:hidden items-center gap-2 flex-shrink-0">
           <Link
             href={personaConfig.dashboardRoute}
             className="p-2 text-xs font-mono rounded-lg bg-red-primary text-white"
@@ -179,17 +135,17 @@ export default function Navbar() {
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-surface-1/95 backdrop-blur-xl border-b border-white/10 px-4 py-6 space-y-4">
+        <div className="min-[1180px]:hidden bg-surface-1/95 backdrop-blur-xl border-b border-white/10 px-6 py-6 space-y-4 max-h-[calc(100vh-5rem)] overflow-y-auto">
           <div className="space-y-1">
-            {[...primaryNavLinks, ...moreNavLinks].map((link) => (
+            {navLinks.map((link) => (
               <Link
                 key={link.name}
                 href={link.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className={`block px-3 py-2.5 rounded-lg text-sm font-medium ${
+                className={`block px-3 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap ${
                   pathname === link.href
-                    ? "bg-red-primary/10 text-red-bright border-l-2 border-red-bright"
-                    : "text-text-secondary hover:text-white"
+                    ? "bg-red-primary/10 text-red-bright border-l-2 border-red-bright font-bold"
+                    : "text-text-secondary hover:text-white hover:bg-white/5"
                 }`}
               >
                 {link.name}
@@ -201,14 +157,14 @@ export default function Navbar() {
             <Link
               href="/register"
               onClick={() => setMobileMenuOpen(false)}
-              className="w-full text-center py-2.5 text-xs font-mono rounded-lg border border-white/10 text-white"
+              className="w-full text-center py-2.5 text-xs font-mono rounded-lg border border-white/10 text-white hover:bg-white/5 transition-colors"
             >
               Register for OWOC
             </Link>
             <Link
               href={personaConfig.dashboardRoute}
               onClick={() => setMobileMenuOpen(false)}
-              className="w-full text-center py-2.5 text-xs font-semibold rounded-lg bg-red-primary text-white"
+              className="w-full text-center py-2.5 text-xs font-semibold rounded-lg bg-red-primary hover:bg-red-bright text-white shadow-red-glow-sm transition-colors"
             >
               Open {personaConfig.roleLabel} Dashboard
             </Link>
