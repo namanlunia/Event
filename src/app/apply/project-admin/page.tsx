@@ -20,6 +20,12 @@ export default function ApplyProjectAdminPage() {
   const [techStack, setTechStack] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 4000);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,6 +53,7 @@ export default function ApplyProjectAdminPage() {
     });
 
     setSubmitted(true);
+    showToast("Project application submitted successfully! Logged to review queue.");
   };
 
   return (
@@ -220,6 +227,13 @@ export default function ApplyProjectAdminPage() {
           </form>
         )}
       </div>
+
+      {toastMessage && (
+        <div className="fixed bottom-6 right-6 z-50 bg-[#15151B] border border-red-primary/40 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2 font-mono text-xs animate-in slide-in-from-bottom-2 duration-200">
+          <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+          <span>{toastMessage}</span>
+        </div>
+      )}
     </div>
   );
 }

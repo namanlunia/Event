@@ -679,14 +679,23 @@ function MentorDashboardContent() {
                       <Star className="w-3.5 h-3.5" />
                       <span>Review & Grade</span>
                     </button>
-                    <a
-                      href={pr.pr_url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="p-2 rounded-xl bg-surface-2 text-text-muted hover:text-white border border-white/5"
-                    >
-                      <ExternalLink className="w-4 h-4" />
-                    </a>
+                    {pr.pr_url ? (
+                      <a
+                        href={pr.pr_url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="p-2 rounded-xl bg-surface-2 text-text-muted hover:text-white border border-white/5"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                      </a>
+                    ) : (
+                      <span
+                        title="Sample pull request (not a real link)"
+                        className="p-2 rounded-xl bg-surface-2 text-text-muted/60 border border-white/5 cursor-not-allowed"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                      </span>
+                    )}
                   </div>
                 </div>
               ))
@@ -886,15 +895,25 @@ function MentorDashboardContent() {
                   <h3 className="font-heading font-bold text-sm text-white mt-1">{res.title}</h3>
                   <p className="text-xs text-text-secondary">{res.desc}</p>
                 </div>
-                <a
-                  href={res.url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-xs font-mono text-red-bright hover:underline flex items-center gap-1 pt-2 border-t border-white/5"
-                >
-                  <span>Open Resource</span>
-                  <ExternalLink className="w-3 h-3" />
-                </a>
+                {res.url ? (
+                  <a
+                    href={res.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-xs font-mono text-red-bright hover:underline flex items-center gap-1 pt-2 border-t border-white/5"
+                  >
+                    <span>Open Resource</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                ) : (
+                  <span
+                    title="Sample resource (not a real link)"
+                    className="text-xs font-mono text-text-muted/60 flex items-center gap-1 pt-2 border-t border-white/5 cursor-not-allowed"
+                  >
+                    <span>Sample Resource</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </span>
+                )}
               </div>
             ))}
           </div>
@@ -921,10 +940,20 @@ function MentorDashboardContent() {
               <div className="p-3 rounded-xl bg-surface-1 border border-white/5 space-y-1">
                 <div className="text-text-muted">Contributor: <span className="text-white">{selectedPR.contributor_name}</span></div>
                 <div className="text-text-muted">Difficulty: <span className="text-white">{selectedPR.difficulty}</span></div>
-                <a href={selectedPR.pr_url} target="_blank" rel="noreferrer" className="text-red-bright hover:underline flex items-center gap-1 text-[11px] mt-1">
-                  <span>Inspect diff on GitHub</span>
-                  <ExternalLink className="w-3 h-3" />
-                </a>
+                {selectedPR.pr_url ? (
+                  <a href={selectedPR.pr_url} target="_blank" rel="noreferrer" className="text-red-bright hover:underline flex items-center gap-1 text-[11px] mt-1">
+                    <span>Inspect diff on GitHub</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                ) : (
+                  <span
+                    title="Sample pull request (not a real link)"
+                    className="text-text-muted/60 flex items-center gap-1 text-[11px] mt-1 cursor-not-allowed"
+                  >
+                    <span>Sample pull request (not a real link)</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </span>
+                )}
               </div>
 
               {/* Quality Score Stars */}

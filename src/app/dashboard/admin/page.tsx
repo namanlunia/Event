@@ -813,15 +813,25 @@ function SuperAdminDashboardContent() {
                         </span>
                       </div>
                       <p className="text-text-secondary">{p.tagline || p.description}</p>
-                      <a
-                        href={p.repository_url}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-[11px] font-mono text-red-bright hover:underline flex items-center gap-1"
-                      >
-                        <span>{p.repository_url}</span>
-                        <ExternalLink className="w-3 h-3" />
-                      </a>
+                      {p.repository_url ? (
+                        <a
+                          href={p.repository_url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-[11px] font-mono text-red-bright hover:underline flex items-center gap-1"
+                        >
+                          <span>{p.repository_url}</span>
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      ) : (
+                        <span
+                          title="Sample repository (not a real link)"
+                          className="text-[11px] font-mono text-text-muted/60 flex items-center gap-1 cursor-not-allowed"
+                        >
+                          <span>Sample repository (not a real link)</span>
+                          <ExternalLink className="w-3 h-3" />
+                        </span>
+                      )}
                     </div>
 
                     <div className="flex items-center gap-2 flex-shrink-0">
@@ -924,16 +934,25 @@ function SuperAdminDashboardContent() {
                         <span className="text-[11px] font-mono text-text-muted">@{pa.github_username}</span>
                       </div>
                       <div className="text-white font-mono">Project: {pa.project_name}</div>
-                      <p className="text-text-secondary">{pa.project_desc}</p>
-                      <a
-                        href={pa.repo_url}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-[11px] font-mono text-red-bright hover:underline flex items-center gap-1"
-                      >
-                        <span>{pa.repo_url}</span>
-                        <ExternalLink className="w-3 h-3" />
-                      </a>
+                      {pa.repo_url ? (
+                        <a
+                          href={pa.repo_url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-[11px] font-mono text-red-bright hover:underline flex items-center gap-1"
+                        >
+                          <span>{pa.repo_url}</span>
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      ) : (
+                        <span
+                          title="Sample repository (not a real link)"
+                          className="text-[11px] font-mono text-text-muted/60 flex items-center gap-1 cursor-not-allowed"
+                        >
+                          <span>Sample repository (not a real link)</span>
+                          <ExternalLink className="w-3 h-3" />
+                        </span>
+                      )}
                     </div>
 
                     <div className="flex items-center gap-2 flex-shrink-0">

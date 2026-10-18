@@ -633,15 +633,25 @@ function ProjectAdminDashboardContent() {
                     </h3>
                     <StatusBadge status={selectedProject.status} />
                   </div>
-                  <a
-                    href={selectedProject.repository_url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-xs font-mono text-text-muted hover:text-red-bright flex items-center gap-1 mt-1"
-                  >
-                    <span>{selectedProject.repository_url}</span>
-                    <ExternalLink className="w-3 h-3" />
-                  </a>
+                  {selectedProject.repository_url ? (
+                    <a
+                      href={selectedProject.repository_url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-xs font-mono text-text-muted hover:text-red-bright flex items-center gap-1 mt-1"
+                    >
+                      <span>{selectedProject.repository_url}</span>
+                      <ExternalLink className="w-3 h-3" />
+                    </a>
+                  ) : (
+                    <span
+                      title="Sample repository (not a real link)"
+                      className="text-xs font-mono text-text-muted/60 flex items-center gap-1 mt-1 cursor-not-allowed"
+                    >
+                      <span>Sample repository (not a real link)</span>
+                      <ExternalLink className="w-3 h-3" />
+                    </span>
+                  )}
                 </div>
 
                 <div className="flex items-center gap-2">
@@ -769,14 +779,23 @@ function ProjectAdminDashboardContent() {
                             Difficulty: {i.difficulty} ({i.points} pts) · Status: {i.status}
                           </div>
                         </div>
-                        <a
-                          href={i.issue_url}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="p-2 rounded-lg bg-surface-1 border border-white/10 hover:text-white text-text-muted"
-                        >
-                          <ExternalLink className="w-3.5 h-3.5" />
-                        </a>
+                        {i.issue_url ? (
+                          <a
+                            href={i.issue_url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="p-2 rounded-lg bg-surface-1 border border-white/10 hover:text-white text-text-muted"
+                          >
+                            <ExternalLink className="w-3.5 h-3.5" />
+                          </a>
+                        ) : (
+                          <span
+                            title="Sample issue (not a real link)"
+                            className="p-2 rounded-lg bg-surface-1 border border-white/10 text-text-muted/60 cursor-not-allowed"
+                          >
+                            <ExternalLink className="w-3.5 h-3.5" />
+                          </span>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -817,14 +836,23 @@ function ProjectAdminDashboardContent() {
                               Approve & Merge (+Pts)
                             </button>
                           )}
-                          <a
-                            href={pr.pr_url}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="p-2 rounded-lg bg-surface-1 border border-white/10 text-text-muted hover:text-white"
-                          >
-                            <ExternalLink className="w-3.5 h-3.5" />
-                          </a>
+                          {pr.pr_url ? (
+                            <a
+                              href={pr.pr_url}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="p-2 rounded-lg bg-surface-1 border border-white/10 text-text-muted hover:text-white"
+                            >
+                              <ExternalLink className="w-3.5 h-3.5" />
+                            </a>
+                          ) : (
+                            <span
+                              title="Sample pull request (not a real link)"
+                              className="p-2 rounded-lg bg-surface-1 border border-white/10 text-text-muted/60 cursor-not-allowed"
+                            >
+                              <ExternalLink className="w-3.5 h-3.5" />
+                            </span>
+                          )}
                         </div>
                       </div>
                     ))}
@@ -1236,14 +1264,23 @@ function ProjectAdminDashboardContent() {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <a
-                    href={i.issue_url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="p-2 rounded-xl bg-surface-2 text-text-muted hover:text-white"
-                  >
-                    <ExternalLink className="w-4 h-4" />
-                  </a>
+                  {i.issue_url ? (
+                    <a
+                      href={i.issue_url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="p-2 rounded-xl bg-surface-2 text-text-muted hover:text-white"
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                    </a>
+                  ) : (
+                    <span
+                      title="Sample issue (not a real link)"
+                      className="p-2 rounded-xl bg-surface-2 text-text-muted/60 cursor-not-allowed"
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                    </span>
+                  )}
                 </div>
               </div>
             ))}
@@ -1292,14 +1329,23 @@ function ProjectAdminDashboardContent() {
                       Mark Merged-Valid
                     </button>
                   )}
-                  <a
-                    href={pr.pr_url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="p-2 rounded-xl bg-surface-2 text-text-muted hover:text-white"
-                  >
-                    <ExternalLink className="w-4 h-4" />
-                  </a>
+                  {pr.pr_url ? (
+                    <a
+                      href={pr.pr_url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="p-2 rounded-xl bg-surface-2 text-text-muted hover:text-white"
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                    </a>
+                  ) : (
+                    <span
+                      title="Sample pull request (not a real link)"
+                      className="p-2 rounded-xl bg-surface-2 text-text-muted/60 cursor-not-allowed"
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                    </span>
+                  )}
                 </div>
               </div>
             ))}
