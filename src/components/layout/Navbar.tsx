@@ -12,7 +12,6 @@ import {
 import { useAppStore } from "@/lib/store";
 import { SEASON_LABEL } from "@/lib/season";
 import { DemoModeBanner } from "@/components/visual/DemoModeBanner";
-import { SITE_CONFIG } from "@/lib/site-config";
 
 export default function Navbar() {
   const pathname = usePathname();
