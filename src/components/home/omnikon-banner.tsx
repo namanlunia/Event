@@ -268,18 +268,22 @@ export default function OmnikonBanner() {
       {/* 1. HUD Corner Brackets */}
       <div
         aria-hidden="true"
+        data-testid="hud-corner-tl"
         className="pointer-events-none absolute top-4 left-4 sm:top-5 sm:left-5 w-5 h-5 sm:w-6 sm:h-6 border-t-2 border-l-2 border-red-bright/60 transition-opacity"
       />
       <div
         aria-hidden="true"
+        data-testid="hud-corner-tr"
         className="pointer-events-none absolute top-4 right-4 sm:top-5 sm:right-5 w-5 h-5 sm:w-6 sm:h-6 border-t-2 border-r-2 border-red-bright/60 transition-opacity"
       />
       <div
         aria-hidden="true"
+        data-testid="hud-corner-bl"
         className="pointer-events-none absolute bottom-4 left-4 sm:bottom-5 sm:left-5 w-5 h-5 sm:w-6 sm:h-6 border-b-2 border-l-2 border-red-bright/60 transition-opacity"
       />
       <div
         aria-hidden="true"
+        data-testid="hud-corner-br"
         className="pointer-events-none absolute bottom-4 right-4 sm:bottom-5 sm:right-5 w-5 h-5 sm:w-6 sm:h-6 border-b-2 border-r-2 border-red-bright/60 transition-opacity"
       />
 
@@ -349,6 +353,7 @@ export default function OmnikonBanner() {
               ref={(el) => {
                 lettersRef.current[idx] = el;
               }}
+              aria-hidden="true"
               className={`inline-block transition-transform duration-150 ${
                 reducedMotion ? "" : "omnikon-letter-anim"
               }`}
@@ -378,6 +383,7 @@ export default function OmnikonBanner() {
         {/* Glow Line Under Wordmark */}
         <div
           aria-hidden="true"
+          data-testid="banner-glow-line"
           className="relative mt-4 sm:mt-6 w-[65%] max-w-[440px] sm:max-w-[500px] h-[1.5px] overflow-hidden"
         >
           {/* Base Glowing Gradient Line */}
