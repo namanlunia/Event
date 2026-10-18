@@ -37,6 +37,7 @@ import StatusBadge from "@/components/ui/status-badge";
 import DataTable, { Column } from "@/components/ui/data-table";
 import ConfirmDialog from "@/components/ui/confirm-dialog";
 import { Project, Issue, PullRequest, ContributorProjectApplication, ProjectDomain, ProjectDifficulty } from "@/types";
+import { getCurrentPhase, CODING_PHASE, formatDateRange, PHASES } from "@/lib/season";
 import {
   ResponsiveContainer,
   AreaChart,
@@ -75,6 +76,11 @@ function ProjectAdminDashboardContent() {
   } = useAppStore();
 
   const isDemo = SITE_CONFIG.DEMO_MODE;
+  const currentPhase = getCurrentPhase();
+  const codingPeriodDates = formatDateRange(CODING_PHASE);
+  const phaseStatusBadge = currentPhase
+    ? `Phase ${currentPhase.id} Active`
+    : `Phase 1 Starts ${new Date(`${PHASES[0].startDate}T00:00:00`).toLocaleDateString("en-US", { month: "short", day: "numeric" })}`;
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -527,14 +533,14 @@ function ProjectAdminDashboardContent() {
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="font-heading font-bold text-lg text-white">
-                  Pull Request Velocity (December 2026)
+                  Pull Request Velocity ({codingPeriodDates})
                 </h3>
                 <p className="text-xs text-text-secondary">
                   Tracking submissions and code review throughput across the coding sprint.
                 </p>
               </div>
               <span className="text-[11px] font-mono text-red-bright uppercase font-bold px-2 py-0.5 rounded bg-red-primary/10 border border-red-primary/30">
-                Phase 3 Active
+                {phaseStatusBadge}
               </span>
             </div>
 

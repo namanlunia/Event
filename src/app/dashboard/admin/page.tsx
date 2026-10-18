@@ -40,7 +40,7 @@ import {
 import RoleGuard from "@/components/auth/RoleGuard";
 import { useAppStore } from "@/lib/store";
 import { SITE_CONFIG } from "@/lib/site-config";
-import { SEASON_LABEL, SEASON_SHORT, PHASES, EVENT_START, EVENT_END, formatDateRange } from "@/lib/season";
+import { SEASON_LABEL, SEASON_SHORT, PHASES, EVENT_START, EVENT_END, formatDateRange, getCurrentPhase, daysUntilCodingStart } from "@/lib/season";
 import { SampleBadge } from "@/components/visual/DemoModeBanner";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import StatusBadge from "@/components/ui/status-badge";
@@ -318,6 +318,10 @@ function SuperAdminDashboardContent() {
 
   const totalPendingApprovals =
     pendingProjects.length + pendingMentors.length + pendingProjectAdmins.length;
+
+  const currentPhase = getCurrentPhase();
+  const displayPhase = currentPhase || PHASES[0];
+  const daysToSprint = daysUntilCodingStart();
 
   // Actions
   const handleApproveProject = (id: string) => {
@@ -672,24 +676,26 @@ function SuperAdminDashboardContent() {
           <div className="p-6 rounded-3xl bg-gradient-to-r from-red-primary/10 via-surface-1 to-surface-1 border border-red-primary/30 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
               <span className="text-[10px] font-mono text-red-bright uppercase font-bold tracking-widest block">
-                ACTIVE PROGRAM TIMELINE
+                {currentPhase ? "ACTIVE PROGRAM TIMELINE" : "UPCOMING PROGRAM TIMELINE"}
               </span>
               <h3 className="font-heading font-black text-xl text-white mt-1">
-                {PHASES[0].name}
+                {displayPhase.name}
               </h3>
               <p className="text-xs text-text-secondary mt-1">
-                {PHASES[0].description} (Running {PHASES[0].startDate} to {PHASES[0].endDate})
+                {displayPhase.description} (Running {formatDateRange(displayPhase)})
               </p>
             </div>
 
             <div className="flex items-center gap-3 font-mono">
               <div className="p-3 rounded-xl bg-surface-2 border border-white/10 text-center min-w-20">
-                <span className="text-lg font-black text-white block">43</span>
+                <span className="text-lg font-black text-white block">
+                  {daysToSprint > 0 ? daysToSprint : 0}
+                </span>
                 <span className="text-[9px] text-text-muted uppercase">Days to Sprint</span>
               </div>
               <div className="p-3 rounded-xl bg-surface-2 border border-white/10 text-center min-w-20">
                 <span className="text-lg font-black text-red-bright block">{SEASON_LABEL}</span>
-                <span className="text-[9px] text-text-muted uppercase">Cohort</span>
+                <span className="text-[9px] text-text-muted uppercase">Season</span>
               </div>
             </div>
           </div>

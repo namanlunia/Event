@@ -231,26 +231,58 @@ export function getHeroStatusBadge(currentDate: Date = new Date()): {
 }
 
 /**
+ * Helper to compute calendar day difference between an ISO date string (YYYY-MM-DD)
+ * and the current date in Asia/Kolkata timezone.
+ */
+export function getCalendarDaysUntil(targetIso: string, referenceDate: Date = new Date()): number {
+  const formatter = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Kolkata",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+  const todayStr = formatter.format(referenceDate); // e.g. "2026-10-18"
+
+  const [refYear, refMonth, refDay] = todayStr.split("-").map(Number);
+  const [tgtYear, tgtMonth, tgtDay] = targetIso.split("-").map(Number);
+
+  const refUtc = Date.UTC(refYear, refMonth - 1, refDay);
+  const tgtUtc = Date.UTC(tgtYear, tgtMonth - 1, tgtDay);
+
+  return Math.round((tgtUtc - refUtc) / (1000 * 60 * 60 * 24));
+}
+
+/**
+ * Returns number of calendar days until official event start (Dec 1, 2026) using Asia/Kolkata calendar math.
+ */
+export function daysUntilEventStart(currentDate: Date = new Date()): number {
+  return getCalendarDaysUntil(EVENT_START, currentDate);
+}
+
+/**
+ * Returns number of calendar days until coding period start (Dec 4, 2026) using Asia/Kolkata calendar math.
+ */
+export function daysUntilCodingStart(currentDate: Date = new Date()): number {
+  return getCalendarDaysUntil(CODING_PHASE.startDate, currentDate);
+}
+
+/**
  * Countdown helper for Hero section:
  * "Event starts in N days" before December 1, then "Ends in N days" during December.
  */
 export function getHeroCountdown(currentDate: Date = new Date()): string {
-  const now = currentDate.getTime();
-  const eventStart = new Date(`${EVENT_START}T00:00:00`).getTime();
-  const eventEnd = new Date(`${EVENT_END}T23:59:59`).getTime();
+  const daysLeft = daysUntilEventStart(currentDate);
 
-  if (now < eventStart) {
-    const diffDays = Math.ceil((eventStart - now) / (1000 * 60 * 60 * 24));
-    if (diffDays <= 0) return "Event starts today";
-    if (diffDays === 1) return "Event starts tomorrow";
-    return `Event starts in ${diffDays} days`;
+  if (daysLeft > 0) {
+    if (daysLeft === 1) return "Event starts tomorrow";
+    return `Event starts in ${daysLeft} days`;
   }
 
-  if (now <= eventEnd) {
-    const diffDays = Math.ceil((eventEnd - now) / (1000 * 60 * 60 * 24));
-    if (diffDays <= 0) return "Event ends today";
-    if (diffDays === 1) return "Event ends tomorrow";
-    return `Ends in ${diffDays} days`;
+  const daysUntilEnd = getCalendarDaysUntil(EVENT_END, currentDate);
+  if (daysUntilEnd >= 0) {
+    if (daysUntilEnd === 0) return "Event ends today";
+    if (daysUntilEnd === 1) return "Event ends tomorrow";
+    return `Ends in ${daysUntilEnd} days`;
   }
 
   return "Event concluded";
@@ -268,21 +300,22 @@ export function getCodingPeriodProgress(currentDate: Date = new Date()): {
   weekIndex: number;
   totalWeeks: number;
 } {
-  const now = currentDate.getTime();
-  const codingStart = new Date(`${CODING_PHASE.startDate}T00:00:00`).getTime();
-  const codingEnd = new Date(`${CODING_PHASE.endDate}T23:59:59`).getTime();
+  const daysLeft = daysUntilCodingStart(currentDate);
   const totalWeeks = CODING_WEEKS; // 4 weeks
 
-  if (now < codingStart) {
-    const diffDays = Math.ceil((codingStart - now) / (1000 * 60 * 60 * 24));
+  if (daysLeft > 0) {
     return {
-      text: diffDays === 1 ? "Coding starts tomorrow" : `Coding starts in ${diffDays} days`,
+      text: daysLeft === 1 ? "Coding starts tomorrow" : `Coding starts in ${daysLeft} days`,
       isUpcoming: true,
       isComplete: false,
       weekIndex: 0,
       totalWeeks,
     };
   }
+
+  const now = currentDate.getTime();
+  const codingStart = new Date(`${CODING_PHASE.startDate}T00:00:00`).getTime();
+  const codingEnd = new Date(`${CODING_PHASE.endDate}T23:59:59`).getTime();
 
   if (now > codingEnd) {
     return {
