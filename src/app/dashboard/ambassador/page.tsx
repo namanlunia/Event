@@ -35,8 +35,18 @@ export default function AmbassadorDashboard() {
   const referralsCount = demoAmbassador ? demoAmbassador.referrals_count : 0;
   const targetGoal = demoAmbassador ? demoAmbassador.target_goal : 25;
   const rankDisplay = demoAmbassador ? `#${demoAmbassador.rank}` : "Standby";
-  const activeContributors = demoAmbassador ? 118 : 0;
-  const rewardTier = demoAmbassador ? demoAmbassador.reward_tier : "Initiate Tier";
+  const activeContributors = isDemo ? 64 : 0;
+
+  // Derive current and next tier dynamically from SITE_CONFIG.AMBASSADOR_REWARDS
+  const currentTierObj =
+    [...SITE_CONFIG.AMBASSADOR_REWARDS]
+      .reverse()
+      .find((t) => referralsCount >= t.minReferrals) || null;
+  const rewardTier = currentTierObj ? `${currentTierObj.tierName} Tier` : "Initiate Tier";
+  const nextTierObj =
+    SITE_CONFIG.AMBASSADOR_REWARDS.find((t) => referralsCount < t.minReferrals) ||
+    SITE_CONFIG.AMBASSADOR_REWARDS[SITE_CONFIG.AMBASSADOR_REWARDS.length - 1];
+  const progressPercent = targetGoal > 0 ? Math.min(100, Math.round((referralsCount / targetGoal) * 100)) : 0;
 
   const referralUrl = `https://owoc.org?ref=${referralCode}`;
 
@@ -63,10 +73,12 @@ export default function AmbassadorDashboard() {
     },
     {
       id: "t-3",
-      title: `Onboard ${SITE_CONFIG.AMBASSADOR_REWARDS[0].minReferrals}+ Verified University Contributors`,
-      reward: `Unlocks ${SITE_CONFIG.AMBASSADOR_REWARDS[0].tierName} Tier: ${SITE_CONFIG.AMBASSADOR_REWARDS[0].perks[0]}`,
+      title: `Onboard ${nextTierObj.minReferrals}+ Verified University Contributors`,
+      reward: `Unlocks ${nextTierObj.tierName} Tier: ${nextTierObj.perks[0]}`,
       status: isDemo ? "active" : "upcoming",
-      progress: isDemo ? "142 / 150 (94%)" : "0 / 10 (0%)",
+      progress: isDemo
+        ? `${referralsCount} / ${nextTierObj.minReferrals} (${Math.min(100, Math.round((referralsCount / nextTierObj.minReferrals) * 100))}%)`
+        : "0 / 10 (0%)",
     },
     {
       id: "t-4",
@@ -208,14 +220,14 @@ export default function AmbassadorDashboard() {
             </p>
           </div>
           <span className="font-mono text-xs font-bold text-red-bright">
-            {isDemo ? "94% Completed" : "0% Completed"}
+            {isDemo ? `${progressPercent}% Completed` : "0% Completed"}
           </span>
         </div>
 
         <div className="w-full bg-surface-2 h-3 rounded-full overflow-hidden border border-white/5">
           <div
             className="bg-gradient-to-r from-red-primary to-red-bright h-full rounded-full transition-all duration-500 shadow-red-glow-sm"
-            style={{ width: isDemo ? "94%" : "4%" }}
+            style={{ width: isDemo ? `${progressPercent}%` : "4%" }}
           />
         </div>
 

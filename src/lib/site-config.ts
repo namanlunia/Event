@@ -39,8 +39,8 @@ export const SITE_CONFIG = {
   // Ambassador Rewards (Deliverable & confirmed items only)
   AMBASSADOR_REWARDS: [
     {
-      tier: "Bronze Tier",
-      tierName: "Bronze Tier",
+      tier: "Bronze",
+      tierName: "Bronze",
       minReferrals: 10,
       referrals: "10+ Registrations",
       perks: [
@@ -52,8 +52,8 @@ export const SITE_CONFIG = {
       ],
     },
     {
-      tier: "Silver Tier",
-      tierName: "Silver Tier",
+      tier: "Silver",
+      tierName: "Silver",
       minReferrals: 25,
       referrals: "25+ Registrations",
       perks: [
@@ -65,8 +65,8 @@ export const SITE_CONFIG = {
       ],
     },
     {
-      tier: "Gold Tier",
-      tierName: "Gold Tier",
+      tier: "Gold",
+      tierName: "Gold",
       minReferrals: 50,
       referrals: "50+ Registrations",
       perks: [
@@ -78,8 +78,8 @@ export const SITE_CONFIG = {
       ],
     },
     {
-      tier: "Diamond Tier",
-      tierName: "Diamond Tier",
+      tier: "Diamond",
+      tierName: "Diamond",
       minReferrals: 100,
       referrals: "100+ Registrations",
       perks: [

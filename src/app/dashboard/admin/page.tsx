@@ -297,10 +297,11 @@ function SuperAdminDashboardContent() {
   ];
 
   const roleDistributionData = [
-    { name: "Contributors", value: 1420, color: "#EF4444" },
-    { name: "Mentors", value: 85, color: "#3B82F6" },
-    { name: "Project Admins", value: 42, color: "#10B981" },
-    { name: "Ambassadors", value: 110, color: "#F59E0B" },
+    { role: "Contributors", count: 1420, color: "#EF4444" },
+    { role: "Mentors", count: 85, color: "#3B82F6" },
+    { role: "Project Admins", count: 42, color: "#10B981" },
+    { role: "Ambassadors", count: 105, color: "#F59E0B" },
+    { role: "Admins", count: 5, color: "#8B5CF6" },
   ];
 
   const domainBreakdownData = [
@@ -697,9 +698,14 @@ function SuperAdminDashboardContent() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Registration Growth Chart */}
             <div className="glass-card p-6 rounded-3xl border border-white/10 space-y-3">
-              <h4 className="font-heading font-bold text-sm text-white">
-                Cumulative Registrations Growth
-              </h4>
+              <div className="flex items-center justify-between">
+                <h4 className="font-heading font-bold text-sm text-white">
+                  Cumulative Registrations Growth
+                </h4>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-surface-2 text-text-muted border border-white/5">
+                  Sample projection
+                </span>
+              </div>
               <div className="h-56 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={registrationTimelineData}>
@@ -718,18 +724,45 @@ function SuperAdminDashboardContent() {
               </div>
             </div>
 
-            {/* User Roles Breakdown */}
+            {/* Stakeholders by Role Breakdown */}
             <div className="glass-card p-6 rounded-3xl border border-white/10 space-y-3">
-              <h4 className="font-heading font-bold text-sm text-white">
-                Stakeholders by Role Distribution
-              </h4>
+              <div className="flex items-center justify-between">
+                <h4 className="font-heading font-bold text-sm text-white">
+                  Stakeholders by Role Distribution
+                </h4>
+                <span className="text-[10px] font-mono text-text-muted">
+                  Total Users: {isDemo ? 1657 : 0}
+                </span>
+              </div>
+              <div className="h-56 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={roleDistributionData}>
+                    <XAxis dataKey="role" stroke="#666" tick={{ fill: "#888", fontSize: 10 }} />
+                    <YAxis stroke="#666" tick={{ fill: "#888", fontSize: 11 }} />
+                    <Tooltip contentStyle={{ backgroundColor: "#0B0B0D", borderRadius: "10px" }} />
+                    <Bar dataKey="count" fill="#EF4444" radius={[6, 6, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            {/* Projects by Domain (Kept Separate) */}
+            <div className="glass-card p-6 rounded-3xl border border-white/10 space-y-3 lg:col-span-2">
+              <div className="flex items-center justify-between">
+                <h4 className="font-heading font-bold text-sm text-white">
+                  Projects by Domain
+                </h4>
+                <span className="text-[10px] font-mono text-text-muted">
+                  {projects.length} Total Repositories
+                </span>
+              </div>
               <div className="h-56 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={domainBreakdownData}>
                     <XAxis dataKey="domain" stroke="#666" tick={{ fill: "#888", fontSize: 11 }} />
                     <YAxis stroke="#666" tick={{ fill: "#888", fontSize: 11 }} />
                     <Tooltip contentStyle={{ backgroundColor: "#0B0B0D", borderRadius: "10px" }} />
-                    <Bar dataKey="count" fill="#EF4444" radius={[6, 6, 0, 0]} />
+                    <Bar dataKey="count" fill="#3B82F6" radius={[6, 6, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
