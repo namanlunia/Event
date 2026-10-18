@@ -27,7 +27,6 @@ import {
   useAppStore,
   PERSONAS_LIST,
 } from "@/lib/store";
-import AvatarDisplay from "@/components/visual/AvatarDisplay";
 import { SITE_CONFIG } from "@/lib/site-config";
 import { SEASON_SHORT } from "@/lib/season";
 import NotificationCenter from "@/components/dashboard/NotificationCenter";
@@ -85,7 +84,7 @@ function DashboardLayoutContent({
   const currentTab = searchParams?.get("tab") || "overview";
 
   return (
-    <div className="pt-20 min-h-screen flex bg-background">
+    <div className="pt-28 min-h-screen flex bg-background">
       {/* Mobile Sidebar Backdrop */}
       {mobileSidebarOpen && (
         <div
@@ -96,7 +95,7 @@ function DashboardLayoutContent({
 
       {/* Sidebar (Desktop fixed + Mobile slide-over) */}
       <aside
-        className={`w-64 border-r border-white/10 bg-[#0B0B0D] flex flex-col justify-between p-4 fixed left-0 top-20 bottom-0 z-40 transition-transform duration-200 md:translate-x-0 ${
+        className={`w-64 border-r border-white/10 bg-[#0B0B0D] flex flex-col justify-between p-4 fixed left-0 top-28 bottom-0 z-40 transition-transform duration-200 md:translate-x-0 ${
           mobileSidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         }`}
       >
@@ -104,12 +103,17 @@ function DashboardLayoutContent({
           {/* Active Profile Card */}
           <div className="p-3.5 rounded-2xl bg-surface-1 border border-white/10 flex items-center justify-between gap-3">
             <div className="flex items-center gap-3 min-w-0">
-              <AvatarDisplay name={personaConfig.personaName} size="sm" />
+              <div
+                data-testid="sidebar-avatar-initials"
+                className="w-8 h-8 rounded-xl bg-gradient-to-br from-red-primary to-red-deep border border-red-primary/40 flex items-center justify-center font-bold text-white text-xs flex-shrink-0 shadow-red-glow-sm"
+              >
+                {personaConfig.avatarInitials}
+              </div>
               <div className="truncate">
-                <div className="text-xs font-bold text-white truncate">
+                <div data-testid="sidebar-persona-name" className="text-xs font-bold text-white truncate">
                   {personaConfig.personaName}
                 </div>
-                <div className="text-[10px] font-mono text-red-bright uppercase font-bold truncate">
+                <div data-testid="sidebar-role-label" className="text-[10px] font-mono text-red-bright uppercase font-bold truncate">
                   {personaConfig.roleLabel}
                 </div>
               </div>
@@ -124,7 +128,7 @@ function DashboardLayoutContent({
           </div>
 
           {/* Navigation Links for current role */}
-          <nav className="space-y-1">
+          <nav data-testid="dashboard-sidebar-nav" className="space-y-1">
             <div className="flex items-center justify-between px-3 mb-2">
               <span className="text-[10px] font-mono uppercase text-text-muted font-bold tracking-wider">
                 {personaConfig.sidebarMenuTitle}
@@ -212,7 +216,7 @@ function DashboardLayoutContent({
       {/* Main Content Area */}
       <div className="flex-grow md:ml-64 flex flex-col min-h-screen w-full">
         {/* Dashboard Sub-header */}
-        <div className="h-14 border-b border-white/10 bg-[#0B0B0D]/80 backdrop-blur-md px-4 sm:px-8 flex items-center justify-between sticky top-20 z-20">
+        <div className="h-14 border-b border-white/10 bg-[#0B0B0D]/80 backdrop-blur-md px-4 sm:px-8 flex items-center justify-between sticky top-28 z-20">
           <div className="flex items-center gap-3">
             {/* Mobile Hamburger Button */}
             <button
@@ -239,16 +243,17 @@ function DashboardLayoutContent({
               <div className="relative">
                 <button
                   onClick={() => setRoleSwitcherOpen(!roleSwitcherOpen)}
+                  data-testid="role-switcher-button"
                   className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-surface-1 border border-white/10 hover:border-red-primary/40 text-xs font-mono text-text-secondary hover:text-white transition-colors"
                   title="Switch Workspace Role"
                 >
                   <div className="w-1.5 h-1.5 rounded-full bg-red-bright" />
-                  <span>{personaConfig.roleLabel}</span>
+                  <span data-testid="role-switcher-current">{personaConfig.roleLabel}</span>
                   <ChevronDown className="w-3 h-3 text-text-muted" />
                 </button>
 
                 {roleSwitcherOpen && (
-                  <div className="absolute right-0 mt-2 w-64 bg-surface-1 border border-white/10 rounded-2xl shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
+                  <div data-testid="role-switcher-menu" className="absolute right-0 mt-2 w-64 bg-surface-1 border border-white/10 rounded-2xl shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
                     <div className="px-3 py-2 border-b border-white/10 mb-1">
                       <span className="text-[10px] font-mono text-red-bright uppercase font-bold tracking-wider">
                         Role Workspaces
@@ -260,6 +265,7 @@ function DashboardLayoutContent({
                         return (
                           <button
                             key={p.id}
+                            data-testid={`role-option-${p.id}`}
                             onClick={() => {
                               switchRole(p.id);
                               router.push(p.dashboardRoute);
@@ -288,6 +294,16 @@ function DashboardLayoutContent({
 
             {/* Notification Center */}
             <NotificationCenter />
+
+            {/* User Profile Avatar with Initials */}
+            <div
+              data-testid="user-menu-avatar"
+              className="w-8 h-8 rounded-xl bg-surface-2 border border-white/15 flex items-center justify-center font-bold text-xs text-white"
+              title={`${personaConfig.personaName} (${personaConfig.roleLabel})`}
+              aria-label={`User avatar ${personaConfig.avatarInitials}`}
+            >
+              <span>{personaConfig.avatarInitials}</span>
+            </div>
 
             {/* Exit to Home */}
             <Link

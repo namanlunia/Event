@@ -149,19 +149,20 @@ export default function Navbar() {
             <div className="relative">
               <button
                 onClick={() => setRoleDropdownOpen(!roleDropdownOpen)}
+                data-testid="navbar-role-switcher"
                 className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-1 border border-white/10 hover:border-red-primary/40 transition-colors text-xs font-mono text-text-secondary hover:text-white"
                 title="Test the platform as different stakeholders"
               >
                 <div className="w-2 h-2 rounded-full bg-red-bright animate-ping"></div>
                 <span>Role:</span>
-                <span className="text-red-bright font-bold">
+                <span data-testid="navbar-current-role" className="text-red-bright font-bold">
                   {personaConfig.roleLabel}
                 </span>
                 <ChevronDown className="w-3.5 h-3.5" />
               </button>
 
               {roleDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-72 bg-surface-1/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
+                <div data-testid="navbar-role-menu" className="absolute right-0 mt-2 w-72 bg-surface-1/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
                   <div className="px-3 py-2 border-b border-white/10 mb-1">
                     <p className="text-xs font-mono text-red-bright uppercase font-bold tracking-wider">
                       Instant Role Switcher
@@ -176,6 +177,7 @@ export default function Navbar() {
                       return (
                         <button
                           key={persona.id}
+                          data-testid={`navbar-role-option-${persona.id}`}
                           onClick={() => {
                             switchRole(persona.id);
                             router.push(persona.dashboardRoute);
@@ -223,6 +225,17 @@ export default function Navbar() {
           >
             <Terminal className="w-3.5 h-3.5" />
             <span>Dashboard</span>
+          </Link>
+
+          {/* User Profile Avatar with Initials */}
+          <Link
+            href={personaConfig.dashboardRoute}
+            data-testid="user-menu-avatar"
+            className="w-8 h-8 rounded-lg bg-surface-2 border border-white/15 hover:border-red-primary/40 flex items-center justify-center font-bold text-xs text-white transition-colors"
+            title={`${personaConfig.personaName} (${personaConfig.roleLabel})`}
+            aria-label={`User menu for ${personaConfig.personaName}`}
+          >
+            <span>{personaConfig.avatarInitials}</span>
           </Link>
         </div>
 
