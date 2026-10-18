@@ -546,7 +546,7 @@ function ProjectAdminDashboardContent() {
 
             <div className="h-64 w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={prActivityData}>
+                <AreaChart data={prActivityData} margin={{ top: 10, right: 15, left: 0, bottom: 0 }}>
                   <defs>
                     <linearGradient id="prGrad" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="#EF4444" stopOpacity={0.4} />
@@ -554,8 +554,10 @@ function ProjectAdminDashboardContent() {
                     </linearGradient>
                   </defs>
                   <XAxis dataKey="date" stroke="#666" tick={{ fill: "#888", fontSize: 11 }} />
-                  <YAxis stroke="#666" tick={{ fill: "#888", fontSize: 11 }} />
+                  <YAxis width={40} stroke="#666" tick={{ fill: "#888", fontSize: 11 }} />
                   <Tooltip
+                    allowEscapeViewBox={{ x: false, y: false }}
+                    wrapperStyle={{ zIndex: 50, outline: "none" }}
                     contentStyle={{
                       backgroundColor: "#0B0B0D",
                       borderColor: "rgba(255,255,255,0.1)",
@@ -945,7 +947,7 @@ function ProjectAdminDashboardContent() {
               Submit Open-Source Repository
             </h2>
             <p className="text-xs text-text-secondary mt-1">
-              Onboard your codebase for the OWOC 2026 cohort. Submissions are reviewed by organizers.
+              Onboard your codebase for the OWOC 2026 season. Submissions are reviewed by organizers.
             </p>
           </div>
 

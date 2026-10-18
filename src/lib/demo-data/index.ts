@@ -925,7 +925,7 @@ export const MOCK_MENTOR_FEEDBACK: MentorFeedbackRecord[] = [
     contributor_id: "c-1",
     contributor_name: "Aarav Patel",
     is_private: true,
-    feedback_text: "Strong technical candidate for next cohort maintainer invite.",
+    feedback_text: "Strong technical candidate for next season maintainer invite.",
     quality_rating: 5,
     created_at: "2026-12-05T16:25:00Z"
   }

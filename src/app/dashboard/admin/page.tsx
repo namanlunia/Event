@@ -434,7 +434,7 @@ function SuperAdminDashboardContent() {
         addAuditLog({
           action: "bulk_issue_certificates",
           target_type: "certificates",
-          target_id: "cohort_2026",
+          target_id: "season_2026",
           details_after: { issued_count: 128 },
         });
         showToast("128 Certificates successfully generated and verified!");
@@ -556,7 +556,7 @@ function SuperAdminDashboardContent() {
               OWOC {SEASON_LABEL} Organizer Console
             </h1>
             <p className="text-xs text-text-secondary mt-0.5">
-              Full administrative authority over cohort phases, approvals, points rules, and audits.
+              Full administrative authority over season phases, approvals, points rules, and audits.
             </p>
           </div>
         </div>
@@ -714,7 +714,7 @@ function SuperAdminDashboardContent() {
               </div>
               <div className="h-56 w-full">
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={registrationTimelineData}>
+                  <AreaChart data={registrationTimelineData} margin={{ top: 10, right: 15, left: 0, bottom: 0 }}>
                     <defs>
                       <linearGradient id="regGrad" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor="#EF4444" stopOpacity={0.4} />
@@ -722,8 +722,12 @@ function SuperAdminDashboardContent() {
                       </linearGradient>
                     </defs>
                     <XAxis dataKey="date" stroke="#666" tick={{ fill: "#888", fontSize: 11 }} />
-                    <YAxis stroke="#666" tick={{ fill: "#888", fontSize: 11 }} />
-                    <Tooltip contentStyle={{ backgroundColor: "#0B0B0D", borderRadius: "10px" }} />
+                    <YAxis width={40} stroke="#666" tick={{ fill: "#888", fontSize: 11 }} />
+                    <Tooltip
+                      allowEscapeViewBox={{ x: false, y: false }}
+                      wrapperStyle={{ zIndex: 50, outline: "none" }}
+                      contentStyle={{ backgroundColor: "#0B0B0D", borderRadius: "10px" }}
+                    />
                     <Area type="monotone" dataKey="count" stroke="#EF4444" fill="url(#regGrad)" />
                   </AreaChart>
                 </ResponsiveContainer>
@@ -742,10 +746,14 @@ function SuperAdminDashboardContent() {
               </div>
               <div className="h-56 w-full">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={roleDistributionData}>
+                  <BarChart data={roleDistributionData} margin={{ top: 10, right: 15, left: 0, bottom: 0 }}>
                     <XAxis dataKey="role" stroke="#666" tick={{ fill: "#888", fontSize: 10 }} />
-                    <YAxis stroke="#666" tick={{ fill: "#888", fontSize: 11 }} />
-                    <Tooltip contentStyle={{ backgroundColor: "#0B0B0D", borderRadius: "10px" }} />
+                    <YAxis width={40} stroke="#666" tick={{ fill: "#888", fontSize: 11 }} />
+                    <Tooltip
+                      allowEscapeViewBox={{ x: false, y: false }}
+                      wrapperStyle={{ zIndex: 50, outline: "none" }}
+                      contentStyle={{ backgroundColor: "#0B0B0D", borderRadius: "10px" }}
+                    />
                     <Bar dataKey="count" fill="#EF4444" radius={[6, 6, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
@@ -764,10 +772,14 @@ function SuperAdminDashboardContent() {
               </div>
               <div className="h-56 w-full">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={domainBreakdownData}>
+                  <BarChart data={domainBreakdownData} margin={{ top: 10, right: 15, left: 0, bottom: 0 }}>
                     <XAxis dataKey="domain" stroke="#666" tick={{ fill: "#888", fontSize: 11 }} />
-                    <YAxis stroke="#666" tick={{ fill: "#888", fontSize: 11 }} />
-                    <Tooltip contentStyle={{ backgroundColor: "#0B0B0D", borderRadius: "10px" }} />
+                    <YAxis width={40} stroke="#666" tick={{ fill: "#888", fontSize: 11 }} />
+                    <Tooltip
+                      allowEscapeViewBox={{ x: false, y: false }}
+                      wrapperStyle={{ zIndex: 50, outline: "none" }}
+                      contentStyle={{ backgroundColor: "#0B0B0D", borderRadius: "10px" }}
+                    />
                     <Bar dataKey="count" fill="#3B82F6" radius={[6, 6, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
@@ -1446,7 +1458,7 @@ function SuperAdminDashboardContent() {
         <div className="glass-card p-6 sm:p-8 rounded-3xl border border-white/10 max-w-2xl space-y-6">
           <div>
             <span className="text-[10px] font-mono uppercase text-red-bright font-bold tracking-wider">
-              END-OF-COHORT ACCREDITATION
+              END-OF-SEASON ACCREDITATION
             </span>
             <h2 className="font-heading font-black text-2xl text-white mt-1">
               Certificates Issuance Engine
@@ -1459,7 +1471,7 @@ function SuperAdminDashboardContent() {
 
           <div className="p-4 rounded-2xl bg-surface-1 border border-white/10 space-y-2 text-xs font-mono">
             <div className="flex justify-between items-center">
-              <span className="text-text-muted">Target Cohort:</span>
+              <span className="text-text-muted">Target Season:</span>
               <span className="text-white font-bold">{SEASON_SHORT} (Dec 2026)</span>
             </div>
             <div className="flex justify-between items-center">

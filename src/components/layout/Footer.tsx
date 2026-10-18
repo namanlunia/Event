@@ -117,7 +117,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="/leaderboard" className="text-text-secondary hover:text-white transition-colors">
-                  Live Leaderboard
+                  Leaderboard
                 </Link>
               </li>
               <li>

@@ -46,7 +46,7 @@ export const PERSONAS: Record<StandardRole, PersonaConfig> = {
       },
       {
         id: "leaderboard",
-        label: "Live Leaderboard",
+        label: "Leaderboard",
         href: "/leaderboard",
         iconName: "Award",
       },

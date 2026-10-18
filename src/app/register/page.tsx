@@ -41,7 +41,7 @@ export default function RegisterPage() {
             <span className="font-heading font-black text-2xl text-white">OWOC {SEASON_LABEL}</span>
           </Link>
           <h1 className="font-heading font-black text-3xl sm:text-4xl text-white">
-            Join the Winter Cohort
+            Join the Winter Season
           </h1>
           <p className="text-xs sm:text-sm text-text-secondary max-w-lg mx-auto">
             Choose how you want to participate in Omnikon Winter of Code 2026.
@@ -61,7 +61,7 @@ export default function RegisterPage() {
               Student Contributor
             </h2>
             <p className="text-xs text-text-secondary leading-relaxed max-w-md">
-              Solve issues on production repositories, submit PRs, earn points on the live leaderboard, unlock digital certificates, and win winter swag boxes.
+              Solve issues on real open-source repositories, submit PRs, earn points on the leaderboard, unlock digital certificates, and win winter swag boxes.
             </p>
           </div>
 

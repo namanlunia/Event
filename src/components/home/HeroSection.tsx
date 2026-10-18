@@ -91,8 +91,8 @@ export default function HeroSection() {
         {/* Subtitle */}
         <p className="mt-8 text-base sm:text-lg lg:text-xl text-text-secondary max-w-3xl mx-auto leading-relaxed">
           Omnikon Winter of Code is a high-octane open source mentorship program.
-          Contribute to production-grade repositories, collaborate with veteran
-          engineers, climb the live leaderboard, and earn verifiable credentials.
+          Contribute to real open-source repositories, collaborate with experienced
+          mentors, climb the leaderboard, and earn verifiable credentials.
         </p>
 
         {/* Call to Actions */}

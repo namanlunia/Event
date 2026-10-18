@@ -219,7 +219,7 @@ export default function ContributorDashboard() {
 
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={weeklyData}>
+              <AreaChart data={weeklyData} margin={{ top: 10, right: 15, left: 0, bottom: 0 }}>
                 <defs>
                   <linearGradient id="redGradient" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#E11D2E" stopOpacity={0.4} />
@@ -232,8 +232,10 @@ export default function ContributorDashboard() {
                   fontSize={10}
                   tickLine={false}
                 />
-                <YAxis stroke="#71717A" fontSize={10} tickLine={false} />
+                <YAxis width={40} stroke="#71717A" fontSize={10} tickLine={false} />
                 <Tooltip
+                  allowEscapeViewBox={{ x: false, y: false }}
+                  wrapperStyle={{ zIndex: 50, outline: "none" }}
                   contentStyle={{
                     backgroundColor: "#111114",
                     border: "1px solid rgba(225,29,46,0.4)",
