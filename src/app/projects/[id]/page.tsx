@@ -10,23 +10,52 @@ import {
   ExternalLink,
   AlertCircle,
   Users,
-  BookOpen,
-  CheckCircle2,
   Check,
   Flame,
   Award,
+  FolderGit2,
 } from "lucide-react";
-import { MOCK_PROJECTS } from "@/data/mockDatabase";
+import { getProjectById } from "@/lib/dataService";
+import { SITE_CONFIG } from "@/lib/site-config";
+import { SampleBadge } from "@/components/visual/DemoModeBanner";
+import AvatarDisplay from "@/components/visual/AvatarDisplay";
 import { Issue } from "@/types";
 
 export default function ProjectDetailPage() {
   const params = useParams();
   const id = params?.id as string;
-  const project = MOCK_PROJECTS.find((p) => p.id === id) || MOCK_PROJECTS[0];
+  const project = getProjectById(id);
+  const isDemoMode = SITE_CONFIG.DEMO_MODE;
 
   const [applyModalOpen, setApplyModalOpen] = useState(false);
   const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
   const [applicationSent, setApplicationSent] = useState(false);
+
+  // If project is not found or not approved
+  if (!project) {
+    return (
+      <div className="relative pt-36 pb-24 min-h-screen flex items-center justify-center px-4">
+        <div className="max-w-md w-full glass-card p-8 sm:p-12 rounded-3xl border border-white/10 text-center shadow-2xl">
+          <div className="w-16 h-16 rounded-2xl bg-surface-2 border border-red-primary/30 flex items-center justify-center mx-auto mb-6 shadow-red-glow-sm">
+            <FolderGit2 className="w-8 h-8 text-red-bright" />
+          </div>
+          <h1 className="font-heading font-bold text-2xl text-white mb-2">
+            Repository Not Found
+          </h1>
+          <p className="text-xs sm:text-sm text-text-secondary leading-relaxed mb-6">
+            The project repository you requested is either not onboarded yet or pending maintainer verification for this season.
+          </p>
+          <Link
+            href="/projects"
+            className="w-full py-3 rounded-xl bg-gradient-to-r from-red-primary to-red-bright text-white text-xs font-bold shadow-red-glow flex items-center justify-center gap-2"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span>Browse All Repositories</span>
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   // Sample issues for this project
   const projectIssues: Issue[] = [
@@ -34,10 +63,10 @@ export default function ProjectDetailPage() {
       id: "iss-1",
       project_id: project.id,
       project_name: project.name,
-      title: "Add unit benchmark tests for SIMD vector tensor transformations",
+      title: "Add benchmark suites for core data processing pipelines",
       issue_number: 14,
       issue_url: `${project.repository_url}/issues/14`,
-      labels: ["good-first-issue", "benchmarks", "rust"],
+      labels: ["good-first-issue", "benchmarks"],
       difficulty: "Easy",
       points: 10,
       status: "open",
@@ -46,7 +75,7 @@ export default function ProjectDetailPage() {
       id: "iss-2",
       project_id: project.id,
       project_name: project.name,
-      title: "Implement ring buffer fallback when AVX-512 extensions are absent",
+      title: "Implement fallback handlers for legacy operating system runtimes",
       issue_number: 28,
       issue_url: `${project.repository_url}/issues/28`,
       labels: ["core-pipeline", "optimization"],
@@ -61,7 +90,7 @@ export default function ProjectDetailPage() {
       title: "Zero-copy IPC shared memory transport for multi-process worker nodes",
       issue_number: 45,
       issue_url: `${project.repository_url}/issues/45`,
-      labels: ["systems", "architecture", "high-priority"],
+      labels: ["systems", "architecture"],
       difficulty: "Hard",
       points: 50,
       status: "open",
@@ -76,8 +105,7 @@ export default function ProjectDetailPage() {
       labels: ["documentation", "good-first-issue"],
       difficulty: "Easy",
       points: 10,
-      status: "assigned",
-      assigned_to_name: "Aarav Patel",
+      status: "open",
     },
   ];
 
@@ -101,25 +129,24 @@ export default function ProjectDetailPage() {
           className="inline-flex items-center gap-2 text-xs font-mono text-text-muted hover:text-white mb-8 transition-colors"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
-          <span>Back to Projects Directory</span>
+          <span>Back to All Projects</span>
         </Link>
 
-        {/* Project Header Box */}
-        <div className="glass-panel p-6 sm:p-10 rounded-3xl border border-white/10 mb-12 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-red-primary/10 blur-3xl pointer-events-none" />
-
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+        {/* Hero Card */}
+        <div className="glass-card p-6 sm:p-10 rounded-3xl border border-white/10 relative overflow-hidden mb-10 shadow-2xl">
+          <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6">
             <div>
-              <div className="flex flex-wrap items-center gap-2 mb-3">
-                <span className="text-xs font-mono px-2.5 py-0.5 rounded bg-surface-2 text-red-bright border border-red-primary/40 font-bold">
+              <div className="flex flex-wrap items-center gap-2.5 mb-3">
+                <span className="text-xs font-mono px-3 py-1 rounded-full bg-red-primary/10 border border-red-primary/30 text-red-bright font-bold">
                   {project.domain}
                 </span>
-                <span className="text-xs font-mono px-2.5 py-0.5 rounded bg-white/5 text-text-muted">
-                  {project.difficulty}
+                <span className="text-xs font-mono px-2.5 py-0.5 rounded bg-surface-2 text-text-secondary border border-white/5">
+                  Difficulty: {project.difficulty}
                 </span>
                 <span className="text-xs font-mono px-2.5 py-0.5 rounded bg-white/5 text-text-secondary">
                   Org: {project.organization}
                 </span>
+                {isDemoMode && <SampleBadge />}
               </div>
 
               <h1 className="font-heading font-black text-3xl sm:text-5xl text-white tracking-tight">
@@ -219,26 +246,7 @@ export default function ProjectDetailPage() {
               </div>
             </div>
 
-            {/* Contribution Guidelines */}
-            <div className="glass-card p-6 sm:p-8 rounded-2xl border border-white/10 space-y-4">
-              <div className="flex items-center gap-2">
-                <BookOpen className="w-5 h-5 text-red-bright" />
-                <h2 className="font-heading font-bold text-xl text-white">
-                  Contribution Guidelines
-                </h2>
-              </div>
-              <p className="text-xs sm:text-sm text-text-secondary leading-relaxed">
-                {project.contribution_guide ||
-                  "Always write automated test cases for your features. Format code using the project's linter and ensure your PR description explicitly states 'Fixes #<issue-number>'."}
-              </p>
-              <div className="p-3.5 rounded-xl bg-surface-1 border border-white/5 text-xs text-text-muted font-mono space-y-1">
-                <div>• Clone: git clone {project.repository_url}.git</div>
-                <div>• Create branch: git checkout -b feat/owoc-issue-number</div>
-                <div>• Ensure all test suites pass prior to PR review request</div>
-              </div>
-            </div>
-
-            {/* Active Issues List */}
+            {/* Curated Issues List */}
             <div className="glass-card p-6 sm:p-8 rounded-2xl border border-white/10 space-y-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -246,107 +254,86 @@ export default function ProjectDetailPage() {
                     Available OWOC Issues
                   </h2>
                   <p className="text-xs text-text-secondary mt-1">
-                    Select an issue to view difficulty and claim it for the winter sprint.
+                    Claim an issue to reserve it. Points are credited to the leaderboard once your PR is merged.
                   </p>
                 </div>
-                <span className="text-xs font-mono px-2.5 py-1 rounded bg-red-primary/10 text-red-bright border border-red-primary/30">
-                  {projectIssues.length} Listed
-                </span>
+                {isDemoMode && <SampleBadge />}
               </div>
 
               <div className="space-y-3">
-                {projectIssues.map((issue) => {
-                  const isAssigned = issue.status === "assigned";
-                  return (
-                    <div
-                      key={issue.id}
-                      className="p-4 rounded-xl bg-surface-1 border border-white/5 hover:border-red-primary/30 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4"
-                    >
-                      <div className="space-y-1.5 flex-grow">
-                        <div className="flex items-center gap-2">
-                          <span className="font-mono text-xs text-text-muted">
-                            #{issue.issue_number}
-                          </span>
-                          <span
-                            className={`text-[10px] font-mono px-2 py-0.5 rounded font-bold ${
-                              issue.difficulty === "Easy"
-                                ? "bg-green-500/10 text-green-400 border border-green-500/30"
-                                : issue.difficulty === "Medium"
-                                ? "bg-yellow-500/10 text-yellow-400 border border-yellow-500/30"
-                                : "bg-red-primary/20 text-red-bright border border-red-primary/40"
-                            }`}
-                          >
-                            {issue.difficulty} • {issue.points} pts
-                          </span>
-                          {isAssigned && (
-                            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-white/5 text-text-muted">
-                              Assigned to {issue.assigned_to_name}
-                            </span>
-                          )}
-                        </div>
-
+                {projectIssues.map((issue) => (
+                  <div
+                    key={issue.id}
+                    className="p-4 rounded-xl bg-surface-1 border border-white/5 hover:border-red-primary/30 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                  >
+                    <div className="space-y-1.5 flex-grow">
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono text-xs text-red-bright font-bold">
+                          #{issue.issue_number}
+                        </span>
                         <h4 className="text-sm font-semibold text-white">
                           {issue.title}
                         </h4>
+                      </div>
 
-                        <div className="flex flex-wrap gap-1">
-                          {issue.labels.map((l) => (
-                            <span
-                              key={l}
-                              className="text-[10px] font-mono px-2 py-0.2 rounded bg-surface-2 text-text-muted"
-                            >
-                              {l}
-                            </span>
-                          ))}
+                      <div className="flex flex-wrap items-center gap-2">
+                        {issue.labels.map((l) => (
+                          <span
+                            key={l}
+                            className="text-[10px] font-mono px-2 py-0.5 rounded bg-surface-2 text-text-muted"
+                          >
+                            {l}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-4 flex-shrink-0">
+                      <div className="text-right font-mono">
+                        <div className="text-red-bright font-bold text-sm">
+                          {issue.points} pts
+                        </div>
+                        <div className="text-[10px] text-text-muted uppercase">
+                          {issue.difficulty}
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-2 flex-shrink-0">
-                        {isAssigned ? (
-                          <span className="px-3 py-1.5 text-xs font-mono text-text-muted bg-surface-2 rounded-lg">
-                            Assigned
-                          </span>
-                        ) : (
-                          <button
-                            onClick={() => handleClaim(issue)}
-                            className="px-4 py-2 rounded-lg bg-red-primary hover:bg-red-bright text-white text-xs font-semibold shadow-sm transition-colors"
-                          >
-                            Claim Issue
-                          </button>
-                        )}
-                      </div>
+                      <button
+                        onClick={() => handleClaim(issue)}
+                        className="px-4 py-2 rounded-lg bg-red-primary/10 hover:bg-red-primary border border-red-primary/30 text-red-bright hover:text-white text-xs font-bold transition-colors"
+                      >
+                        Claim Issue
+                      </button>
                     </div>
-                  );
-                })}
+                  </div>
+                ))}
               </div>
             </div>
           </div>
 
-          {/* Sidebar: Mentors & Maintainer */}
+          {/* Sidebar */}
           <div className="space-y-6">
-            {/* Maintainer Box */}
+            {/* Maintainer Info */}
             <div className="glass-card p-6 rounded-2xl border border-white/10 space-y-4">
               <span className="text-xs font-mono text-text-muted uppercase block">
-                Project Lead
+                Lead Maintainer
               </span>
               <div className="flex items-center gap-3">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={project.maintainer_avatar}
-                  alt={project.maintainer_name}
-                  className="w-12 h-12 rounded-full object-cover border-2 border-red-bright"
+                <AvatarDisplay
+                  name={project.maintainer_name}
+                  size="md"
                 />
                 <div>
-                  <h4 className="font-heading font-bold text-sm text-white">
+                  <h4 className="text-sm font-bold text-white">
                     {project.maintainer_name}
                   </h4>
-                  <p className="text-xs text-text-muted font-mono">
-                    Maintainer & Architect
-                  </p>
+                  <span className="text-xs text-text-muted">
+                    Project Author & Reviewer
+                  </span>
                 </div>
               </div>
               <p className="text-xs text-text-secondary leading-relaxed">
-                Oversees pull request approvals, reviews architectural changes, and assigns difficulty scores.
+                Triage lead for incoming issues and architecture reviewer for active contributor pull requests.
               </p>
             </div>
 
@@ -368,11 +355,9 @@ export default function ProjectDetailPage() {
                     className="p-3 rounded-xl bg-surface-1 border border-white/5 flex items-center justify-between"
                   >
                     <div className="flex items-center gap-2.5">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={m.avatar}
-                        alt={m.name}
-                        className="w-8 h-8 rounded-full object-cover"
+                      <AvatarDisplay
+                        name={m.name}
+                        size="sm"
                       />
                       <div>
                         <div className="text-xs font-bold text-white">{m.name}</div>
@@ -384,6 +369,7 @@ export default function ProjectDetailPage() {
                       target="_blank"
                       rel="noreferrer"
                       className="text-text-muted hover:text-white"
+                      aria-label={`${m.name}'s GitHub Profile`}
                     >
                       <ExternalLink className="w-3.5 h-3.5" />
                     </a>
@@ -426,7 +412,7 @@ export default function ProjectDetailPage() {
                   Issue Claim Submitted!
                 </h3>
                 <p className="text-xs text-text-secondary leading-relaxed">
-                  The maintainer and assigned mentors for {project.name} have been notified. Check your Contributor Dashboard and Discord for assignment confirmation.
+                  The maintainer and assigned mentors for {project.name} have been notified. Check your Contributor Dashboard and community channels for assignment confirmation.
                 </p>
                 <button
                   onClick={() => setApplyModalOpen(false)}
@@ -458,30 +444,37 @@ export default function ProjectDetailPage() {
                   <input
                     type="text"
                     required
-                    defaultValue="aaravpatel"
-                    className="w-full bg-surface-2 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-red-primary/60"
+                    placeholder="octocat"
+                    className="w-full px-3 py-2 rounded-lg bg-surface-2 border border-white/10 text-xs text-white focus:outline-none focus:border-red-primary/60 font-mono"
                   />
                 </div>
 
                 <div>
                   <label className="text-xs font-mono text-text-muted block mb-1">
-                    Brief Implementation Plan
+                    Proposed Implementation Approach (Optional)
                   </label>
                   <textarea
                     rows={3}
-                    required
-                    placeholder="Briefly describe how you plan to approach this issue..."
-                    defaultValue="I will inspect the benchmark harness and implement SIMD vector transformations using Rust AVX-512 intrinsics with unit tests."
-                    className="w-full bg-surface-2 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-red-primary/60"
+                    placeholder="Briefly describe how you plan to tackle this issue..."
+                    className="w-full px-3 py-2 rounded-lg bg-surface-2 border border-white/10 text-xs text-white focus:outline-none focus:border-red-primary/60 resize-none"
                   />
                 </div>
 
-                <button
-                  type="submit"
-                  className="w-full py-2.5 rounded-xl bg-red-primary hover:bg-red-bright text-white text-xs font-bold shadow-red-glow transition-all"
-                >
-                  Submit Issue Claim Request
-                </button>
+                <div className="flex items-center justify-end gap-3 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setApplyModalOpen(false)}
+                    className="px-4 py-2 text-xs text-text-muted hover:text-white"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-5 py-2 rounded-xl bg-red-primary hover:bg-red-bright text-white text-xs font-bold shadow-red-glow transition-all"
+                  >
+                    Submit Claim Request
+                  </button>
+                </div>
               </form>
             )}
           </div>

@@ -1,12 +1,13 @@
 import React from "react";
 import Link from "next/link";
 import { BookOpen, Calendar, Clock, ArrowRight, User } from "lucide-react";
-import { MOCK_BLOGS } from "@/data/mockDatabase";
+import { MOCK_BLOGS } from "@/lib/demo-data";
+import { SEASON_LABEL } from "@/lib/season";
 
 export const metadata = {
-  title: "Blog & Announcements — Omnikon Winter of Code",
+  title: `Blog & Announcements — Omnikon Winter of Code ${SEASON_LABEL}`,
   description:
-    "Read the latest updates, engineering tutorials, contributor guides, and community spotlights from OWOC 2024–25.",
+    `Read the latest updates, engineering tutorials, contributor guides, and community spotlights from OWOC ${SEASON_LABEL}.`,
 };
 
 export default function BlogPage() {

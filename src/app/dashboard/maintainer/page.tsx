@@ -15,35 +15,40 @@ import {
   Send,
   Sparkles,
 } from "lucide-react";
-import { MOCK_PROJECTS } from "@/data/mockDatabase";
 import { useAppStore } from "@/lib/store";
+import { SITE_CONFIG } from "@/lib/site-config";
+import { SampleBadge } from "@/components/visual/DemoModeBanner";
+import AvatarDisplay from "@/components/visual/AvatarDisplay";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export default function MaintainerDashboard() {
   const { projects } = useAppStore();
-  const myProject = projects[0]; // WinterVision Core
+  const myProject = projects.length > 0 ? projects[0] : null;
 
-  const [issueRequests, setIssueRequests] = useState([
-    {
-      id: "req-1",
-      contributor: "Aarav Patel",
-      avatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150",
-      issueNumber: 14,
-      issueTitle: "Add unit benchmark tests for SIMD vector tensor transformations",
-      difficulty: "Easy (10 pts)",
-      plan: "Implementing SIMD vector transformations using Rust AVX-512 intrinsics with unit tests.",
-      status: "pending",
-    },
-    {
-      id: "req-2",
-      contributor: "Diya Menon",
-      avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150",
-      issueNumber: 28,
-      issueTitle: "Implement ring buffer fallback when AVX-512 extensions are absent",
-      difficulty: "Medium (25 pts)",
-      plan: "Writing software fallback using standard vector iteration and validating CPU feature flags.",
-      status: "pending",
-    },
-  ]);
+  const [issueRequests, setIssueRequests] = useState(
+    SITE_CONFIG.DEMO_MODE
+      ? [
+          {
+            id: "req-1",
+            contributor: "Sample Contributor 1",
+            issueNumber: 14,
+            issueTitle: "Add benchmark tests for vector transformations",
+            difficulty: "Easy (10 pts)",
+            plan: "Implementing vector transformations with unit tests.",
+            status: "pending",
+          },
+          {
+            id: "req-2",
+            contributor: "Sample Contributor 2",
+            issueNumber: 28,
+            issueTitle: "Implement fallback when optional CPU extensions are absent",
+            difficulty: "Medium (25 pts)",
+            plan: "Writing software fallback using standard iteration and validating flags.",
+            status: "pending",
+          },
+        ]
+      : []
+  );
 
   const [showSubmitModal, setShowSubmitModal] = useState(false);
   const [broadcastMessage, setBroadcastMessage] = useState("");
@@ -79,15 +84,24 @@ export default function MaintainerDashboard() {
             <span className="text-xs font-mono text-red-bright uppercase font-bold tracking-wider">
               PROJECT LEAD CONSOLE
             </span>
-            <span className="px-2 py-0.5 rounded bg-green-500/10 text-green-400 border border-green-500/30 text-[10px] font-mono">
-              Status: Approved & Live
-            </span>
+            {myProject ? (
+              <span className="px-2 py-0.5 rounded bg-green-500/10 text-green-400 border border-green-500/30 text-[10px] font-mono">
+                Status: {myProject.status === "approved" ? "Approved & Live" : myProject.status}
+              </span>
+            ) : (
+              <span className="px-2 py-0.5 rounded bg-surface-2 text-text-muted border border-white/10 text-[10px] font-mono">
+                No Registered Project
+              </span>
+            )}
+            {SITE_CONFIG.DEMO_MODE && <SampleBadge />}
           </div>
           <h1 className="font-heading font-black text-2xl sm:text-3xl text-white">
-            {myProject.name}
+            {myProject ? myProject.name : "Maintainer Console"}
           </h1>
           <p className="text-xs text-text-secondary mt-0.5 max-w-xl">
-            {myProject.tagline}
+            {myProject
+              ? myProject.tagline
+              : "Manage your open-source repository submissions, issue assignments, and contributor communications."}
           </p>
         </div>
 
@@ -97,18 +111,20 @@ export default function MaintainerDashboard() {
             className="px-4 py-2.5 rounded-xl bg-surface-2 border border-white/10 hover:border-red-primary/40 text-xs font-mono text-white transition-colors flex items-center gap-2"
           >
             <Plus className="w-3.5 h-3.5 text-red-bright" />
-            <span>Submit New Project</span>
+            <span>Submit Project</span>
           </button>
 
-          <a
-            href={myProject.repository_url}
-            target="_blank"
-            rel="noreferrer"
-            className="px-5 py-2.5 rounded-xl bg-red-primary hover:bg-red-bright text-white text-xs font-bold shadow-red-glow transition-all flex items-center gap-2"
-          >
-            <ExternalLink className="w-3.5 h-3.5" />
-            <span>GitHub Repo</span>
-          </a>
+          {myProject && (
+            <a
+              href={myProject.repository_url}
+              target="_blank"
+              rel="noreferrer"
+              className="px-5 py-2.5 rounded-xl bg-red-primary hover:bg-red-bright text-white text-xs font-bold shadow-red-glow transition-all flex items-center gap-2"
+            >
+              <ExternalLink className="w-3.5 h-3.5" />
+              <span>GitHub Repo</span>
+            </a>
+          )}
         </div>
       </div>
 
@@ -122,10 +138,14 @@ export default function MaintainerDashboard() {
             <AlertCircle className="w-4 h-4 text-red-bright" />
           </div>
           <div className="font-heading font-black text-3xl text-white">
-            {myProject.open_issues_count}
+            <AnimatedCounter
+              value={myProject ? myProject.open_issues_count : 0}
+              fallbackText="0"
+              className="font-heading font-black text-3xl text-white"
+            />
           </div>
           <p className="text-[11px] text-text-muted font-mono mt-1">
-            4 labeled Good First Issue
+            {myProject ? "Tracked for OWOC contributors" : "Submit repo to track"}
           </p>
         </div>
 
@@ -136,9 +156,15 @@ export default function MaintainerDashboard() {
             </span>
             <Users className="w-4 h-4 text-white" />
           </div>
-          <div className="font-heading font-black text-3xl text-white">24</div>
-          <p className="text-[11px] text-green-400 font-mono mt-1">
-            +6 joined this sprint
+          <div className="font-heading font-black text-3xl text-white">
+            <AnimatedCounter
+              value={SITE_CONFIG.DEMO_MODE ? 24 : 0}
+              fallbackText="0"
+              className="font-heading font-black text-3xl text-white"
+            />
+          </div>
+          <p className="text-[11px] text-text-muted font-mono mt-1">
+            Registered contributors
           </p>
         </div>
 
@@ -149,9 +175,15 @@ export default function MaintainerDashboard() {
             </span>
             <GitPullRequest className="w-4 h-4 text-green-400" />
           </div>
-          <div className="font-heading font-black text-3xl text-white">38</div>
+          <div className="font-heading font-black text-3xl text-white">
+            <AnimatedCounter
+              value={SITE_CONFIG.DEMO_MODE ? 38 : 0}
+              fallbackText="0"
+              className="font-heading font-black text-3xl text-white"
+            />
+          </div>
           <p className="text-[11px] text-text-muted font-mono mt-1">
-            920 total points awarded
+            Evaluated for points
           </p>
         </div>
 
@@ -162,9 +194,15 @@ export default function MaintainerDashboard() {
             </span>
             <Sparkles className="w-4 h-4 text-yellow-400" />
           </div>
-          <div className="font-heading font-black text-3xl text-white">2</div>
+          <div className="font-heading font-black text-3xl text-white">
+            <AnimatedCounter
+              value={SITE_CONFIG.DEMO_MODE ? 2 : 0}
+              fallbackText="0"
+              className="font-heading font-black text-3xl text-white"
+            />
+          </div>
           <p className="text-[11px] text-text-muted font-mono mt-1">
-            Dr. Aris Thorne, Elena Rostova
+            Technical review support
           </p>
         </div>
       </div>
@@ -187,74 +225,79 @@ export default function MaintainerDashboard() {
             </span>
           </div>
 
-          <div className="space-y-3">
-            {issueRequests.map((req) => (
-              <div
-                key={req.id}
-                className="p-4 rounded-xl bg-surface-1 border border-white/5 space-y-3"
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex items-center gap-3">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={req.avatar}
-                      alt={req.contributor}
-                      className="w-9 h-9 rounded-full object-cover border border-white/10"
-                    />
-                    <div>
-                      <div className="text-xs font-bold text-white">
-                        {req.contributor}
-                      </div>
-                      <div className="text-[10px] text-text-muted font-mono">
-                        Requesting Issue #{req.issueNumber} • {req.difficulty}
+          {issueRequests.length > 0 ? (
+            <div className="space-y-3">
+              {issueRequests.map((req) => (
+                <div
+                  key={req.id}
+                  className="p-4 rounded-xl bg-surface-1 border border-white/5 space-y-3"
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                      <AvatarDisplay name={req.contributor} size="sm" />
+                      <div>
+                        <div className="text-xs font-bold text-white">
+                          {req.contributor}
+                        </div>
+                        <div className="text-[10px] text-text-muted font-mono">
+                          Requesting Issue #{req.issueNumber} • {req.difficulty}
+                        </div>
                       </div>
                     </div>
+
+                    <span
+                      className={`text-[10px] font-mono px-2 py-0.5 rounded font-bold uppercase ${
+                        req.status === "approved"
+                          ? "bg-green-500/10 text-green-400 border border-green-500/30"
+                          : "bg-yellow-500/10 text-yellow-400 border border-yellow-500/30"
+                      }`}
+                    >
+                      {req.status}
+                    </span>
                   </div>
 
-                  <span
-                    className={`text-[10px] font-mono px-2 py-0.5 rounded font-bold uppercase ${
-                      req.status === "approved"
-                        ? "bg-green-500/10 text-green-400 border border-green-500/30"
-                        : "bg-yellow-500/10 text-yellow-400 border border-yellow-500/30"
-                    }`}
-                  >
-                    {req.status}
-                  </span>
-                </div>
-
-                <div className="text-xs font-semibold text-white">
-                  {req.issueTitle}
-                </div>
-
-                <div className="p-2.5 rounded-lg bg-surface-2 border border-white/5 text-[11px] text-text-secondary">
-                  <span className="text-text-muted font-mono block text-[10px]">
-                    Approach Plan:
-                  </span>
-                  {req.plan}
-                </div>
-
-                {req.status === "pending" && (
-                  <div className="flex items-center gap-2 pt-1">
-                    <button
-                      onClick={() => handleApproveRequest(req.id)}
-                      className="px-3.5 py-1.5 rounded-lg bg-red-primary hover:bg-red-bright text-white text-xs font-semibold transition-colors flex items-center gap-1.5"
-                    >
-                      <CheckCircle2 className="w-3.5 h-3.5" />
-                      <span>Approve Assignment</span>
-                    </button>
-                    <button
-                      onClick={() =>
-                        setIssueRequests(issueRequests.filter((r) => r.id !== req.id))
-                      }
-                      className="px-3.5 py-1.5 rounded-lg bg-surface-2 border border-white/5 hover:border-white/10 text-text-muted hover:text-white text-xs transition-colors"
-                    >
-                      Decline
-                    </button>
+                  <div className="text-xs font-semibold text-white">
+                    {req.issueTitle}
                   </div>
-                )}
-              </div>
-            ))}
-          </div>
+
+                  <div className="p-2.5 rounded-lg bg-surface-2 border border-white/5 text-[11px] text-text-secondary">
+                    <span className="text-text-muted font-mono block text-[10px]">
+                      Approach Plan:
+                    </span>
+                    {req.plan}
+                  </div>
+
+                  {req.status === "pending" && (
+                    <div className="flex items-center gap-2 pt-1">
+                      <button
+                        onClick={() => handleApproveRequest(req.id)}
+                        className="px-3.5 py-1.5 rounded-lg bg-red-primary hover:bg-red-bright text-white text-xs font-semibold transition-colors flex items-center gap-1.5"
+                      >
+                        <CheckCircle2 className="w-3.5 h-3.5" />
+                        <span>Approve Assignment</span>
+                      </button>
+                      <button
+                        onClick={() =>
+                          setIssueRequests(issueRequests.filter((r) => r.id !== req.id))
+                        }
+                        className="px-3.5 py-1.5 rounded-lg bg-surface-2 border border-white/5 hover:border-white/10 text-text-muted hover:text-white text-xs transition-colors"
+                      >
+                        Decline
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="p-8 rounded-xl bg-surface-1 border border-white/5 text-center text-text-muted space-y-2">
+              <CheckCircle2 className="w-8 h-8 text-green-400 mx-auto mb-1" />
+              <div className="text-sm font-bold text-white">No Pending Issue Requests</div>
+              <p className="text-xs text-text-secondary">
+                When student contributors request assignment for issues in your repository, their proposals will appear here.
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Post Broadcast to Contributors */}
@@ -264,13 +307,13 @@ export default function MaintainerDashboard() {
               Broadcast to Contributors
             </h3>
             <p className="text-xs text-text-secondary leading-relaxed mb-4">
-              Post an announcement or sprint priority note directly to all student contributors working on {myProject.name}.
+              Post an announcement or priority guidance note to student contributors.
             </p>
 
             {broadcastSent ? (
               <div className="p-4 rounded-xl bg-green-500/10 border border-green-500/30 text-xs text-green-400 space-y-1">
                 <div className="font-bold">Broadcast Dispatched!</div>
-                <div>Your update was sent to 24 contributors via Discord webhook.</div>
+                <div>Your update was sent to contributors on your project track.</div>
               </div>
             ) : (
               <form onSubmit={handleBroadcast} className="space-y-3">
@@ -279,7 +322,7 @@ export default function MaintainerDashboard() {
                   required
                   value={broadcastMessage}
                   onChange={(e) => setBroadcastMessage(e.target.value)}
-                  placeholder="e.g. Please prioritize resolving the AVX-512 benchmark harness before tackling new features..."
+                  placeholder="e.g. Please prioritize resolving the unit test suite before opening new feature PRs..."
                   className="w-full bg-surface-1 border border-white/10 rounded-xl p-3 text-xs text-white placeholder-text-muted focus:outline-none focus:border-red-primary/60"
                 />
                 <button
@@ -294,7 +337,7 @@ export default function MaintainerDashboard() {
           </div>
 
           <div className="pt-4 border-t border-white/5 text-[11px] font-mono text-text-muted">
-            Next Maintainer Sync: Wednesday 7:00 PM UTC
+            Next Maintainer Sync: Announced in discord
           </div>
         </div>
       </div>
@@ -317,7 +360,7 @@ export default function MaintainerDashboard() {
               </h3>
             </div>
             <p className="text-xs text-text-secondary mb-6">
-              Onboard a new repository for the OWOC winter sprints. Submissions are reviewed by the Super Admin council.
+              Onboard a repository for the OWOC winter sprints. Submissions are reviewed by the evaluation committee.
             </p>
 
             <form
@@ -335,7 +378,7 @@ export default function MaintainerDashboard() {
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Solana WinterPay SDK"
+                  placeholder="e.g. Distributed Cache Mesh"
                   className="w-full bg-surface-2 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-red-primary/60"
                 />
               </div>
@@ -359,7 +402,7 @@ export default function MaintainerDashboard() {
                   </label>
                   <select className="w-full bg-surface-2 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-red-primary/60">
                     <option>AI/ML</option>
-                    <option>Web3</option>
+                    <option>Web3 & Systems</option>
                     <option>Cloud & DevOps</option>
                     <option>Full-Stack</option>
                     <option>Mobile</option>
@@ -386,7 +429,7 @@ export default function MaintainerDashboard() {
                 <input
                   type="text"
                   required
-                  placeholder="High-throughput real-time inference engine..."
+                  placeholder="High-throughput in-memory caching engine..."
                   className="w-full bg-surface-2 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-red-primary/60"
                 />
               </div>

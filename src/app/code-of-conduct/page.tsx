@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { ShieldCheck, Heart, AlertCircle, ArrowLeft } from "lucide-react";
+import { SITE_CONFIG } from "@/lib/site-config";
 
 export const metadata = {
   title: "Code of Conduct — Omnikon Winter of Code",
@@ -74,12 +75,12 @@ export default function CodeOfConductPage() {
               4. Enforcement & Reporting
             </h2>
             <p>
-              Instances of abusive, harassing, or otherwise unacceptable behavior may be reported directly to the OWOC Community Ethics Committee at{" "}
+              Instances of abusive, harassing, or otherwise unacceptable behavior may be reported directly to the OWOC Organizing Council at{" "}
               <a
-                href="mailto:conduct@owoc.omnikon.org"
+                href={`mailto:${SITE_CONFIG.CONTACT_EMAIL}`}
                 className="text-red-bright underline"
               >
-                conduct@owoc.omnikon.org
+                {SITE_CONFIG.CONTACT_EMAIL}
               </a>
               . All complaints will be reviewed and investigated promptly and fairly.
             </p>

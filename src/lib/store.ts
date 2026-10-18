@@ -9,7 +9,8 @@ import {
 import {
   MOCK_PROJECTS,
   MOCK_PRS,
-} from "@/data/mockDatabase";
+} from "@/lib/demo-data";
+import { SITE_CONFIG } from "@/lib/site-config";
 
 export interface DemoPersona {
   role: UserRole;
@@ -25,47 +26,47 @@ export const DEMO_PERSONAS: DemoPersona[] = [
   {
     role: "contributor",
     title: "Student Contributor",
-    name: "Aarav Patel",
-    email: "aarav.patel@iitd.ac.in",
-    avatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150",
+    name: "Sample Contributor",
+    email: "contributor@example.com",
+    avatar: "",
     dashboardUrl: "/dashboard/contributor",
-    badge: "Rank #1 Contributor",
+    badge: "Sample Contributor",
   },
   {
     role: "maintainer",
     title: "Project Maintainer",
-    name: "Dr. Aris Thorne",
-    email: "aris@omnikon.org",
-    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
+    name: "Sample Maintainer",
+    email: "maintainer@example.com",
+    avatar: "",
     dashboardUrl: "/dashboard/maintainer",
-    badge: "WinterVision Lead",
+    badge: "Sample Maintainer",
   },
   {
     role: "mentor",
     title: "Technical Mentor",
-    name: "Elena Rostova",
-    email: "elena@omnikon.org",
-    avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150",
+    name: "Sample Mentor",
+    email: "mentor@example.com",
+    avatar: "",
     dashboardUrl: "/dashboard/mentor",
-    badge: "CUDA Track Mentor",
+    badge: "Sample Mentor",
   },
   {
     role: "ambassador",
     title: "Campus Ambassador",
-    name: "Kabir Sen",
-    email: "kabir.sen@iitb.ac.in",
-    avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150",
+    name: "Sample Ambassador",
+    email: "ambassador@example.com",
+    avatar: "",
     dashboardUrl: "/dashboard/ambassador",
-    badge: "Master Ambassador (IITB)",
+    badge: "Sample Ambassador",
   },
   {
     role: "admin",
-    title: "Super Admin (OWOC Lead)",
-    name: "Devansh Rastogi",
-    email: "admin@owoc.omnikon.org",
-    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
+    title: "Super Admin",
+    name: "OWOC Admin",
+    email: "admin@example.com",
+    avatar: "",
     dashboardUrl: "/dashboard/admin",
-    badge: "Program Director",
+    badge: "Program Organizer",
   },
 ];
 
@@ -75,8 +76,8 @@ const STORAGE_KEY_PRS = "owoc_prs_data";
 
 export function useAppStore() {
   const [currentPersona, setCurrentPersona] = useState<DemoPersona>(DEMO_PERSONAS[0]);
-  const [projects, setProjects] = useState<Project[]>(MOCK_PROJECTS);
-  const [pullRequests, setPullRequests] = useState<PullRequest[]>(MOCK_PRS);
+  const [projects, setProjects] = useState<Project[]>(SITE_CONFIG.DEMO_MODE ? MOCK_PROJECTS : []);
+  const [pullRequests, setPullRequests] = useState<PullRequest[]>(SITE_CONFIG.DEMO_MODE ? MOCK_PRS : []);
   const [isHydrated, setIsHydrated] = useState(false);
 
   useEffect(() => {
@@ -87,14 +88,16 @@ export function useAppStore() {
         if (found) setCurrentPersona(found);
       }
 
-      const savedProjects = localStorage.getItem(STORAGE_KEY_PROJECTS);
-      if (savedProjects) {
-        setProjects(JSON.parse(savedProjects));
-      }
+      if (SITE_CONFIG.DEMO_MODE) {
+        const savedProjects = localStorage.getItem(STORAGE_KEY_PROJECTS);
+        if (savedProjects) {
+          setProjects(JSON.parse(savedProjects));
+        }
 
-      const savedPrs = localStorage.getItem(STORAGE_KEY_PRS);
-      if (savedPrs) {
-        setPullRequests(JSON.parse(savedPrs));
+        const savedPrs = localStorage.getItem(STORAGE_KEY_PRS);
+        if (savedPrs) {
+          setPullRequests(JSON.parse(savedPrs));
+        }
       }
     } catch (e) {
       console.warn("Storage hydration notice:", e);

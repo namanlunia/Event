@@ -150,7 +150,7 @@ CREATE TABLE IF NOT EXISTS public.referrals (
 
 -- 10. CERTIFICATES TABLE
 CREATE TABLE IF NOT EXISTS public.certificates (
-    id TEXT PRIMARY KEY, -- e.g. OWOC-2024-C-9821
+    id TEXT PRIMARY KEY, -- e.g. OWOC-2026-C-9821
     user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
     recipient_name TEXT NOT NULL,
     role TEXT NOT NULL,

@@ -2,11 +2,51 @@
 
 import React from "react";
 import Link from "next/link";
-import { ArrowRight, Star, GitFork, AlertCircle, ArrowUpRight } from "lucide-react";
-import { MOCK_PROJECTS } from "@/data/mockDatabase";
+import { ArrowRight, Star, GitFork, AlertCircle, ArrowUpRight, FolderOpen } from "lucide-react";
+import { getApprovedProjects } from "@/lib/dataService";
+import { SITE_CONFIG } from "@/lib/site-config";
 
 export default function FeaturedProjects() {
-  const featured = MOCK_PROJECTS.slice(0, 4);
+  const allProjects = getApprovedProjects();
+  const featured = allProjects.slice(0, 4);
+  const isDemoMode = SITE_CONFIG.DEMO_MODE;
+
+  // Empty state — no projects onboarded yet
+  if (!isDemoMode && featured.length === 0) {
+    return (
+      <section className="relative py-20 z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-primary/10 border border-red-primary/30 text-xs font-mono text-red-bright uppercase mb-3">
+                <span>Handpicked Codebases</span>
+              </div>
+              <h2 className="font-heading font-black text-3xl sm:text-5xl text-white tracking-tight">
+                Featured Repositories
+              </h2>
+              <p className="mt-3 text-sm sm:text-base text-text-secondary max-w-xl">
+                High-impact repositories looking for active contributors this winter.
+              </p>
+            </div>
+          </div>
+          <div className="glass-card rounded-2xl border border-white/10 p-12 text-center max-w-xl mx-auto">
+            <FolderOpen className="w-12 h-12 text-text-muted mx-auto mb-4" />
+            <p className="text-text-secondary font-semibold">Project onboarding opens Oct 20, 2026</p>
+            <p className="text-xs text-text-muted mt-2">
+              Maintainers can apply to onboard their open-source repositories once the registration period begins.
+            </p>
+            <Link
+              href="/projects"
+              className="inline-flex items-center gap-2 mt-6 px-5 py-2.5 rounded-lg bg-red-primary/10 border border-red-primary/30 text-xs font-mono text-red-bright hover:bg-red-primary/20 transition-colors"
+            >
+              <span>Browse Projects Page</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="relative py-20 z-10">
@@ -28,10 +68,23 @@ export default function FeaturedProjects() {
             href="/projects"
             className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-surface-1 border border-white/10 hover:border-red-primary/40 text-xs font-mono text-text-primary hover:text-white transition-all w-fit"
           >
-            <span>Explore All 120+ Projects</span>
+            {isDemoMode ? (
+              <>
+                <span>Explore All Projects</span>
+                <span className="text-yellow-400 ml-1">(Sample)</span>
+              </>
+            ) : (
+              <span>Explore All Projects</span>
+            )}
             <ArrowRight className="w-3.5 h-3.5 text-red-bright" />
           </Link>
         </div>
+
+        {isDemoMode && (
+          <p className="text-xs font-mono text-yellow-400/80 mb-6 text-center">
+            ⚠ Sample repositories shown — real projects will appear after maintainer onboarding opens
+          </p>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {featured.map((project) => (
@@ -89,12 +142,9 @@ export default function FeaturedProjects() {
               {/* Bottom Footer Details */}
               <div className="pt-4 border-t border-white/5 flex items-center justify-between text-xs">
                 <div className="flex items-center gap-2">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={project.maintainer_avatar}
-                    alt={project.maintainer_name}
-                    className="w-5 h-5 rounded-full object-cover"
-                  />
+                  <div className="w-5 h-5 rounded-full bg-gradient-to-br from-red-primary/40 to-surface-2 border border-white/10 flex items-center justify-center text-[9px] font-bold text-white">
+                    {project.maintainer_name.split(" ").map((n: string) => n[0]).join("").slice(0, 2)}
+                  </div>
                   <span className="text-text-muted text-[11px]">
                     Lead: {project.maintainer_name}
                   </span>

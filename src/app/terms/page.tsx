@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { ArrowLeft, FileText } from "lucide-react";
+import { SEASON_LABEL } from "@/lib/season";
 
 export const metadata = {
   title: "Terms of Participation — Omnikon Winter of Code",
@@ -28,7 +29,7 @@ export default function TermsPage() {
             Terms of Participation
           </h1>
           <p className="text-sm text-text-secondary leading-relaxed">
-            By registering and participating in OWOC 2024–25 as a contributor, mentor, ambassador, or project admin, you agree to these program terms.
+            By registering and participating in OWOC {SEASON_LABEL} as a contributor, mentor, ambassador, or project admin, you agree to these program terms.
           </p>
         </div>
 
@@ -53,10 +54,10 @@ export default function TermsPage() {
 
           <section className="space-y-2">
             <h2 className="font-heading font-bold text-lg text-white">
-              3. Certificates & Merchandise
+              3. Certificates & Recognition
             </h2>
             <p>
-              Digital certificates are awarded to contributors with at least one approved and merged pull request. Physical merchandise and swag packages are subject to postal availability and customs regulations.
+              Digital certificates are awarded to participants who meet the program qualification criteria (including approved and merged pull requests or active mentorship). Any additional physical awards or perks are subject to confirmed sponsorship.
             </p>
           </section>
         </div>

@@ -14,6 +14,9 @@ import {
 } from "lucide-react";
 import { DEMO_PERSONAS, useAppStore } from "@/lib/store";
 import { UserRole } from "@/types";
+import { SITE_CONFIG } from "@/lib/site-config";
+import { SampleBadge } from "@/components/visual/DemoModeBanner";
+import AvatarDisplay from "@/components/visual/AvatarDisplay";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -72,49 +75,50 @@ export default function LoginPage() {
           <span>Continue with GitHub (Recommended)</span>
         </button>
 
-        {/* Divider */}
-        <div className="relative my-6 text-center">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-white/10" />
-          </div>
-          <span className="relative px-3 bg-surface-1 text-[11px] font-mono text-text-muted">
-            OR TEST DEMO PERSONAS
-          </span>
-        </div>
-
-        {/* Instant Role Persona Switcher Grid */}
-        <div className="space-y-2 mb-6">
-          <div className="text-[11px] font-mono text-red-bright uppercase font-bold tracking-wider mb-2 flex items-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Select Persona to Test Dashboard</span>
-          </div>
-
-          {DEMO_PERSONAS.map((p) => (
-            <button
-              key={p.role}
-              onClick={() => handleDemoLogin(p.role, p.dashboardUrl)}
-              className="w-full p-2.5 rounded-xl bg-surface-2 border border-white/5 hover:border-red-primary/40 text-left flex items-center justify-between group transition-all"
-            >
-              <div className="flex items-center gap-2.5">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={p.avatar}
-                  alt={p.name}
-                  className="w-8 h-8 rounded-full object-cover border border-white/10 group-hover:border-red-bright transition-colors"
-                />
-                <div>
-                  <div className="text-xs font-bold text-white group-hover:text-red-bright transition-colors">
-                    {p.name}
-                  </div>
-                  <div className="text-[10px] font-mono text-text-muted">
-                    {p.title}
-                  </div>
-                </div>
+        {/* Divider & Demo Personas (Visible only in DEMO_MODE) */}
+        {SITE_CONFIG.DEMO_MODE && (
+          <>
+            <div className="relative my-6 text-center">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-white/10" />
               </div>
-              <ArrowRight className="w-3.5 h-3.5 text-text-muted group-hover:text-red-bright group-hover:translate-x-1 transition-all" />
-            </button>
-          ))}
-        </div>
+              <span className="relative px-3 bg-surface-1 text-[11px] font-mono text-text-muted">
+                DEMO PERSONAS
+              </span>
+            </div>
+
+            <div className="space-y-2 mb-6">
+              <div className="flex items-center justify-between mb-2">
+                <div className="text-[11px] font-mono text-red-bright uppercase font-bold tracking-wider flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>Sample Role Switcher</span>
+                </div>
+                <SampleBadge />
+              </div>
+
+              {DEMO_PERSONAS.map((p) => (
+                <button
+                  key={p.role}
+                  onClick={() => handleDemoLogin(p.role, p.dashboardUrl)}
+                  className="w-full p-2.5 rounded-xl bg-surface-2 border border-white/5 hover:border-red-primary/40 text-left flex items-center justify-between group transition-all"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <AvatarDisplay name={p.name} size="sm" />
+                    <div>
+                      <div className="text-xs font-bold text-white group-hover:text-red-bright transition-colors">
+                        {p.name}
+                      </div>
+                      <div className="text-[10px] font-mono text-text-muted">
+                        {p.title}
+                      </div>
+                    </div>
+                  </div>
+                  <ArrowRight className="w-3.5 h-3.5 text-text-muted group-hover:text-red-bright group-hover:translate-x-1 transition-all" />
+                </button>
+              ))}
+            </div>
+          </>
+        )}
 
         {/* Fallback Email Input */}
         <form onSubmit={handleEmailLogin} className="space-y-2 pt-2 border-t border-white/5">

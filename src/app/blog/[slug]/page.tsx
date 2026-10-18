@@ -4,7 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { ArrowLeft, Calendar, Clock, Share2, Bookmark } from "lucide-react";
-import { MOCK_BLOGS } from "@/data/mockDatabase";
+import { MOCK_BLOGS } from "@/lib/demo-data";
 
 export default function BlogPostPage() {
   const params = useParams();

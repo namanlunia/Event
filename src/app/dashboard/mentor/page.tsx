@@ -14,12 +14,15 @@ import {
   Flame,
 } from "lucide-react";
 import { useAppStore } from "@/lib/store";
+import { SITE_CONFIG } from "@/lib/site-config";
+import { SampleBadge } from "@/components/visual/DemoModeBanner";
+import AvatarDisplay from "@/components/visual/AvatarDisplay";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export default function MentorDashboard() {
-  const { pullRequests, mergePR } = useAppStore();
+  const { pullRequests, mergePR, currentPersona } = useAppStore();
 
   const [selectedQualityBonus, setSelectedQualityBonus] = useState<Record<string, number>>({});
-  const [feedbackMap, setFeedbackMap] = useState<Record<string, string>>({});
   const [successToast, setSuccessToast] = useState<string | null>(null);
 
   const pendingPRs = pullRequests.filter((pr) => pr.status === "pending" || pr.status === "approved");
@@ -47,34 +50,27 @@ export default function MentorDashboard() {
         <div className="absolute top-0 right-0 w-80 h-80 bg-red-primary/10 blur-3xl pointer-events-none" />
 
         <div className="flex items-center gap-4">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150"
-            alt="Elena Rostova"
-            className="w-16 h-16 rounded-2xl object-cover border-2 border-red-bright shadow-red-glow-sm"
-          />
+          <AvatarDisplay name={currentPersona?.name || "Mentor"} size="lg" />
           <div>
             <div className="flex items-center gap-2 mb-1">
               <span className="text-xs font-mono text-red-bright uppercase font-bold tracking-wider">
                 TECHNICAL MENTOR WORKSPACE
               </span>
-              <span className="px-2 py-0.5 rounded bg-surface-2 text-[10px] font-mono text-text-muted">
-                WinterVision Core Track
-              </span>
+              {SITE_CONFIG.DEMO_MODE && <SampleBadge />}
             </div>
             <h1 className="font-heading font-black text-2xl sm:text-3xl text-white">
-              Elena Rostova
+              {currentPersona?.name || "Technical Mentor"}
             </h1>
             <p className="text-xs text-text-secondary mt-0.5">
-              Reviewing pull requests, grading architectural quality, and awarding bonus points.
+              Reviewing pull requests, grading code quality, and guiding student contributors.
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-3">
           <div className="p-3 rounded-xl bg-surface-1 border border-white/10 font-mono text-xs text-right">
-            <span className="text-text-muted block text-[10px]">Active Track</span>
-            <span className="text-white font-bold">CUDA & Systems</span>
+            <span className="text-text-muted block text-[10px]">Track Status</span>
+            <span className="text-white font-bold">Active Reviewer</span>
           </div>
         </div>
       </div>
@@ -89,7 +85,11 @@ export default function MentorDashboard() {
             <Clock className="w-4 h-4 text-yellow-400" />
           </div>
           <div className="font-heading font-black text-3xl text-white">
-            {pendingPRs.length}
+            <AnimatedCounter
+              value={pendingPRs.length}
+              fallbackText="0"
+              className="font-heading font-black text-3xl text-white"
+            />
           </div>
           <p className="text-[11px] text-text-muted font-mono mt-1">
             Target turnaround: &lt; 48 hours
@@ -104,23 +104,33 @@ export default function MentorDashboard() {
             <CheckCircle2 className="w-4 h-4 text-green-400" />
           </div>
           <div className="font-heading font-black text-3xl text-white">
-            {mergedPRs.length}
+            <AnimatedCounter
+              value={mergedPRs.length}
+              fallbackText="0"
+              className="font-heading font-black text-3xl text-white"
+            />
           </div>
           <p className="text-[11px] text-green-400 font-mono mt-1">
-            Points tabulated on live podium
+            Points tabulated on leaderboard
           </p>
         </div>
 
         <div className="glass-card p-6 rounded-2xl border border-white/10">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-mono text-text-muted uppercase">
-              Mentees Mentored
+              Active Mentees
             </span>
             <Users className="w-4 h-4 text-red-bright" />
           </div>
-          <div className="font-heading font-black text-3xl text-white">12</div>
+          <div className="font-heading font-black text-3xl text-white">
+            <AnimatedCounter
+              value={SITE_CONFIG.DEMO_MODE ? 12 : 0}
+              fallbackText="0"
+              className="font-heading font-black text-3xl text-white"
+            />
+          </div>
           <p className="text-[11px] text-text-muted font-mono mt-1">
-            Active in Discord Track Voice
+            Assigned in track workrooms
           </p>
         </div>
       </div>
@@ -153,12 +163,7 @@ export default function MentorDashboard() {
                 >
                   <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                     <div className="flex items-start gap-3">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={pr.contributor_avatar}
-                        alt={pr.contributor_name}
-                        className="w-10 h-10 rounded-full object-cover border border-white/10 flex-shrink-0"
-                      />
+                      <AvatarDisplay name={pr.contributor_name} size="md" />
                       <div>
                         <div className="flex items-center gap-2 mb-1">
                           <span className="font-mono text-xs text-text-muted">
@@ -257,14 +262,23 @@ export default function MentorDashboard() {
             })}
           </div>
         ) : (
-          <div className="glass-card p-12 rounded-2xl border border-white/10 text-center text-text-muted space-y-2">
+          <div className="glass-card p-12 rounded-2xl border border-white/10 text-center text-text-muted space-y-3">
             <CheckCircle2 className="w-10 h-10 text-green-400 mx-auto mb-2" />
             <h3 className="font-heading font-bold text-lg text-white">
-              All PRs Caught Up!
+              No Pending PRs in Queue
             </h3>
-            <p className="text-xs text-text-secondary">
-              No pending reviews in your queue. Great job keeping the review turnaround under 48 hours.
+            <p className="text-xs text-text-secondary max-w-md mx-auto">
+              Pull requests submitted by student contributors during the coding period will appear here for architectural review and bonus grading.
             </p>
+            <div className="pt-2">
+              <Link
+                href="/projects"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-surface-2 border border-white/10 text-xs text-white hover:border-white/20 transition-colors"
+              >
+                <span>Browse Approved Repositories</span>
+                <ExternalLink className="w-3.5 h-3.5" />
+              </Link>
+            </div>
           </div>
         )}
       </div>

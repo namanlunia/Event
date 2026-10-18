@@ -2,8 +2,10 @@ import React from "react";
 import Link from "next/link";
 import { ArrowLeft, Shield } from "lucide-react";
 
+import { SITE_CONFIG } from "@/lib/site-config";
+
 export const metadata = {
-  title: "Privacy Policy — Omnikon Winter of Code",
+  title: `Privacy Policy — ${SITE_CONFIG.ORG_NAME} Winter of Code`,
   description: "Privacy and data protection policy for OWOC participants.",
 };
 
@@ -28,7 +30,7 @@ export default function PrivacyPage() {
             Privacy Policy
           </h1>
           <p className="text-sm text-text-secondary leading-relaxed">
-            Last updated: October 2024. Your privacy is paramount. This policy outlines how Omnikon Foundation collects, utilizes, and protects your information during OWOC.
+            Last updated: October 2026. Your privacy is paramount. This policy outlines how {SITE_CONFIG.ORG_NAME} collects, utilizes, and protects your information during OWOC.
           </p>
         </div>
 
@@ -47,16 +49,16 @@ export default function PrivacyPage() {
               2. How Your Information Is Used
             </h2>
             <p>
-              Your data is utilized strictly to authenticate your identity, tabulate points on the public leaderboard, dispatch swags/certificates, and facilitate mentor-contributor communication in project tracks. We never sell your personal information.
+              Your data is utilized strictly to authenticate your identity, tabulate points on the leaderboard, issue digital certificates, and facilitate mentor-contributor communication in project tracks. We never sell your personal information.
             </p>
           </section>
 
           <section className="space-y-2">
             <h2 className="font-heading font-bold text-lg text-white">
-              3. Opt-in Resume Books for Sponsors
+              3. Opt-in Opportunities
             </h2>
             <p>
-              Top-performing contributors are invited to opt-in to our partner sponsor resume book. Inclusion is strictly voluntary and requires your explicit consent.
+              If confirmed program partners offer recruitment or interview opportunities, participants may choose to opt in to talent showcases. Participation is strictly voluntary and requires explicit consent.
             </p>
           </section>
         </div>
