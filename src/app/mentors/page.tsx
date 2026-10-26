@@ -92,13 +92,10 @@ export default function MentorsPage() {
                 </div>
 
                 <div className="pt-4 border-t border-white/5 flex items-center justify-between text-xs">
-                  <Link
-                    href={`/projects/${mentor.projectId}`}
-                    className="text-text-muted hover:text-white transition-colors flex items-center gap-1 font-mono text-[11px]"
-                  >
+                  <span className="text-text-muted flex items-center gap-1.5 font-mono text-[11px]">
                     <Code2 className="w-3.5 h-3.5 text-red-bright" />
-                    <span>{mentor.project}</span>
-                  </Link>
+                    <span>Track Mentor &bull; {mentor.domain}</span>
+                  </span>
 
                   <span
                     title="Sample profile (not a real link)"

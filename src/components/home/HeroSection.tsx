@@ -40,13 +40,13 @@ export default function HeroSection() {
 
   // Build stat rows only when DEMO_MODE or when real data exists
   const statItems = [
-    { label: "Merged PRs", value: stats.mergedPrs, suffix: "+" },
-    { label: "Student Builders", value: stats.studentBuilders, suffix: "+" },
-    { label: "Open Repositories", value: stats.openRepositories, suffix: "+" },
-    { label: "Participating Colleges", value: stats.participatingColleges, suffix: "+" },
+    { label: "Merged PRs", value: stats.mergedPrs, suffix: "+", displayValue: "" },
+    { label: "Student Builders", value: stats.studentBuilders, suffix: "+", displayValue: "" },
+    { label: "Open Repositories", value: 0, suffix: "", displayValue: "TBA" },
+    { label: "Participating Colleges", value: stats.participatingColleges, suffix: "+", displayValue: "" },
   ];
 
-  const hasStats = isDemoMode || statItems.some((s) => s.value > 0);
+  const hasStats = isDemoMode || statItems.some((s) => s.value > 0 || s.displayValue);
 
   return (
     <section className="relative pt-32 pb-24 md:pt-44 md:pb-32 overflow-hidden">
@@ -156,11 +156,17 @@ export default function HeroSection() {
                   <div className="text-xs font-mono text-text-muted mb-1">
                     {stat.label}
                   </div>
-                  <AnimatedCounter
-                    value={stat.value}
-                    suffix={stat.value > 0 ? stat.suffix : ""}
-                    className="font-heading font-black text-2xl sm:text-3xl text-white"
-                  />
+                  {stat.displayValue ? (
+                    <span className="font-heading font-black text-2xl sm:text-3xl text-text-muted">
+                      {stat.displayValue}
+                    </span>
+                  ) : (
+                    <AnimatedCounter
+                      value={stat.value}
+                      suffix={stat.value > 0 ? stat.suffix : ""}
+                      className="font-heading font-black text-2xl sm:text-3xl text-white"
+                    />
+                  )}
                 </div>
               ))}
             </div>

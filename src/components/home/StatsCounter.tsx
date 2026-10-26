@@ -13,6 +13,7 @@ interface StatBlockItem {
   sublabel: string;
   value: number;
   suffix: string;
+  isTba?: boolean;
   icon: React.ReactNode;
 }
 
@@ -39,13 +40,10 @@ export default function StatsCounter() {
     },
     {
       label: "Open Source Projects",
-      sublabel: isDemoMode
-        ? "Sample data — season not started"
-        : stats_data.openRepositories > 0
-        ? "Onboarded repositories"
-        : "Maintainer onboarding active",
-      value: stats_data.openRepositories,
-      suffix: stats_data.openRepositories > 0 ? "+" : "",
+      sublabel: "To be announced",
+      value: 0,
+      suffix: "",
+      isTba: true,
       icon: <FolderGit2 className="w-5 h-5 text-red-bright" />,
     },
     {
@@ -72,7 +70,7 @@ export default function StatsCounter() {
     },
   ];
 
-  const hasAnyData = isDemoMode || stats.some((s) => s.value > 0);
+  const hasAnyData = isDemoMode || stats.some((s) => s.value > 0 || s.isTba);
 
   // If completely 0 and in production mode, show honest inaugural onboarding notice
   if (!hasAnyData) {
@@ -127,7 +125,11 @@ export default function StatsCounter() {
               </div>
 
               <div className="font-heading font-black text-3xl sm:text-4xl text-white tracking-tight flex items-baseline">
-                {stat.value > 0 ? (
+                {stat.isTba ? (
+                  <span className="text-text-muted font-heading font-black text-3xl sm:text-4xl">
+                    TBA
+                  </span>
+                ) : stat.value > 0 ? (
                   <AnimatedCounter
                     value={stat.value}
                     suffix={stat.suffix}

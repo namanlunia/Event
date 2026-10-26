@@ -4,13 +4,9 @@ import * as demoData from "@/lib/demo-data";
 
 /**
  * Returns approved projects.
- * When DEMO_MODE is false, only genuine confirmed projects from DB/store are returned.
+ * In launch mode, projects are "To Be Announced" prior to official onboarding.
  */
 export function getApprovedProjects(): Project[] {
-  if (SITE_CONFIG.DEMO_MODE) {
-    return demoData.MOCK_PROJECTS;
-  }
-  // When DEMO_MODE is false: return empty array or real DB projects
   return [];
 }
 
@@ -88,10 +84,10 @@ export function getSiteStats(): SiteStats {
       mergedPrs: 4800,
       mergedPRs: 4800,
       studentBuilders: 2500,
-      openRepositories: 120,
-      approvedProjects: 120,
+      openRepositories: 0,
+      approvedProjects: 0,
       participatingColleges: 350,
-      verifiedCerts: 1800,
+      verifiedCerts: 0,
       isLive: false,
     };
   }
@@ -118,13 +114,10 @@ export const getProgramStats = getSiteStats;
 
 /**
  * Returns a project by ID.
+ * Returns undefined as projects are TBA.
  */
 export function getProjectById(id: string): Project | undefined {
-  if (SITE_CONFIG.DEMO_MODE) {
-    return demoData.MOCK_PROJECTS.find((p) => p.id === id);
-  }
-  const approved = getApprovedProjects();
-  return approved.find((p) => p.id === id);
+  return undefined;
 }
 
 /**
