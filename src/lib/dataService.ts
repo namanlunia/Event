@@ -7,37 +7,24 @@ import * as demoData from "@/lib/demo-data";
  * In launch mode, projects are "To Be Announced" prior to official onboarding.
  */
 export function getApprovedProjects(): Project[] {
-  if (SITE_CONFIG.DEMO_MODE) {
-    return demoData.MOCK_PROJECTS;
-  }
+  // In launch mode, projects are cleared and "To Be Continued / To Be Announced"
   return [];
 }
 
 export function getActiveContributors(): UserProfile[] {
-  if (SITE_CONFIG.DEMO_MODE) {
-    return demoData.MOCK_CONTRIBUTORS;
-  }
+  // In launch mode, leaderboard is cleared and "To Be Continued" until sprint starts
   return [];
 }
 
 export function getCampusAmbassadors(): Ambassador[] {
-  if (SITE_CONFIG.DEMO_MODE) {
-    return demoData.MOCK_AMBASSADORS;
-  }
   return [];
 }
 
 export function getScoredPullRequests(): PullRequest[] {
-  if (SITE_CONFIG.DEMO_MODE) {
-    return demoData.MOCK_PRS;
-  }
   return [];
 }
 
 export function getColleges(): College[] {
-  if (SITE_CONFIG.DEMO_MODE) {
-    return demoData.MOCK_COLLEGES;
-  }
   return [];
 }
 
@@ -73,10 +60,10 @@ export function getSiteStats(): SiteStats {
       mergedPrs: 4800,
       mergedPRs: 4800,
       studentBuilders: 2500,
-      openRepositories: 120,
-      approvedProjects: 120,
+      openRepositories: 0,
+      approvedProjects: 0,
       participatingColleges: 350,
-      verifiedCerts: 1800,
+      verifiedCerts: 0,
       isLive: false,
     };
   }
@@ -91,8 +78,8 @@ export function getSiteStats(): SiteStats {
     mergedPrs: prs.filter((p) => p.status === "merged").length,
     mergedPRs: prs.filter((p) => p.status === "merged").length,
     studentBuilders: contributors.length,
-    openRepositories: projects.length,
-    approvedProjects: projects.length,
+    openRepositories: 0,
+    approvedProjects: 0,
     participatingColleges: colleges.length,
     verifiedCerts: 0,
     isLive: false,
@@ -103,13 +90,10 @@ export const getProgramStats = getSiteStats;
 
 /**
  * Returns a project by ID.
+ * Returns undefined as projects are cleared/TBA.
  */
 export function getProjectById(id: string): Project | undefined {
-  if (SITE_CONFIG.DEMO_MODE) {
-    return demoData.MOCK_PROJECTS.find((p) => p.id === id);
-  }
-  const approved = getApprovedProjects();
-  return approved.find((p) => p.id === id);
+  return undefined;
 }
 
 /**

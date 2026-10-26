@@ -40,13 +40,10 @@ export default function StatsCounter() {
     },
     {
       label: "Open Source Projects",
-      sublabel: isDemoMode
-        ? "Sample data — season not started"
-        : stats_data.openRepositories > 0
-        ? "Onboarded repositories"
-        : "Maintainer onboarding active",
-      value: stats_data.openRepositories,
-      suffix: stats_data.openRepositories > 0 ? "+" : "",
+      sublabel: "To be continued · To be announced",
+      value: 0,
+      suffix: "",
+      isTba: true,
       icon: <FolderGit2 className="w-5 h-5 text-red-bright" />,
     },
     {
