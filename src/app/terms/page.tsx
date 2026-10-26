@@ -60,6 +60,21 @@ export default function TermsPage() {
               Digital certificates are awarded to participants who meet the program qualification criteria (including approved and merged pull requests or active mentorship). Any additional physical awards or perks are subject to confirmed sponsorship.
             </p>
           </section>
+
+          <section className="space-y-2">
+            <h2 className="font-heading font-bold text-lg text-white">
+              4. Inquiries & Communications
+            </h2>
+            <p>
+              For legal questions, disputes, or clarifications regarding these terms, contact the organizers at{" "}
+              <a
+                href="mailto:contact@omnikonhub.com"
+                className="text-red-bright hover:underline font-mono text-xs"
+              >
+                contact@omnikonhub.com
+              </a>.
+            </p>
+          </section>
         </div>
       </div>
     </div>

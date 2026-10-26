@@ -222,7 +222,7 @@ function SuperAdminDashboardContent() {
     {
       id: "u-2",
       name: "Dr. Aris Thorne",
-      email: "aris@omnikon.org",
+      email: "aris@omnikonhub.com",
       role: "mentor",
       college: "Stanford",
       points: 0,

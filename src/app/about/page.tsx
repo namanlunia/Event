@@ -8,6 +8,8 @@ import {
   Award,
   ArrowRight,
   ShieldCheck,
+  Globe,
+  Mail,
 } from "lucide-react";
 import { SEASON_LABEL } from "@/lib/season";
 import { SITE_CONFIG } from "@/lib/site-config";
@@ -264,6 +266,82 @@ export default function AboutPage() {
               </div>
             </div>
           )}
+        </div>
+
+        {/* Find Omnikon Online */}
+        <div className="glass-card p-8 sm:p-10 rounded-3xl border border-white/10 mb-20 max-w-3xl mx-auto">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="p-2.5 rounded-xl bg-surface-2 border border-white/5 text-red-bright">
+              <Globe className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="font-heading font-bold text-xl text-white">
+                Find Omnikon Online
+              </h3>
+              <p className="text-xs text-text-muted">
+                Official community portals, source code, and developer networks
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-mono mb-6">
+            <a
+              href={SITE_CONFIG.SOCIAL_LINKS.website}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-3 rounded-xl bg-surface-1 border border-white/5 hover:border-red-primary/40 flex items-center justify-between text-text-secondary hover:text-white transition-all"
+            >
+              <span>Website</span>
+              <span className="text-[11px] text-text-muted">omnikonhub.com &rarr;</span>
+            </a>
+            <a
+              href={SITE_CONFIG.SOCIAL_LINKS.discord}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-3 rounded-xl bg-surface-1 border border-white/5 hover:border-red-primary/40 flex items-center justify-between text-text-secondary hover:text-white transition-all"
+            >
+              <span>Discord</span>
+              <span className="text-[11px] text-text-muted">Community Server &rarr;</span>
+            </a>
+            <a
+              href={SITE_CONFIG.SOCIAL_LINKS.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-3 rounded-xl bg-surface-1 border border-white/5 hover:border-red-primary/40 flex items-center justify-between text-text-secondary hover:text-white transition-all"
+            >
+              <span>GitHub</span>
+              <span className="text-[11px] text-text-muted">@Omnikon-Org &rarr;</span>
+            </a>
+            <a
+              href={SITE_CONFIG.SOCIAL_LINKS.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-3 rounded-xl bg-surface-1 border border-white/5 hover:border-red-primary/40 flex items-center justify-between text-text-secondary hover:text-white transition-all"
+            >
+              <span>LinkedIn</span>
+              <span className="text-[11px] text-text-muted">Omnikon &rarr;</span>
+            </a>
+            <a
+              href={SITE_CONFIG.SOCIAL_LINKS.twitter}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-3 rounded-xl bg-surface-1 border border-white/5 hover:border-red-primary/40 flex items-center justify-between text-text-secondary hover:text-white transition-all sm:col-span-2"
+            >
+              <span>X / Twitter</span>
+              <span className="text-[11px] text-text-muted">@OmnikonOrg &rarr;</span>
+            </a>
+          </div>
+
+          <div className="pt-4 border-t border-white/5 flex items-center justify-between flex-wrap gap-2 text-xs">
+            <span className="text-text-muted">Universal Inquiries:</span>
+            <a
+              href={`mailto:${SITE_CONFIG.CONTACT_EMAIL}`}
+              className="inline-flex items-center gap-1.5 font-mono text-red-bright hover:underline"
+            >
+              <Mail className="w-3.5 h-3.5" />
+              <span>{SITE_CONFIG.CONTACT_EMAIL}</span>
+            </a>
+          </div>
         </div>
 
         {/* CTA banner */}

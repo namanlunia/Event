@@ -61,6 +61,21 @@ export default function PrivacyPage() {
               If confirmed program partners offer recruitment or interview opportunities, participants may choose to opt in to talent showcases. Participation is strictly voluntary and requires explicit consent.
             </p>
           </section>
+
+          <section className="space-y-2">
+            <h2 className="font-heading font-bold text-lg text-white">
+              4. Contact & Inquiries
+            </h2>
+            <p>
+              If you have any questions or data requests regarding our privacy practices, reach out to our team at{" "}
+              <a
+                href="mailto:contact@omnikonhub.com"
+                className="text-red-bright hover:underline font-mono text-xs"
+              >
+                contact@omnikonhub.com
+              </a>.
+            </p>
+          </section>
         </div>
       </div>
     </div>

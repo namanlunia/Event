@@ -995,7 +995,7 @@ export const MOCK_AUDIT_LOGS: AuditLogItem[] = [
   {
     id: "al-1",
     admin_id: "admin-1",
-    admin_email: "organizer@omnikon.org",
+    admin_email: "contact@omnikonhub.com",
     action: "approve_project",
     target_type: "project",
     target_id: "proj-1",
@@ -1006,7 +1006,7 @@ export const MOCK_AUDIT_LOGS: AuditLogItem[] = [
   {
     id: "al-2",
     admin_id: "admin-1",
-    admin_email: "organizer@omnikon.org",
+    admin_email: "contact@omnikonhub.com",
     action: "update_points_rules",
     target_type: "points_rules_config",
     target_id: "rules-v1",
@@ -1017,12 +1017,12 @@ export const MOCK_AUDIT_LOGS: AuditLogItem[] = [
 ];
 
 export const MOCK_SITE_SETTINGS: SiteSettings = {
-  contact_email: "contact@omnikon.org",
-  conduct_email: "conduct@omnikon.org",
-  twitter_url: "",
-  linkedin_url: "",
-  github_url: "https://github.com/namanlunia/Event",
-  discord_url: "",
+  contact_email: "contact@omnikonhub.com",
+  conduct_email: "contact@omnikonhub.com",
+  twitter_url: "https://x.com/OmnikonOrg",
+  linkedin_url: "https://www.linkedin.com/company/omnikon-org/",
+  github_url: "https://github.com/Omnikon-Org",
+  discord_url: "https://discord.gg/yWtjK2Tb8T",
   ambassador_rewards_config: {
     bronze_threshold: 10,
     silver_threshold: 25,

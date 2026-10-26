@@ -4,6 +4,8 @@ import React from "react";
 import Link from "next/link";
 import {
   MessageSquare,
+  Globe,
+  Mail,
 } from "lucide-react";
 import BrandLogo from "@/components/brand/BrandLogo";
 import { COPYRIGHT_YEAR } from "@/lib/season";
@@ -29,11 +31,22 @@ export default function Footer() {
               Omnikon Winter of Code is a premier open-source initiative bringing together developers, mentors, and campus ambassadors to engineer production-grade software during the winter season.
             </p>
             <div className="flex items-center gap-3 pt-2">
+              {SITE_CONFIG.SOCIAL_LINKS.website && (
+                <a
+                  href={SITE_CONFIG.SOCIAL_LINKS.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-9 h-9 rounded-lg bg-surface-1 border border-white/10 flex items-center justify-center text-text-secondary hover:text-white hover:border-red-primary/50 transition-colors"
+                  aria-label="Omnikon Website"
+                >
+                  <Globe className="w-4 h-4" />
+                </a>
+              )}
               {SITE_CONFIG.SOCIAL_LINKS.github && (
                 <a
                   href={SITE_CONFIG.SOCIAL_LINKS.github}
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                   className="w-9 h-9 rounded-lg bg-surface-1 border border-white/10 flex items-center justify-center text-text-secondary hover:text-white hover:border-red-primary/50 transition-colors"
                   aria-label="GitHub"
                 >
@@ -46,7 +59,7 @@ export default function Footer() {
                 <a
                   href={SITE_CONFIG.SOCIAL_LINKS.twitter}
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                   className="w-9 h-9 rounded-lg bg-surface-1 border border-white/10 flex items-center justify-center text-text-secondary hover:text-white hover:border-red-primary/50 transition-colors"
                   aria-label="X / Twitter"
                 >
@@ -59,7 +72,7 @@ export default function Footer() {
                 <a
                   href={SITE_CONFIG.SOCIAL_LINKS.linkedin}
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                   className="w-9 h-9 rounded-lg bg-surface-1 border border-white/10 flex items-center justify-center text-text-secondary hover:text-white hover:border-red-primary/50 transition-colors"
                   aria-label="LinkedIn"
                 >
@@ -72,18 +85,22 @@ export default function Footer() {
                 <a
                   href={SITE_CONFIG.SOCIAL_LINKS.discord}
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                   className="w-9 h-9 rounded-lg bg-surface-1 border border-white/10 flex items-center justify-center text-text-secondary hover:text-white hover:border-red-primary/50 transition-colors"
                   aria-label="Discord"
                 >
                   <MessageSquare className="w-4 h-4" />
                 </a>
               )}
-              {/* No social links configured yet — add URLs to .env.local */}
-              {!SITE_CONFIG.SOCIAL_LINKS.github && !SITE_CONFIG.SOCIAL_LINKS.twitter &&
-               !SITE_CONFIG.SOCIAL_LINKS.linkedin && !SITE_CONFIG.SOCIAL_LINKS.discord && (
-                <p className="text-xs text-text-muted font-mono">Social links coming soon</p>
-              )}
+            </div>
+            <div className="pt-2">
+              <a
+                href={`mailto:${SITE_CONFIG.CONTACT_EMAIL}`}
+                className="inline-flex items-center gap-1.5 text-xs font-mono text-text-secondary hover:text-red-bright transition-colors"
+              >
+                <Mail className="w-3.5 h-3.5 text-red-bright" />
+                <span>{SITE_CONFIG.CONTACT_EMAIL}</span>
+              </a>
             </div>
           </div>
 

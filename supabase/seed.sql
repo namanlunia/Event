@@ -9,12 +9,12 @@
 INSERT INTO public.site_settings (id, contact_email, conduct_email, twitter_url, linkedin_url, github_url, discord_url)
 VALUES (
     '00000000-0000-0000-0000-000000000001',
-    'contact@omnikon.org',
-    'conduct@omnikon.org',
-    'https://x.com/omnikon_owoc',
-    'https://linkedin.com/company/omnikon',
-    'https://github.com/namanlunia/Event',
-    'https://discord.gg/owoc'
+    'contact@omnikonhub.com',
+    'contact@omnikonhub.com',
+    'https://x.com/OmnikonOrg',
+    'https://www.linkedin.com/company/omnikon-org/',
+    'https://github.com/Omnikon-Org',
+    'https://discord.gg/yWtjK2Tb8T'
 ) ON CONFLICT (id) DO NOTHING;
 
 -- Sample Points Rules

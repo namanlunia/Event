@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Mail, MessageSquare, Send, CheckCircle2, MapPin, Clock } from "lucide-react";
+import { Mail, MessageSquare, Send, CheckCircle2, MapPin, Clock, Globe } from "lucide-react";
 
 import { SITE_CONFIG } from "@/lib/site-config";
 
@@ -98,6 +98,74 @@ export default function ContactPage() {
               <p className="text-[11px] text-text-muted">
                 Email inquiries replied to within 24–48 hours.
               </p>
+            </div>
+
+            {/* Find Omnikon Online */}
+            <div className="glass-card p-6 rounded-2xl border border-white/10 space-y-3">
+              <div className="p-2.5 rounded-xl bg-surface-2 border border-white/5 w-fit text-red-bright">
+                <Globe className="w-5 h-5" />
+              </div>
+              <h3 className="font-heading font-bold text-base text-white">
+                Find Omnikon Online
+              </h3>
+              <p className="text-xs text-text-muted">
+                Connect across our verified community channels:
+              </p>
+              <div className="space-y-2 pt-1 text-xs font-mono">
+                <a
+                  href={SITE_CONFIG.SOCIAL_LINKS.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between text-text-secondary hover:text-white transition-colors"
+                >
+                  <span>Website</span>
+                  <span className="text-[11px] text-text-muted">omnikonhub.com &rarr;</span>
+                </a>
+                <a
+                  href={SITE_CONFIG.SOCIAL_LINKS.discord}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between text-text-secondary hover:text-white transition-colors"
+                >
+                  <span>Discord</span>
+                  <span className="text-[11px] text-text-muted">Community Server &rarr;</span>
+                </a>
+                <a
+                  href={SITE_CONFIG.SOCIAL_LINKS.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between text-text-secondary hover:text-white transition-colors"
+                >
+                  <span>GitHub</span>
+                  <span className="text-[11px] text-text-muted">@Omnikon-Org &rarr;</span>
+                </a>
+                <a
+                  href={SITE_CONFIG.SOCIAL_LINKS.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between text-text-secondary hover:text-white transition-colors"
+                >
+                  <span>LinkedIn</span>
+                  <span className="text-[11px] text-text-muted">Omnikon &rarr;</span>
+                </a>
+                <a
+                  href={SITE_CONFIG.SOCIAL_LINKS.twitter}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between text-text-secondary hover:text-white transition-colors"
+                >
+                  <span>X / Twitter</span>
+                  <span className="text-[11px] text-text-muted">@OmnikonOrg &rarr;</span>
+                </a>
+              </div>
+              <div className="pt-2 border-t border-white/5">
+                <a
+                  href={`mailto:${SITE_CONFIG.CONTACT_EMAIL}`}
+                  className="text-xs font-mono text-red-bright hover:underline block break-all"
+                >
+                  {SITE_CONFIG.CONTACT_EMAIL}
+                </a>
+              </div>
             </div>
           </div>
 

@@ -19,15 +19,17 @@ export const SITE_CONFIG = {
   SHORT_PROGRAM_NAME: "OWOC",
   
   // Contact & Inquiries
-  CONTACT_EMAIL: process.env.NEXT_PUBLIC_CONTACT_EMAIL || "contact@omnikon.org",
-  CONDUCT_EMAIL: process.env.NEXT_PUBLIC_CONDUCT_EMAIL || "conduct@omnikon.org",
+  CONTACT_EMAIL: process.env.NEXT_PUBLIC_CONTACT_EMAIL || "contact@omnikonhub.com",
+  CONDUCT_EMAIL: process.env.NEXT_PUBLIC_CONDUCT_EMAIL || "contact@omnikonhub.com",
 
-  // Social Links (only rendered if URL string is populated)
+  // Social Links
+  WEBSITE_URL: process.env.NEXT_PUBLIC_WEBSITE_URL || "https://www.omnikonhub.com/",
   SOCIAL_LINKS: {
-    github: process.env.NEXT_PUBLIC_GITHUB_URL || "",
-    twitter: process.env.NEXT_PUBLIC_TWITTER_URL || "",
-    linkedin: process.env.NEXT_PUBLIC_LINKEDIN_URL || "",
-    discord: process.env.NEXT_PUBLIC_DISCORD_URL || "",
+    website: process.env.NEXT_PUBLIC_WEBSITE_URL || "https://www.omnikonhub.com/",
+    discord: process.env.NEXT_PUBLIC_DISCORD_URL || "https://discord.gg/yWtjK2Tb8T",
+    linkedin: process.env.NEXT_PUBLIC_LINKEDIN_URL || "https://www.linkedin.com/company/omnikon-org/",
+    twitter: process.env.NEXT_PUBLIC_TWITTER_URL || "https://x.com/OmnikonOrg",
+    github: process.env.NEXT_PUBLIC_GITHUB_URL || "https://github.com/Omnikon-Org",
     instagram: process.env.NEXT_PUBLIC_INSTAGRAM_URL || "",
   },
 

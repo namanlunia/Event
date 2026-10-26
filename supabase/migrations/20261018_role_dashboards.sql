@@ -155,8 +155,8 @@ CREATE TABLE IF NOT EXISTS public.notifications (
 -- 13. SITE SETTINGS
 CREATE TABLE IF NOT EXISTS public.site_settings (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    contact_email TEXT NOT NULL DEFAULT 'contact@omnikon.org',
-    conduct_email TEXT NOT NULL DEFAULT 'conduct@omnikon.org',
+    contact_email TEXT NOT NULL DEFAULT 'contact@omnikonhub.com',
+    conduct_email TEXT NOT NULL DEFAULT 'contact@omnikonhub.com',
     twitter_url TEXT DEFAULT '',
     linkedin_url TEXT DEFAULT '',
     github_url TEXT DEFAULT '',

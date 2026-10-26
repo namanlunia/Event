@@ -59,8 +59,8 @@ All supported environment configuration flags are documented in `.env.example`:
 | :--- | :--- | :--- |
 | `NEXT_PUBLIC_DEMO_MODE` | Controls whether sample preview data is displayed with transparent disclaimer banners (`true`) or strictly verified live records (`false`). | `true` |
 | `NEXT_PUBLIC_ORG_NAME` | Organization name displayed in header, footer, and certificates. | `"Omnikon"` |
-| `NEXT_PUBLIC_CONTACT_EMAIL` | General support and inquiries email address. | `"contact@omnikon.org"` |
-| `NEXT_PUBLIC_CONDUCT_EMAIL` | Code of conduct reporting contact email. | `"conduct@omnikon.org"` |
+| `NEXT_PUBLIC_CONTACT_EMAIL` | General support and inquiries email address. | `"contact@omnikonhub.com"` |
+| `NEXT_PUBLIC_CONDUCT_EMAIL` | Code of conduct reporting contact email. | `"contact@omnikonhub.com"` |
 | `NEXT_PUBLIC_GITHUB_URL` | Organization GitHub profile URL (renders icon if provided). | `""` |
 | `NEXT_PUBLIC_TWITTER_URL` | Official X / Twitter profile URL. | `""` |
 | `NEXT_PUBLIC_LINKEDIN_URL` | Official LinkedIn page URL. | `""` |

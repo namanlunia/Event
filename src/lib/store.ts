@@ -139,12 +139,12 @@ const globalStore: GlobalStoreState = {
   siteSettings: SITE_CONFIG.DEMO_MODE
     ? { ...MOCK_SITE_SETTINGS }
     : {
-        contact_email: "contact@omnikon.org",
-        conduct_email: "conduct@omnikon.org",
-        twitter_url: "",
-        linkedin_url: "",
-        github_url: "",
-        discord_url: "",
+        contact_email: "contact@omnikonhub.com",
+        conduct_email: "contact@omnikonhub.com",
+        twitter_url: "https://x.com/OmnikonOrg",
+        linkedin_url: "https://www.linkedin.com/company/omnikon-org/",
+        github_url: "https://github.com/Omnikon-Org",
+        discord_url: "https://discord.gg/yWtjK2Tb8T",
         ambassador_rewards_config: {
           bronze_threshold: 10,
           silver_threshold: 25,
