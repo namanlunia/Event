@@ -55,7 +55,7 @@ export default function TimelinePage() {
       "Mentor code reviews and score confirmations finalized",
     ],
     5: [
-      "Digital certificates made available on public verification URL",
+      "Digital certificates issued to qualifying participants",
       "Top contributor podium and college awards announced",
       "Community closing ceremony and project showcase celebration",
     ],
@@ -103,7 +103,7 @@ export default function TimelinePage() {
                   ? currentPhase.description
                   : isBeforeProgram
                   ? "Explore repositories and prepare your environment before contributor registrations open."
-                  : "All certificates have been issued. Check the verification portal to claim your credentials."}
+                  : "All certificates have been issued to qualifying participants."}
               </p>
             </div>
           </div>

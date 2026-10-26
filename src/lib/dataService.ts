@@ -234,7 +234,7 @@ export function getFAQItems() {
     {
       category: "General",
       question: "Is OWOC free to participate in?",
-      answer: "Yes, 100% free! OWOC provides accessible open-source mentorship, project contribution opportunities, and verifiable digital credentials.",
+      answer: "Yes, 100% free! OWOC provides accessible open-source mentorship, project contribution opportunities, and digital certificates.",
     },
     {
       category: "Contributors",
@@ -259,7 +259,7 @@ export function getFAQItems() {
     {
       category: "Points & Rewards",
       question: "What credentials do participants receive?",
-      answer: "All contributors who merge at least 1 approved pull request receive a verifiable digital Certificate of Participation with a unique QR code and ID.",
+      answer: "All contributors who merge at least 1 approved pull request receive an official Digital Certificate of Participation.",
     },
   ];
 }

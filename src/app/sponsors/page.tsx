@@ -37,7 +37,7 @@ export default function SponsorsPage() {
       perks: [
         "Branded domain or track designation (e.g. AI/ML or Web3 Track)",
         "Featured sponsor logo across project directories",
-        "Logo on verifiable participant certificates for track completions",
+        "Logo on official participant certificates for track completions",
         "Direct engagement with track contributors via community channels",
       ],
       color: "border-red-primary/40 shadow-red-glow-sm",

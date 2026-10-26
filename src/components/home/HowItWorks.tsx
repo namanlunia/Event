@@ -43,9 +43,9 @@ export default function HowItWorks() {
     },
     {
       step: "05",
-      title: "Earn Verifiable Credentials",
+      title: "Earn Digital Certificates",
       description:
-        "Climb the live standings, unlock milestone achievement badges, and receive a verifiable certificate with a unique QR code.",
+        "Climb the live standings, unlock milestone achievement badges, and receive an official certificate of completion.",
       icon: <Award className="w-5 h-5 text-red-bright" />,
     },
   ];

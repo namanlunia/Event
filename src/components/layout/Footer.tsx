@@ -114,11 +114,6 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/certificate" className="text-text-secondary hover:text-white transition-colors">
-                  Certificate Verification
-                </Link>
-              </li>
-              <li>
                 <Link href="/apply/project-admin" className="text-red-bright hover:text-white font-mono text-xs transition-colors">
                   &rarr; Apply as Project Admin
                 </Link>

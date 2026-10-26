@@ -265,7 +265,7 @@ export default function ContributorDashboard() {
               </div>
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-red-primary/20 text-red-bright font-bold">
-                  SAMPLE CREDENTIAL
+                  PROGRAM CREDENTIAL
                 </span>
                 <SampleBadge />
               </div>
@@ -273,20 +273,15 @@ export default function ContributorDashboard() {
                 Digital Certificate of Excellence
               </h3>
               <p className="text-xs text-text-secondary leading-relaxed mb-4">
-                Preview of verifiable certificate issued upon program completion.
+                Official certificates of completion are issued to all qualifying participants upon program completion on December 31, 2026.
               </p>
-              <div className="p-3 rounded-xl bg-surface-2 border border-white/5 font-mono text-xs text-text-muted mb-4 space-y-1">
-                <div>UID: {MOCK_SAMPLE_CERTIFICATE.id}</div>
-                <div>Status: Verified</div>
-              </div>
             </div>
 
             <Link
-              href={`/certificate/${MOCK_SAMPLE_CERTIFICATE.id}`}
-              className="w-full py-2.5 rounded-xl bg-red-primary hover:bg-red-bright text-white text-xs font-bold shadow-red-glow transition-all flex items-center justify-center gap-2"
+              href="/rules"
+              className="w-full py-2.5 rounded-xl bg-surface-1 border border-white/10 hover:border-red-primary/40 text-text-secondary hover:text-white text-xs font-semibold text-center transition-colors"
             >
-              <span>View Sample Certificate</span>
-              <ExternalLink className="w-3.5 h-3.5" />
+              View Qualification Rules
             </Link>
           </div>
         ) : (
@@ -302,7 +297,7 @@ export default function ContributorDashboard() {
                 Certificate of Participation
               </h3>
               <p className="text-xs text-text-secondary leading-relaxed mb-4">
-                Merge at least 1 approved pull request during the active coding period to qualify for your verifiable digital certificate with QR verification code.
+                Merge at least 1 approved pull request during the active coding period to qualify for your official Digital Certificate of Participation.
               </p>
             </div>
 

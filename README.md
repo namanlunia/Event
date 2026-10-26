@@ -5,7 +5,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38B2AC?style=flat&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 
-**Omnikon Winter of Code (OWOC)** is an open-source mentorship and developer sprint program running throughout **December 2026**. OWOC connects aspiring student engineers with production-grade open-source repositories, vetted maintainers, and experienced mentors. Contributors resolve real-world issues, climb the live podium leaderboard, earn streak bonuses, and receive cryptographically verifiable digital certificates.
+**Omnikon Winter of Code (OWOC)** is an open-source mentorship and developer sprint program running throughout **December 2026**. OWOC connects aspiring student engineers with production-grade open-source repositories, vetted maintainers, and experienced mentors. Contributors resolve real-world issues, climb the live podium leaderboard, earn streak bonuses, and receive official digital certificates.
 
 Live Deployment: **[https://event-nine-swart.vercel.app/](https://event-nine-swart.vercel.app/)**
 

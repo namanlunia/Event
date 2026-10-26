@@ -672,7 +672,7 @@ export const MOCK_FAQS: FAQItem[] = [
   {
     category: "Points & Rewards",
     question: "What rewards and certificates do participants receive?",
-    answer: "All contributors who merge at least 1 approved PR receive a cryptographically verified Digital Certificate of Participation. Top 100 contributors receive official OWOC Winter Swag Boxes, custom hoodies, and recognition across community channels.",
+    answer: "All contributors who merge at least 1 approved PR receive an official Digital Certificate of Participation. Top 100 contributors receive official OWOC Winter Swag Boxes, custom hoodies, and recognition across community channels.",
   }
 ];
 

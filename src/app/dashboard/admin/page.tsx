@@ -428,7 +428,7 @@ function SuperAdminDashboardContent() {
   const handleIssueCertificates = () => {
     openConfirm(
       "Bulk Generate & Issue Certificates?",
-      "This will generate unique cryptographically verifiable certificate IDs (OWOC-2026-...) and QR verification records for all qualifying participants.",
+      "This will generate unique official certificate IDs (OWOC-2026-...) for all qualifying participants.",
       () => {
         setIssuedCertificatesCount(128);
         addAuditLog({
@@ -437,7 +437,7 @@ function SuperAdminDashboardContent() {
           target_id: "season_2026",
           details_after: { issued_count: 128 },
         });
-        showToast("128 Certificates successfully generated and verified!");
+        showToast("128 Certificates successfully generated and issued!");
       },
       "ISSUE",
       false
@@ -1487,18 +1487,9 @@ function SuperAdminDashboardContent() {
               onClick={handleIssueCertificates}
               className="px-5 py-2.5 rounded-xl bg-red-primary hover:bg-red-bright text-white text-xs font-mono font-bold shadow-red-glow-sm flex items-center gap-2"
             >
-              <QrCode className="w-4 h-4" />
-              <span>Bulk Generate & Issue All Verified Certs</span>
+              <Award className="w-4 h-4" />
+              <span>Bulk Generate & Issue All Certs</span>
             </button>
-
-            <Link
-              href="/certificate/OWOC-2026-C-9821"
-              target="_blank"
-              className="px-4 py-2.5 rounded-xl bg-surface-2 hover:bg-surface-1 text-text-secondary hover:text-white border border-white/10 text-xs font-mono flex items-center gap-1.5"
-            >
-              <span>Preview Demo Cert</span>
-              <ExternalLink className="w-3.5 h-3.5" />
-            </Link>
           </div>
         </div>
       )}

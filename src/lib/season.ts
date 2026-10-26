@@ -98,7 +98,7 @@ export const PHASES: Phase[] = [
     name: "Grand Results & Certificate Issuance",
     startDate: "2026-12-31",
     endDate: "2026-12-31",
-    description: "Announcement of top podium winners, issuance of cryptographically verified certificates, and dispatch of winter swag kits.",
+    description: "Announcement of top podium winners, issuance of official digital certificates, and dispatch of winter swag kits.",
   },
 ];
 

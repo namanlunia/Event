@@ -35,7 +35,6 @@ export default function Navbar() {
     { name: "Mentors", href: "/mentors" },
     { name: "Ambassadors", href: "/ambassadors" },
     { name: "Rules & Points", href: "/rules" },
-    { name: "Verify Cert", href: "/certificate" },
   ];
 
   return (

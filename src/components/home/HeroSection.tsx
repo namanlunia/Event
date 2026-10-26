@@ -92,7 +92,7 @@ export default function HeroSection() {
         <p className="mt-8 text-base sm:text-lg lg:text-xl text-text-secondary max-w-3xl mx-auto leading-relaxed">
           Omnikon Winter of Code is a high-octane open source mentorship program.
           Contribute to real open-source repositories, collaborate with experienced
-          mentors, climb the leaderboard, and earn verifiable credentials.
+          mentors, climb the leaderboard, and earn certificates.
         </p>
 
         {/* Call to Actions */}
@@ -172,7 +172,7 @@ export default function HeroSection() {
           {[
             { icon: <GitPullRequest className="w-3.5 h-3.5 text-red-bright" />, text: "Real open-source projects" },
             { icon: <Users className="w-3.5 h-3.5 text-red-bright" />, text: "Mentor support from maintainers" },
-            { icon: <Shield className="w-3.5 h-3.5 text-red-bright" />, text: "Verifiable certificates" },
+            { icon: <Shield className="w-3.5 h-3.5 text-red-bright" />, text: "Digital certificates" },
             { icon: <Calendar className="w-3.5 h-3.5 text-red-bright" />, text: DURATION_COPY.hero },
             { icon: <Sparkles className="w-3.5 h-3.5 text-red-bright" />, text: "Merit-based gamification" },
           ].map(({ icon, text }) => (

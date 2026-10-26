@@ -56,12 +56,6 @@ export const PERSONAS: Record<StandardRole, PersonaConfig> = {
         href: "/rules",
         iconName: "BookOpen",
       },
-      {
-        id: "certificate",
-        label: "Verify Certificate",
-        href: "/certificate",
-        iconName: "Award",
-      },
     ],
   },
 

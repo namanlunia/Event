@@ -47,9 +47,9 @@ export default function AboutPage() {
     },
     {
       icon: <Award className="w-5 h-5 text-red-bright" />,
-      title: "Verifiable Digital Credentials",
+      title: "Digital Certificates",
       description:
-        "Earn digital certificates with unique verification IDs and QR codes verifiable directly on this site.",
+        "Earn official digital certificates of participation upon completing program milestones.",
     },
   ];
 
