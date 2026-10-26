@@ -44,6 +44,8 @@ export default function AmbassadorDashboard() {
   const nextTierObj =
     SITE_CONFIG.AMBASSADOR_REWARDS.find((t) => referralsCount < t.minReferrals) ||
     SITE_CONFIG.AMBASSADOR_REWARDS[SITE_CONFIG.AMBASSADOR_REWARDS.length - 1];
+  const targetGoal = nextTierObj?.minReferrals || 50;
+  const activeContributors = demoAmbassador ? 4 : 0;
   const progressPercent = targetGoal > 0 ? Math.min(100, Math.round((referralsCount / targetGoal) * 100)) : 0;
 
   const referralUrl = `https://owoc.org?ref=${referralCode}`;

@@ -98,7 +98,7 @@ export default function ContributorDashboard() {
           <div>
             <div className="flex items-center gap-2 mb-1">
               <span className="text-xs font-mono text-red-bright uppercase font-bold tracking-wider">
-                CONTRIBUTOR WORKSPACE
+                CONTRIBUTOR DASHBOARD
               </span>
               {isDemoMode && <SampleBadge />}
             </div>

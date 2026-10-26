@@ -344,7 +344,7 @@ function ProjectAdminDashboardContent() {
               {isDemo && <SampleBadge />}
             </div>
             <h1 className="font-heading font-black text-2xl sm:text-3xl text-white">
-              Maintainer Workspace
+              Maintainer Console
             </h1>
             <p className="text-xs text-text-secondary mt-0.5">
               Submit repositories, assign issues, triage PRs, and award points for OWOC 2026.

@@ -23,7 +23,7 @@ export default function NotFound() {
         </h1>
 
         <p className="text-xs sm:text-sm text-text-secondary leading-relaxed mb-8">
-          The repository, branch, or document you are searching for does not exist or has been relocated to another workspace.
+          The repository, branch, or document you are searching for does not exist or has been relocated to another directory.
         </p>
 
         <div className="space-y-3">

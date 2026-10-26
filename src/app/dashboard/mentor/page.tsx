@@ -293,7 +293,7 @@ function MentorDashboardContent() {
           <div>
             <div className="flex items-center gap-2 mb-1">
               <span className="text-xs font-mono text-red-bright uppercase font-bold tracking-wider">
-                TECHNICAL MENTOR WORKSPACE
+                TECHNICAL MENTOR HUB
               </span>
               {isDemo && <SampleBadge />}
             </div>

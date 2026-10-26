@@ -4,7 +4,6 @@ import React from "react";
 import Link from "next/link";
 import { ShieldAlert, ArrowLeft, Terminal } from "lucide-react";
 import { useAppStore } from "@/lib/store";
-import { SITE_CONFIG } from "@/lib/site-config";
 
 interface ForbiddenStateProps {
   requiredRoles?: string[];
@@ -17,7 +16,7 @@ export default function ForbiddenState({
   currentRole,
   message,
 }: ForbiddenStateProps) {
-  const { currentPersona, switchRole } = useAppStore();
+  const { currentPersona } = useAppStore();
   const activeRole = currentRole || currentPersona.role;
 
   return (
@@ -40,7 +39,7 @@ export default function ForbiddenState({
             </h1>
             <p className="text-xs text-text-secondary mt-2">
               {message ||
-                "Your current active role does not have authorization to view this workspace. Access is restricted to designated stakeholders."}
+                "Your current active role does not have authorization to view this dashboard. Access is restricted to designated stakeholders."}
             </p>
           </div>
 
@@ -78,25 +77,6 @@ export default function ForbiddenState({
               <span>Exit to Home</span>
             </Link>
           </div>
-
-          {SITE_CONFIG.DEMO_MODE && (
-            <div className="pt-4 border-t border-white/10 text-center">
-              <span className="text-[11px] font-mono text-text-muted block mb-2">
-                Demo Testing Mode: Switch to authorized persona
-              </span>
-              <div className="flex flex-wrap justify-center gap-1.5">
-                {requiredRoles.map((role) => (
-                  <button
-                    key={role}
-                    onClick={() => switchRole(role)}
-                    className="px-2.5 py-1 rounded-lg bg-surface-2 hover:bg-surface-1 border border-white/10 text-[10px] font-mono text-red-bright capitalize"
-                  >
-                    Switch to {role.replace("_", " ")}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </div>

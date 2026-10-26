@@ -39,6 +39,7 @@ import {
 } from "lucide-react";
 import RoleGuard from "@/components/auth/RoleGuard";
 import { useAppStore } from "@/lib/store";
+import { StandardRole } from "@/types";
 import { SITE_CONFIG } from "@/lib/site-config";
 import { SEASON_LABEL, SEASON_SHORT, PHASES, EVENT_START, EVENT_END, formatDateRange, getCurrentPhase, daysUntilCodingStart } from "@/lib/season";
 import { SampleBadge } from "@/components/visual/DemoModeBanner";
@@ -209,6 +210,16 @@ function SuperAdminDashboardContent() {
   const [usersSearch, setUsersSearch] = useState("");
   const [usersRoleFilter, setUsersRoleFilter] = useState("all");
   const [users, setUsers] = useState([
+    {
+      id: "u-admin",
+      name: "Super Admin (You)",
+      email: "contact@omnikonhub.com",
+      role: "super_admin",
+      college: "Omnikon Core",
+      points: 0,
+      status: "active",
+      joinedAt: "2026-09-01",
+    },
     {
       id: "u-1",
       name: "Aarav Patel",
@@ -1085,24 +1096,54 @@ function SuperAdminDashboardContent() {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => {
-                      const nextRole = user.role === "contributor" ? "mentor" : "contributor";
-                      setUsers((prev) =>
-                        prev.map((u) => (u.id === user.id ? { ...u, role: nextRole } : u))
-                      );
-                      addAuditLog({
-                        action: "change_user_role",
-                        target_type: "user",
-                        target_id: user.id,
-                        details_after: { role: nextRole },
-                      });
-                      showToast(`Role toggled to ${nextRole} for ${user.name}.`);
-                    }}
-                    className="px-3 py-1.5 rounded-lg bg-surface-2 hover:bg-surface-1 border border-white/10 font-mono text-[11px] text-white"
-                  >
-                    Toggle Role
-                  </button>
+                  <div className="flex items-center gap-1.5">
+                    <label htmlFor={`assign-role-${user.id}`} className="sr-only">
+                      Assign role for {user.name}
+                    </label>
+                    <select
+                      id={`assign-role-${user.id}`}
+                      data-testid={`assign-role-select-${user.id}`}
+                      value={user.role}
+                      onChange={(e) => {
+                        const newRole = e.target.value as StandardRole;
+                        if (newRole === user.role) return;
+
+                        // Prevent self-demotion
+                        if (user.id === "u-admin" && newRole !== "super_admin") {
+                          showToast("Action Blocked: Super Admins cannot self-demote or revoke their own clearance.");
+                          return;
+                        }
+
+                        openConfirm(
+                          "Confirm Role Assignment",
+                          `Change role for ${user.name} from "${user.role.replace("_", " ")}" to "${newRole.replace("_", " ")}"? This updates their permissions immediately.`,
+                          () => {
+                            const oldRole = user.role;
+                            setUsers((prev) =>
+                              prev.map((u) => (u.id === user.id ? { ...u, role: newRole } : u))
+                            );
+                            addAuditLog({
+                              action: "assign_role",
+                              target_type: "user",
+                              target_id: user.id,
+                              details_before: { role: oldRole },
+                              details_after: { role: newRole, from: oldRole, to: newRole },
+                            });
+                            showToast(`Assigned role: ${user.name} is now ${newRole.replace("_", " ")}.`);
+                          },
+                          undefined,
+                          false
+                        );
+                      }}
+                      className="px-2.5 py-1.5 rounded-lg bg-surface-2 hover:bg-surface-1 border border-white/10 font-mono text-[11px] text-white focus:outline-none focus:border-red-primary/60 cursor-pointer"
+                    >
+                      <option value="contributor">Contributor</option>
+                      <option value="project_admin">Project Admin</option>
+                      <option value="mentor">Mentor</option>
+                      <option value="ambassador">Campus Ambassador</option>
+                      <option value="super_admin">Super Admin</option>
+                    </select>
+                  </div>
 
                   {user.status !== "suspended" ? (
                     <button

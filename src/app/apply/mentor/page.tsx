@@ -88,7 +88,7 @@ export default function ApplyMentorPage() {
                 href="/dashboard/mentor"
                 className="px-5 py-2.5 rounded-xl bg-red-primary hover:bg-red-bright text-white text-xs font-mono font-bold"
               >
-                Go to Mentor Workspace
+                Go to Mentor Hub
               </Link>
               <Link
                 href="/"

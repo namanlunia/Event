@@ -62,7 +62,7 @@ export default function ContactPage() {
                 <MessageSquare className="w-5 h-5" />
               </div>
               <h3 className="font-heading font-bold text-base text-white">
-                Community Workspace
+                Community Discord
               </h3>
               <p className="text-xs text-text-muted">
                 {SITE_CONFIG.SOCIAL_LINKS.discord

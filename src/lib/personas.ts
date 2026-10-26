@@ -24,11 +24,11 @@ export const PERSONAS: Record<StandardRole, PersonaConfig> = {
   contributor: {
     id: "contributor",
     roleLabel: "Contributor",
-    personaName: "Sample Contributor",
-    subtitle: "Student Contributor Menu",
-    avatarInitials: "SC",
-    sidebarMenuTitle: "Student Contributor Menu",
-    breadcrumbLabel: "Contributor Workspace",
+    personaName: "OWOC Contributor",
+    subtitle: "Contributor Dashboard",
+    avatarInitials: "CO",
+    sidebarMenuTitle: "Contributor Navigation",
+    breadcrumbLabel: "Contributor Dashboard",
     dashboardRoute: "/dashboard/contributor",
     sidebarMenuItems: [
       {
@@ -62,10 +62,10 @@ export const PERSONAS: Record<StandardRole, PersonaConfig> = {
   project_admin: {
     id: "project_admin",
     roleLabel: "Project Admin",
-    personaName: "Sample Project Admin",
-    subtitle: "Project Maintainer Menu",
+    personaName: "Project Maintainer",
+    subtitle: "Project Admin Dashboard",
     avatarInitials: "PA",
-    sidebarMenuTitle: "Project Maintainer Menu",
+    sidebarMenuTitle: "Maintainer Navigation",
     breadcrumbLabel: "Project Admin Console",
     dashboardRoute: "/dashboard/project-admin",
     sidebarMenuItems: [
@@ -124,10 +124,10 @@ export const PERSONAS: Record<StandardRole, PersonaConfig> = {
   mentor: {
     id: "mentor",
     roleLabel: "Mentor",
-    personaName: "Sample Mentor",
-    subtitle: "Technical Mentor Menu",
-    avatarInitials: "SM",
-    sidebarMenuTitle: "Technical Mentor Menu",
+    personaName: "Technical Mentor",
+    subtitle: "Technical Mentor Dashboard",
+    avatarInitials: "ME",
+    sidebarMenuTitle: "Mentor Navigation",
     breadcrumbLabel: "Mentor Hub",
     dashboardRoute: "/dashboard/mentor",
     sidebarMenuItems: [
@@ -172,10 +172,10 @@ export const PERSONAS: Record<StandardRole, PersonaConfig> = {
   ambassador: {
     id: "ambassador",
     roleLabel: "Campus Ambassador",
-    personaName: "Sample Ambassador",
-    subtitle: "Campus Ambassador Menu",
+    personaName: "Campus Ambassador",
+    subtitle: "Ambassador Dashboard",
     avatarInitials: "CA",
-    sidebarMenuTitle: "Campus Ambassador Menu",
+    sidebarMenuTitle: "Ambassador Navigation",
     breadcrumbLabel: "Ambassador Portal",
     dashboardRoute: "/dashboard/ambassador",
     sidebarMenuItems: [
@@ -210,10 +210,10 @@ export const PERSONAS: Record<StandardRole, PersonaConfig> = {
   super_admin: {
     id: "super_admin",
     roleLabel: "Super Admin",
-    personaName: "OWOC Super Admin",
+    personaName: "Super Admin",
     subtitle: "Super Admin Console",
     avatarInitials: "SA",
-    sidebarMenuTitle: "Super Admin Console",
+    sidebarMenuTitle: "Super Admin Navigation",
     breadcrumbLabel: "Super Admin Console",
     dashboardRoute: "/dashboard/admin",
     sidebarMenuItems: [
