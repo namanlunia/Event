@@ -66,7 +66,7 @@ export default function ContributorDashboard() {
   const myRankIdx = sortedContributors.findIndex(
     (c) => c.full_name === currentPersona.name || c.username === "aaravcode"
   );
-  const currentRank = isDemoMode && myRankIdx !== -1 ? `#${myRankIdx + 1}` : isDemoMode ? "#1" : "Standby";
+  const currentRank = "Standby";
 
   // Points Progression chart matching exact merged PR timeline and streak
   const weeklyData = isDemoMode
@@ -176,7 +176,7 @@ export default function ContributorDashboard() {
             {currentRank}
           </div>
           <span className="text-xs text-text-muted mt-1 block">
-            {isDemoMode ? "Sample Leaderboard #1" : `Opens ${codingStartDate}`}
+            Opens {codingStartDate}
           </span>
         </div>
 

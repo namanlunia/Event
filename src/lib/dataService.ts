@@ -12,23 +12,16 @@ export function getApprovedProjects(): Project[] {
 
 /**
  * Returns active contributors.
- * When DEMO_MODE is false, only genuine registered contributors are returned.
+ * In launch mode, leaderboard is in standby until coding begins.
  */
 export function getActiveContributors(): UserProfile[] {
-  if (SITE_CONFIG.DEMO_MODE) {
-    return demoData.MOCK_CONTRIBUTORS;
-  }
   return [];
 }
 
 /**
  * Returns campus ambassadors.
- * When DEMO_MODE is false, only verified campus ambassadors are returned.
  */
 export function getCampusAmbassadors(): Ambassador[] {
-  if (SITE_CONFIG.DEMO_MODE) {
-    return demoData.MOCK_AMBASSADORS;
-  }
   return [];
 }
 
@@ -36,9 +29,6 @@ export function getCampusAmbassadors(): Ambassador[] {
  * Returns scored PRs.
  */
 export function getScoredPullRequests(): PullRequest[] {
-  if (SITE_CONFIG.DEMO_MODE) {
-    return demoData.MOCK_PRS;
-  }
   return [];
 }
 
@@ -46,9 +36,6 @@ export function getScoredPullRequests(): PullRequest[] {
  * Returns participating colleges.
  */
 export function getColleges(): College[] {
-  if (SITE_CONFIG.DEMO_MODE) {
-    return demoData.MOCK_COLLEGES;
-  }
   return [];
 }
 

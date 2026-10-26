@@ -33,9 +33,7 @@ export default function AmbassadorDashboard() {
   const collegeName = demoAmbassador ? demoAmbassador.college_name : "Your University Chapter";
   const referralCode = demoAmbassador ? demoAmbassador.referral_code : "CAMPUS-2026";
   const referralsCount = demoAmbassador ? demoAmbassador.referrals_count : 0;
-  const targetGoal = demoAmbassador ? demoAmbassador.target_goal : 25;
-  const rankDisplay = demoAmbassador ? `#${demoAmbassador.rank}` : "Standby";
-  const activeContributors = isDemo ? 64 : 0;
+  const rankDisplay = "Standby";
 
   // Derive current and next tier dynamically from SITE_CONFIG.AMBASSADOR_REWARDS
   const currentTierObj =
@@ -166,8 +164,8 @@ export default function AmbassadorDashboard() {
           <div className="font-heading font-black text-3xl text-white">
             {rankDisplay}
           </div>
-          <p className="text-[11px] text-yellow-400 font-mono mt-1">
-            {isDemo ? "Leading Ambassador across sample campuses" : "Rankings active when coding starts"}
+          <p className="text-[11px] text-text-muted font-mono mt-1">
+            Rankings active when coding starts
           </p>
         </div>
 
