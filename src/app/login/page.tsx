@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { AlertCircle, Lock, ArrowRight, ShieldCheck, Terminal } from "lucide-react";
+import { AlertCircle, ArrowRight, Terminal } from "lucide-react";
 import BrandLogo from "@/components/brand/BrandLogo";
 import { supabase, isSupabaseConfigured } from "@/lib/supabaseClient";
 import { StandardRole } from "@/types";
@@ -38,8 +38,9 @@ export default function LoginPage() {
         setErrorMsg(error.message);
         setLoading(false);
       }
-    } catch (err: any) {
-      setErrorMsg(err?.message || "Failed to initiate GitHub authentication.");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to initiate GitHub authentication.";
+      setErrorMsg(message);
       setLoading(false);
     }
   };

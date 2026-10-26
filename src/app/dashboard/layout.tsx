@@ -21,9 +21,7 @@ import {
   MessageSquare,
   Clock,
   User,
-  Settings,
   LogOut,
-  ExternalLink,
 } from "lucide-react";
 import { useAppStore } from "@/lib/store";
 import { SEASON_SHORT } from "@/lib/season";
