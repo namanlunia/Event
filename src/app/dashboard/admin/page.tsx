@@ -287,13 +287,13 @@ function SuperAdminDashboardContent() {
 
   // Analytics Chart Data
   const registrationTimelineData = [
-    { date: "Oct 20", count: 45 },
-    { date: "Oct 24", count: 110 },
-    { date: "Oct 28", count: 240 },
-    { date: "Nov 02", count: 420 },
-    { date: "Nov 08", count: 780 },
-    { date: "Nov 14", count: 1250 },
-    { date: "Nov 20", count: 1800 },
+    { date: "Oct 28", count: 45 },
+    { date: "Oct 31", count: 110 },
+    { date: "Nov 04", count: 240 },
+    { date: "Nov 08", count: 420 },
+    { date: "Nov 14", count: 780 },
+    { date: "Nov 20", count: 1250 },
+    { date: "Nov 26", count: 1800 },
   ];
 
   const roleDistributionData = [

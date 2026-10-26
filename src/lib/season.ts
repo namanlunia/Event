@@ -59,7 +59,7 @@ export function formatDuration(days: number, adjective: boolean = true): string 
 }
 
 // Program Phases (Single place for phase schedule)
-// 1. Registration & Project Onboarding: Oct 20, 2026 to Nov 30, 2026 (pre-event)
+// 1. Registration & Project Onboarding: Oct 28, 2026 to Nov 30, 2026 (pre-event)
 // 2. Community Bonding & AMA Sprints: Dec 1, 2026 to Dec 3, 2026
 // 3. Coding Period & Weekly Sprints: Dec 4, 2026 to Dec 26, 2026
 // 4. Code Freeze & Evaluation: Dec 27, 2026 to Dec 30, 2026
@@ -68,7 +68,7 @@ export const PHASES: Phase[] = [
   {
     id: 1,
     name: "Registration & Project Onboarding",
-    startDate: "2026-10-20",
+    startDate: "2026-10-28",
     endDate: "2026-11-30",
     description: "Contributor registrations open, repository applications vetted, and mentor onboarding begins.",
   },
@@ -156,7 +156,7 @@ export function getCurrentPhase(currentDate: Date = new Date()): Phase | null {
 }
 
 /**
- * Formats a readable date range for a phase (e.g. "Oct 20 – Nov 30, 2026" or "Dec 31, 2026").
+ * Formats a readable date range for a phase (e.g. "Oct 28 – Nov 30, 2026" or "Dec 31, 2026").
  */
 export function formatDateRange(phase: Phase): string {
   const start = new Date(`${phase.startDate}T00:00:00`);
@@ -200,7 +200,6 @@ export function getHeroStatusBadge(currentDate: Date = new Date()): {
     const formattedStartDate = new Date(`${firstPhase.startDate}T00:00:00`).toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
-      year: "numeric",
     });
     return { text: `Registration opens ${formattedStartDate}`, isUpcoming: true };
   }
@@ -349,8 +348,8 @@ export interface PrimaryCta {
 
 /**
  * Returns primary call-to-action configuration based on program timeline.
- * Before Oct 20: returns "Registration opens Oct 20" (disabled).
- * Oct 20 to Dec 3 (pre-coding): returns "Register Now — Free".
+ * Before Oct 28: returns "Registration opens Oct 28" (disabled).
+ * Oct 28 to Dec 3 (pre-coding): returns "Register Now — Free".
  * Dec 4 to Dec 26 (coding sprint): returns "Start Contributing".
  * After coding sprint: returns "View Leaderboard".
  */

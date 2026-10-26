@@ -85,7 +85,7 @@ OWOC 2026 is an inaugural program. To maintain transparency:
 ## 🗓️ December 2026 Schedule & Single Source of Truth
 
 All dates, durations, and phase calculations derive strictly from [`src/lib/season.ts`](src/lib/season.ts):
-1. **Registration & Project Onboarding**: Oct 20 – Nov 30, 2026
+1. **Registration & Project Onboarding**: Oct 28 – Nov 30, 2026
 2. **Community Bonding & AMA Sprints**: Dec 1 – Dec 3, 2026
 3. **Coding Period & Weekly Sprints**: Dec 4 – Dec 26, 2026 (23-day active sprint)
 4. **Code Freeze & Evaluation**: Dec 27 – Dec 30, 2026

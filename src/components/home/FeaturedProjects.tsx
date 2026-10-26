@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowRight, Star, GitFork, AlertCircle, ArrowUpRight, FolderOpen } from "lucide-react";
 import { getApprovedProjects } from "@/lib/dataService";
 import { SITE_CONFIG } from "@/lib/site-config";
+import { PHASES, formatDateRange } from "@/lib/season";
 
 export default function FeaturedProjects() {
   const allProjects = getApprovedProjects();
@@ -31,7 +32,7 @@ export default function FeaturedProjects() {
           </div>
           <div className="glass-card rounded-2xl border border-white/10 p-12 text-center max-w-xl mx-auto">
             <FolderOpen className="w-12 h-12 text-text-muted mx-auto mb-4" />
-            <p className="text-text-secondary font-semibold">Project onboarding opens Oct 20, 2026</p>
+            <p className="text-text-secondary font-semibold">Project onboarding opens {formatDateRange(PHASES[0])}</p>
             <p className="text-xs text-text-muted mt-2">
               Maintainers can apply to onboard their open-source repositories once the registration period begins.
             </p>

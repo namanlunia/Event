@@ -602,7 +602,7 @@ export const MOCK_BLOGS: BlogPost[] = [
     },
     cover_image: "",
     reading_time: "4 min read",
-    published_at: "Oct 20, 2026"
+    published_at: "Oct 28, 2026"
   },
   {
     id: "blog-2",
