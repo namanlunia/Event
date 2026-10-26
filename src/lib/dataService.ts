@@ -7,35 +7,37 @@ import * as demoData from "@/lib/demo-data";
  * In launch mode, projects are "To Be Announced" prior to official onboarding.
  */
 export function getApprovedProjects(): Project[] {
+  if (SITE_CONFIG.DEMO_MODE) {
+    return demoData.MOCK_PROJECTS;
+  }
   return [];
 }
 
-/**
- * Returns active contributors.
- * In launch mode, leaderboard is in standby until coding begins.
- */
 export function getActiveContributors(): UserProfile[] {
+  if (SITE_CONFIG.DEMO_MODE) {
+    return demoData.MOCK_CONTRIBUTORS;
+  }
   return [];
 }
 
-/**
- * Returns campus ambassadors.
- */
 export function getCampusAmbassadors(): Ambassador[] {
+  if (SITE_CONFIG.DEMO_MODE) {
+    return demoData.MOCK_AMBASSADORS;
+  }
   return [];
 }
 
-/**
- * Returns scored PRs.
- */
 export function getScoredPullRequests(): PullRequest[] {
+  if (SITE_CONFIG.DEMO_MODE) {
+    return demoData.MOCK_PRS;
+  }
   return [];
 }
 
-/**
- * Returns participating colleges.
- */
 export function getColleges(): College[] {
+  if (SITE_CONFIG.DEMO_MODE) {
+    return demoData.MOCK_COLLEGES;
+  }
   return [];
 }
 
@@ -71,10 +73,10 @@ export function getSiteStats(): SiteStats {
       mergedPrs: 4800,
       mergedPRs: 4800,
       studentBuilders: 2500,
-      openRepositories: 0,
-      approvedProjects: 0,
+      openRepositories: 120,
+      approvedProjects: 120,
       participatingColleges: 350,
-      verifiedCerts: 0,
+      verifiedCerts: 1800,
       isLive: false,
     };
   }
@@ -101,10 +103,13 @@ export const getProgramStats = getSiteStats;
 
 /**
  * Returns a project by ID.
- * Returns undefined as projects are TBA.
  */
 export function getProjectById(id: string): Project | undefined {
-  return undefined;
+  if (SITE_CONFIG.DEMO_MODE) {
+    return demoData.MOCK_PROJECTS.find((p) => p.id === id);
+  }
+  const approved = getApprovedProjects();
+  return approved.find((p) => p.id === id);
 }
 
 /**

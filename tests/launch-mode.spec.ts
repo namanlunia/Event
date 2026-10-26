@@ -62,30 +62,26 @@ test.describe('OWOC Launch Readiness Test Suite', () => {
     await expect(githubLink).toBeVisible();
   });
 
-  test('Item 4: Projects directory and featured section display polished TBA states', async ({ page, request }) => {
-    // 1. Projects directory page shows TBA empty state
+  test('Item 4: Projects directory displays populated project cards with domain filters and project detail view', async ({ page }) => {
+    // 1. Projects directory page shows project cards and search
     await page.goto('/projects');
-    await expect(page.getByText('To Be Announced')).toBeVisible();
-    await expect(page.getByRole('link', { name: /Onboard Your Repository/i })).toBeVisible();
+    await expect(page.locator('h1')).toContainText('Explore Repositories');
+    await expect(page.locator('input[placeholder*="Search"]')).toBeVisible();
 
-    // 2. Stats on Home page shows TBA for repositories
-    await page.goto('/');
-    await expect(page.locator('text=TBA').first()).toBeVisible();
-
-    // 3. /projects/proj-1 redirects to /projects
-    const resProj = await request.get('/projects/proj-1', { maxRedirects: 0 });
-    expect([307, 308]).toContain(resProj.status());
-    expect(resProj.headers()['location']).toBe('/projects');
+    // 2. Project detail page /projects/proj-1 opens successfully with tech stack
+    await page.goto('/projects/proj-1');
+    await expect(page.locator('h1')).toContainText('WinterVision Core');
+    await expect(page.getByText('Available OWOC Issues')).toBeVisible();
   });
 
-  test('Item 5: Leaderboard displays empty podium slots and standby messages', async ({ page }) => {
+  test('Item 5: Leaderboard displays top champions podium and rankings table', async ({ page }) => {
     await page.goto('/leaderboard');
-    await expect(page.getByText('Awaiting first contributors')).toHaveCount(3);
-    await expect(page.getByText('The leaderboard goes live when the coding period begins on Dec 4, 2026')).toBeVisible();
+    await expect(page.getByText('CHAMPION #1')).toBeVisible();
+    await expect(page.getByText('Program Leaderboard')).toBeVisible();
 
-    // Contributor dashboard rank shows Standby
+    // Contributor dashboard rank shows active standings
     await page.goto('/dashboard/contributor');
-    await expect(page.getByText('Standby').first()).toBeVisible();
+    await expect(page.locator('h1')).toContainText('Welcome');
   });
 
   test('Item 6: No role switcher or workspace framing; organizer-assigned RBAC', async ({ page }) => {

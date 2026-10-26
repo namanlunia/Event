@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { StandardRole } from "@/types";
-import { useAppStore, normalizeRole } from "@/lib/store";
+import { useAppStore, normalizeRole, getRoleFromPath } from "@/lib/store";
 import ForbiddenState from "./ForbiddenState";
 
 interface RoleGuardProps {
@@ -16,17 +16,20 @@ export default function RoleGuard({
   children,
   fallback,
 }: RoleGuardProps) {
-  const { currentPersona, isHydrated } = useAppStore();
+  const { currentPersona, isHydrated, syncRoleFromPath } = useAppStore();
   const [authorized, setAuthorized] = useState<boolean | null>(null);
 
   useEffect(() => {
     if (!isHydrated) return;
 
-    const normalizedAllowed = allowedRoles.map(normalizeRole);
-    const userRole = normalizeRole(currentPersona.role);
+    if (typeof window !== "undefined") {
+      syncRoleFromPath(window.location.pathname);
+    }
 
-    // Check if user has direct role or role inheritance
-    // super_admin has access to all dashboards
+    const pathRole = typeof window !== "undefined" ? getRoleFromPath(window.location.pathname) : null;
+    const userRole = pathRole || normalizeRole(currentPersona.role);
+    const normalizedAllowed = allowedRoles.map(normalizeRole);
+
     const hasAccess =
       userRole === "super_admin" ||
       normalizedAllowed.includes(userRole) ||
@@ -34,7 +37,7 @@ export default function RoleGuard({
         currentPersona.allowedRoles.some((r) => normalizedAllowed.includes(r)));
 
     setAuthorized(hasAccess);
-  }, [isHydrated, currentPersona, allowedRoles]);
+  }, [isHydrated, currentPersona, allowedRoles, syncRoleFromPath]);
 
   if (!isHydrated || authorized === null) {
     return (

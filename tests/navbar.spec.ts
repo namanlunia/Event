@@ -11,12 +11,11 @@ const EXPECTED_NAV_LINKS = [
   'Mentors',
   'Ambassadors',
   'Rules & Points',
-  'Verify Cert',
 ];
 
 test.describe('Navbar Layout & Responsiveness', () => {
   for (const width of DESKTOP_WIDTHS) {
-    test(`Desktop navbar at ${width}px: full width, 8 links on single row, no role dropdown, no horizontal scroll`, async ({ page }) => {
+    test(`Desktop navbar at ${width}px: full width, 7 links on single row, no role dropdown, no horizontal scroll`, async ({ page }) => {
       await page.setViewportSize({ width, height: 900 });
       await page.goto('/', { waitUntil: 'domcontentloaded' });
       await page.waitForTimeout(300);
@@ -34,22 +33,22 @@ test.describe('Navbar Layout & Responsiveness', () => {
       const desktopNav = page.locator('header nav');
       await expect(desktopNav).toBeVisible();
 
-      // 3. All 8 links are visible with expected names
+      // 3. All 7 links are visible with expected names
       const navLinks = desktopNav.locator('a');
-      await expect(navLinks).toHaveCount(8);
+      await expect(navLinks).toHaveCount(7);
       const linkTexts = await navLinks.allTextContents();
       for (const expected of EXPECTED_NAV_LINKS) {
         expect(linkTexts).toContain(expected);
       }
 
-      // 4. All 8 links lie on the exact same horizontal row (bounding box y within 2px)
+      // 4. All links lie on the exact same horizontal row (bounding box y within 2px)
       const linkBoxes = [];
-      for (let i = 0; i < 8; i++) {
+      for (let i = 0; i < EXPECTED_NAV_LINKS.length; i++) {
         const box = await navLinks.nth(i).boundingBox();
         expect(box).not.toBeNull();
         if (box) linkBoxes.push(box);
       }
-      expect(linkBoxes.length).toBe(8);
+      expect(linkBoxes.length).toBe(EXPECTED_NAV_LINKS.length);
       const baselineY = linkBoxes[0].y;
       for (let i = 1; i < linkBoxes.length; i++) {
         expect(Math.abs(linkBoxes[i].y - baselineY)).toBeLessThanOrEqual(2);
@@ -80,7 +79,7 @@ test.describe('Navbar Layout & Responsiveness', () => {
   }
 
   for (const width of MOBILE_WIDTHS) {
-    test(`Mobile/drawer navbar at ${width}px: hamburger toggle opens drawer with all 8 links, Register & Dashboard`, async ({ page }) => {
+    test(`Mobile/drawer navbar at ${width}px: hamburger toggle opens drawer with all 7 links, Register & Dashboard`, async ({ page }) => {
       await page.setViewportSize({ width, height: 800 });
       await page.goto('/', { waitUntil: 'domcontentloaded' });
       await page.waitForTimeout(300);
@@ -97,7 +96,7 @@ test.describe('Navbar Layout & Responsiveness', () => {
       await hamburgerBtn.click();
       await page.waitForTimeout(300);
 
-      // 4. Assert drawer opens and lists all 8 links
+      // 4. Assert drawer opens and lists all 7 links
       for (const name of EXPECTED_NAV_LINKS) {
         const drawerLink = page.locator(`header a:has-text("${name}")`).last();
         await expect(drawerLink).toBeVisible();
@@ -140,9 +139,10 @@ test.describe('Navbar Layout & Responsiveness', () => {
     await expect(footer.getByRole('heading', { name: 'Community' })).toBeVisible();
     await expect(footer.getByText('Omnikon Winter of Code')).toBeVisible();
 
-    // Verify critical footer links are preserved
+    // Verify critical footer links are preserved (and certificate verification link removed)
     await expect(footer.locator('a[href="/rules"]')).toBeVisible();
-    await expect(footer.locator('a[href="/certificate"]')).toBeVisible();
+    await expect(footer.locator('a[href="/projects"]')).toBeVisible();
+    await expect(footer.locator('a[href="/certificate"]')).toHaveCount(0);
     await expect(footer.locator('a[href="/timeline"]')).toBeVisible();
     await expect(footer.locator('a[href="/leaderboard"]')).toBeVisible();
   });
