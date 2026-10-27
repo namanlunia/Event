@@ -47,20 +47,22 @@ import { AnimatedCounter } from "@/components/ui/animated-counter";
 import StatusBadge from "@/components/ui/status-badge";
 import ConfirmDialog from "@/components/ui/confirm-dialog";
 import AvatarDisplay from "@/components/visual/AvatarDisplay";
-import {
-  ResponsiveContainer,
-  AreaChart,
-  Area,
-  BarChart,
-  Bar,
-  PieChart,
-  Pie,
-  Cell,
-  XAxis,
-  YAxis,
-  Tooltip,
-  Legend,
-} from "recharts";
+import ChartSkeleton from "@/components/charts/chart-skeleton";
+import dynamic from "next/dynamic";
+
+// Recharts (~100KB+ gzipped) loads as a deferred chunk after hydration
+const RegistrationGrowthChart = dynamic(
+  () => import("@/components/charts/dashboard-charts").then((m) => ({ default: m.RegistrationGrowthChart })),
+  { ssr: false, loading: () => <ChartSkeleton /> }
+);
+const RoleDistributionChart = dynamic(
+  () => import("@/components/charts/dashboard-charts").then((m) => ({ default: m.RoleDistributionChart })),
+  { ssr: false, loading: () => <ChartSkeleton /> }
+);
+const DomainBreakdownChart = dynamic(
+  () => import("@/components/charts/dashboard-charts").then((m) => ({ default: m.DomainBreakdownChart })),
+  { ssr: false, loading: () => <ChartSkeleton /> }
+);
 
 export default function SuperAdminDashboardPage() {
   return (
@@ -724,24 +726,7 @@ function SuperAdminDashboardContent() {
                 </span>
               </div>
               <div className="h-56 w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={registrationTimelineData} margin={{ top: 10, right: 15, left: 0, bottom: 0 }}>
-                    <defs>
-                      <linearGradient id="regGrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#EF4444" stopOpacity={0.4} />
-                        <stop offset="95%" stopColor="#EF4444" stopOpacity={0.0} />
-                      </linearGradient>
-                    </defs>
-                    <XAxis dataKey="date" stroke="#666" tick={{ fill: "#888", fontSize: 11 }} />
-                    <YAxis width={40} stroke="#666" tick={{ fill: "#888", fontSize: 11 }} />
-                    <Tooltip
-                      allowEscapeViewBox={{ x: false, y: false }}
-                      wrapperStyle={{ zIndex: 50, outline: "none" }}
-                      contentStyle={{ backgroundColor: "#0B0B0D", borderRadius: "10px" }}
-                    />
-                    <Area type="monotone" dataKey="count" stroke="#EF4444" fill="url(#regGrad)" />
-                  </AreaChart>
-                </ResponsiveContainer>
+                <RegistrationGrowthChart data={registrationTimelineData} />
               </div>
             </div>
 
@@ -756,18 +741,7 @@ function SuperAdminDashboardContent() {
                 </span>
               </div>
               <div className="h-56 w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={roleDistributionData} margin={{ top: 10, right: 15, left: 0, bottom: 0 }}>
-                    <XAxis dataKey="role" stroke="#666" tick={{ fill: "#888", fontSize: 10 }} />
-                    <YAxis width={40} stroke="#666" tick={{ fill: "#888", fontSize: 11 }} />
-                    <Tooltip
-                      allowEscapeViewBox={{ x: false, y: false }}
-                      wrapperStyle={{ zIndex: 50, outline: "none" }}
-                      contentStyle={{ backgroundColor: "#0B0B0D", borderRadius: "10px" }}
-                    />
-                    <Bar dataKey="count" fill="#EF4444" radius={[6, 6, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
+                <RoleDistributionChart data={roleDistributionData} />
               </div>
             </div>
 
@@ -782,18 +756,7 @@ function SuperAdminDashboardContent() {
                 </span>
               </div>
               <div className="h-56 w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={domainBreakdownData} margin={{ top: 10, right: 15, left: 0, bottom: 0 }}>
-                    <XAxis dataKey="domain" stroke="#666" tick={{ fill: "#888", fontSize: 11 }} />
-                    <YAxis width={40} stroke="#666" tick={{ fill: "#888", fontSize: 11 }} />
-                    <Tooltip
-                      allowEscapeViewBox={{ x: false, y: false }}
-                      wrapperStyle={{ zIndex: 50, outline: "none" }}
-                      contentStyle={{ backgroundColor: "#0B0B0D", borderRadius: "10px" }}
-                    />
-                    <Bar dataKey="count" fill="#3B82F6" radius={[6, 6, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
+                <DomainBreakdownChart data={domainBreakdownData} />
               </div>
             </div>
           </div>

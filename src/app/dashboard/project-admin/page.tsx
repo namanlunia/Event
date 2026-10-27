@@ -38,14 +38,13 @@ import DataTable, { Column } from "@/components/ui/data-table";
 import ConfirmDialog from "@/components/ui/confirm-dialog";
 import { Project, Issue, PullRequest, ContributorProjectApplication, ProjectDomain, ProjectDifficulty } from "@/types";
 import { getCurrentPhase, CODING_PHASE, formatDateRange, PHASES } from "@/lib/season";
-import {
-  ResponsiveContainer,
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  Tooltip,
-} from "recharts";
+import dynamic from "next/dynamic";
+import ChartSkeleton from "@/components/charts/chart-skeleton";
+
+const PRActivityChart = dynamic(
+  () => import("@/components/charts/dashboard-charts").then((m) => ({ default: m.PRActivityChart })),
+  { ssr: false, loading: () => <ChartSkeleton /> }
+);
 
 export default function ProjectAdminDashboardPage() {
   return (
@@ -545,36 +544,7 @@ function ProjectAdminDashboardContent() {
             </div>
 
             <div className="h-64 w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={prActivityData} margin={{ top: 10, right: 15, left: 0, bottom: 0 }}>
-                  <defs>
-                    <linearGradient id="prGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#EF4444" stopOpacity={0.4} />
-                      <stop offset="95%" stopColor="#EF4444" stopOpacity={0.0} />
-                    </linearGradient>
-                  </defs>
-                  <XAxis dataKey="date" stroke="#666" tick={{ fill: "#888", fontSize: 11 }} />
-                  <YAxis width={40} stroke="#666" tick={{ fill: "#888", fontSize: 11 }} />
-                  <Tooltip
-                    allowEscapeViewBox={{ x: false, y: false }}
-                    wrapperStyle={{ zIndex: 50, outline: "none" }}
-                    contentStyle={{
-                      backgroundColor: "#0B0B0D",
-                      borderColor: "rgba(255,255,255,0.1)",
-                      borderRadius: "12px",
-                      fontSize: "12px",
-                    }}
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="prs"
-                    stroke="#EF4444"
-                    strokeWidth={2}
-                    fillOpacity={1}
-                    fill="url(#prGrad)"
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
+              <PRActivityChart data={prActivityData} />
             </div>
           </div>
         </div>

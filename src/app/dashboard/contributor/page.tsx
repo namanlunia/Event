@@ -27,14 +27,13 @@ import AvatarDisplay from "@/components/visual/AvatarDisplay";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useAppStore } from "@/lib/store";
 import { PHASES, getCodingPeriodProgress } from "@/lib/season";
-import {
-  ResponsiveContainer,
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  Tooltip,
-} from "recharts";
+import dynamic from "next/dynamic";
+import ChartSkeleton from "@/components/charts/chart-skeleton";
+
+const SprintPerformanceChart = dynamic(
+  () => import("@/components/charts/dashboard-charts").then((m) => ({ default: m.SprintPerformanceChart })),
+  { ssr: false, loading: () => <ChartSkeleton /> }
+);
 
 export default function ContributorDashboard() {
   const { currentPersona } = useAppStore();
@@ -218,41 +217,7 @@ export default function ContributorDashboard() {
           </div>
 
           <div className="h-64 w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={weeklyData} margin={{ top: 10, right: 15, left: 0, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="redGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#E11D2E" stopOpacity={0.4} />
-                    <stop offset="95%" stopColor="#E11D2E" stopOpacity={0.0} />
-                  </linearGradient>
-                </defs>
-                <XAxis
-                  dataKey="week"
-                  stroke="#71717A"
-                  fontSize={10}
-                  tickLine={false}
-                />
-                <YAxis width={40} stroke="#71717A" fontSize={10} tickLine={false} />
-                <Tooltip
-                  allowEscapeViewBox={{ x: false, y: false }}
-                  wrapperStyle={{ zIndex: 50, outline: "none" }}
-                  contentStyle={{
-                    backgroundColor: "#111114",
-                    border: "1px solid rgba(225,29,46,0.4)",
-                    borderRadius: "8px",
-                    fontSize: "12px",
-                  }}
-                />
-                <Area
-                  type="monotone"
-                  dataKey="points"
-                  stroke="#FF3B4A"
-                  strokeWidth={2}
-                  fillOpacity={1}
-                  fill="url(#redGradient)"
-                />
-              </AreaChart>
-            </ResponsiveContainer>
+            <SprintPerformanceChart data={weeklyData} />
           </div>
         </div>
 

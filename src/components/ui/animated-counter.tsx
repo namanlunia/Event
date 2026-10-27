@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { useInView, animate } from "framer-motion";
 
 export interface AnimatedCounterProps {
   value?: number | null | undefined;
@@ -15,9 +14,10 @@ export interface AnimatedCounterProps {
 }
 
 /**
- * Standard easeOutExpo easing bezier curve: fast acceleration, smooth exponential decay.
+ * Standard easeOutExpo easing: fast acceleration, smooth exponential decay.
+ * p in [0, 1] -> eased progress with easeOutExpo(1) === 1 exactly.
  */
-const EASE_OUT_EXPO = [0.16, 1, 0.3, 1] as const;
+const easeOutExpo = (p: number): number => (p >= 1 ? 1 : 1 - Math.pow(2, -10 * p));
 
 /**
  * Format number with Intl.NumberFormat using US locale (comma separators).
@@ -30,6 +30,17 @@ function formatLocaleNumber(val: number, decimals: number = 0): string {
   }).format(val);
 }
 
+/**
+ * Scroll-triggered animated number counter.
+ *
+ * Dependency-free implementation (replaces framer-motion's `useInView` +
+ * `animate` with native IntersectionObserver + a requestAnimationFrame tween)
+ * while preserving the exact same behavior contract:
+ *  - SSR/no-JS render is the final formatted value (no hydration flash)
+ *  - Animates only once when 30% visible (with -40px bottom resting margin)
+ *  - Respects `(prefers-reduced-motion: reduce)`
+ *  - 3s safety timeout guarantees the final value is always shown
+ */
 export function AnimatedCounter({
   value,
   to,
@@ -52,15 +63,11 @@ export function AnimatedCounter({
   // Initial state MUST be the final target value, never 0.
   const [displayValue, setDisplayValue] = useState<number>(targetValue);
 
-  // Trigger on scroll via framer-motion useInView
-  const isInView = useInView(containerRef, {
-    once: true,
-    amount: 0.3,
-    margin: "0px 0px -40px 0px",
-  });
+  // Enter-viewport trigger once element is 30% visible
+  const [isInView, setIsInView] = useState<boolean>(false);
 
   const hasAnimatedRef = useRef<boolean>(false);
-  const safetyTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const safetyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Keep displayValue synced if targetValue prop changes
   useEffect(() => {
@@ -68,6 +75,39 @@ export function AnimatedCounter({
       setDisplayValue(targetValue);
     }
   }, [targetValue]);
+
+  // Observe entering the viewport (IntersectionObserver, fire-once)
+  useEffect(() => {
+    if (isZeroOrEmpty) {
+      return;
+    }
+
+    if (typeof window !== "undefined" && typeof window.IntersectionObserver === "undefined") {
+      setIsInView(true);
+      return;
+    }
+
+    const el = containerRef.current;
+    if (!el) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry.isIntersecting) {
+          observer.disconnect();
+          setIsInView(true);
+        }
+      },
+      { threshold: 0.3, rootMargin: "0px 0px -40px 0px" }
+    );
+    observer.observe(el);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [isZeroOrEmpty]);
 
   useEffect(() => {
     // If invalid or zero, no animation needed
@@ -86,8 +126,7 @@ export function AnimatedCounter({
       return;
     }
 
-    // Check for IntersectionObserver availability
-    if (typeof window !== "undefined" && typeof window.IntersectionObserver === "undefined") {
+    if (!window.IntersectionObserver) {
       setDisplayValue(targetValue);
       hasAnimatedRef.current = true;
       return;
@@ -104,22 +143,27 @@ export function AnimatedCounter({
     if (isInView && !hasAnimatedRef.current) {
       hasAnimatedRef.current = true;
 
-      const controls = animate(0, targetValue, {
-        duration: Math.max(duration, 0.3),
-        ease: EASE_OUT_EXPO,
-        onUpdate: (latest) => {
-          setDisplayValue(latest);
-        },
-        onComplete: () => {
+      let rafId: number;
+      const durationMs = Math.max(duration, 0.3) * 1000;
+      const startTime = performance.now();
+
+      const tick = (now: number) => {
+        const p = Math.min((now - startTime) / durationMs, 1);
+        setDisplayValue(targetValue * easeOutExpo(p));
+        if (p < 1) {
+          rafId = requestAnimationFrame(tick);
+        } else {
           setDisplayValue(targetValue);
           if (safetyTimeoutRef.current) {
             clearTimeout(safetyTimeoutRef.current);
           }
-        },
-      });
+        }
+      };
+
+      rafId = requestAnimationFrame(tick);
 
       return () => {
-        controls.stop();
+        cancelAnimationFrame(rafId);
         if (safetyTimeoutRef.current) {
           clearTimeout(safetyTimeoutRef.current);
         }
