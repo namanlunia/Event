@@ -1,35 +1,54 @@
 import { Project, UserProfile, PullRequest, Ambassador, College, Sponsor } from "@/types";
+import { SITE_CONFIG } from "@/lib/site-config";
+import * as demoData from "@/lib/demo-data";
 
 /**
  * Returns approved projects.
  * In launch mode, projects are "To Be Announced" prior to official onboarding.
  */
 export function getApprovedProjects(): Project[] {
-  // In launch mode, projects are cleared and "To Be Announced"
+  if (SITE_CONFIG.DEMO_MODE) {
+    return demoData.MOCK_PROJECTS;
+  }
   return [];
 }
 
 export function getActiveContributors(): UserProfile[] {
-  // In launch mode, leaderboard is cleared and "To Be Continued" until sprint starts
+  if (SITE_CONFIG.DEMO_MODE) {
+    return demoData.MOCK_CONTRIBUTORS;
+  }
   return [];
 }
 
 export function getCampusAmbassadors(): Ambassador[] {
+  if (SITE_CONFIG.DEMO_MODE) {
+    return demoData.MOCK_AMBASSADORS;
+  }
   return [];
 }
 
 export function getScoredPullRequests(): PullRequest[] {
+  if (SITE_CONFIG.DEMO_MODE) {
+    return demoData.MOCK_PRS;
+  }
   return [];
 }
 
 export function getColleges(): College[] {
+  if (SITE_CONFIG.DEMO_MODE) {
+    return demoData.MOCK_COLLEGES;
+  }
   return [];
 }
 
 /**
  * Returns confirmed sponsors.
+ * In production (DEMO_MODE=false), only confirmed sponsors are returned.
  */
 export function getConfirmedSponsors(): Sponsor[] {
+  if (SITE_CONFIG.DEMO_MODE) {
+    return demoData.MOCK_SPONSORS;
+  }
   return [];
 }
 
@@ -49,13 +68,32 @@ export interface SiteStats {
  * When DEMO_MODE is false, computed strictly from real database entries.
  */
 export function getSiteStats(): SiteStats {
+  if (SITE_CONFIG.DEMO_MODE) {
+    return {
+      mergedPrs: 4800,
+      mergedPRs: 4800,
+      studentBuilders: 2500,
+      openRepositories: 120,
+      approvedProjects: 120,
+      participatingColleges: 350,
+      verifiedCerts: 1800,
+      isLive: false,
+    };
+  }
+
+  // Real data computation
+  const projects = getApprovedProjects();
+  const contributors = getActiveContributors();
+  const prs = getScoredPullRequests();
+  const colleges = getColleges();
+
   return {
-    mergedPrs: 0,
-    mergedPRs: 0,
-    studentBuilders: 0,
-    openRepositories: 0,
-    approvedProjects: 0,
-    participatingColleges: 0,
+    mergedPrs: prs.filter((p) => p.status === "merged").length,
+    mergedPRs: prs.filter((p) => p.status === "merged").length,
+    studentBuilders: contributors.length,
+    openRepositories: projects.length,
+    approvedProjects: projects.length,
+    participatingColleges: colleges.length,
     verifiedCerts: 0,
     isLive: false,
   };
@@ -65,34 +103,106 @@ export const getProgramStats = getSiteStats;
 
 /**
  * Returns a project by ID.
- * Returns undefined as projects are cleared/TBA.
  */
-export function getProjectById(_id: string): Project | undefined {
-  return undefined;
+export function getProjectById(id: string): Project | undefined {
+  if (SITE_CONFIG.DEMO_MODE) {
+    return demoData.MOCK_PROJECTS.find((p) => p.id === id);
+  }
+  const approved = getApprovedProjects();
+  return approved.find((p) => p.id === id);
 }
 
 /**
  * Returns active mentors.
- * Empty until official mentor onboarding announces approved mentors.
  */
-export function getMentors(): {
-  name: string;
-  role: string;
-  company: string;
-  domain: string;
-  github: string;
-  bio: string;
-  project?: string;
-  projectId?: string;
-}[] {
+export function getMentors() {
+  if (SITE_CONFIG.DEMO_MODE) {
+    return [
+      {
+        name: "Dr. Aris Thorne",
+        role: "AI Compiler Architect",
+        company: "Research Labs",
+        domain: "AI/ML & Systems",
+        github: "aristhorne",
+        bio: "Specializing in compiler optimization, SIMD intrinsics, and neural runtimes.",
+        project: "WinterVision Core",
+        projectId: "proj-1",
+      },
+      {
+        name: "Elena Rostova",
+        role: "CUDA Optimization Lead",
+        company: "Accelerated Compute",
+        domain: "High Performance Computing",
+        github: "erostova",
+        bio: "Specializing in GPU kernel scheduling, memory coalescing, and PyTorch C++ extensions.",
+        project: "WinterVision Core",
+        projectId: "proj-1",
+      },
+      {
+        name: "Kaelen Voss",
+        role: "Protocol Engineer",
+        company: "Distributed Systems Lab",
+        domain: "Web3 & Distributed Ledgers",
+        github: "kaelenvoss",
+        bio: "Developer tooling and smart contract safety on modern protocols.",
+        project: "OpenPay Web3 SDK",
+        projectId: "proj-2",
+      },
+      {
+        name: "Marcus Vance",
+        role: "SRE & Infrastructure Architect",
+        company: "CloudNative Labs",
+        domain: "Cloud & DevOps",
+        github: "marcusvance",
+        bio: "Kubernetes SIG contributor, Wireguard mesh tinkerer, and routing specialist.",
+        project: "Nexus DevOps Mesh",
+        projectId: "proj-3",
+      },
+      {
+        name: "Sarah Chen",
+        role: "Frontend Architect",
+        company: "Design Systems Guild",
+        domain: "Full-Stack & Web Performance",
+        github: "sarahchendev",
+        bio: "Passionate about web accessibility, design systems, and modern React concurrency.",
+        project: "OmniUI Glass React",
+        projectId: "proj-4",
+      },
+      {
+        name: "Tariq Mansoor",
+        role: "Security Researcher",
+        company: "Security Research Group",
+        domain: "Security & Program Analysis",
+        github: "tariqsec",
+        bio: "Symbolic execution enthusiast, analyzing bytecode and vulnerability scanners.",
+        project: "Sentinel Shield Threat Detector",
+        projectId: "proj-5",
+      },
+      {
+        name: "Priya Nair",
+        role: "Mobile Engineering Lead",
+        company: "Mobile Open Core",
+        domain: "Mobile & Embedded",
+        github: "priyanair",
+        bio: "Architecting fluid interfaces and local data synchronization.",
+        project: "PulseFit Native",
+        projectId: "proj-6",
+      },
+    ];
+  }
   return [];
 }
 
 /**
  * Returns a certificate by ID if verified.
- * Returns null until certificates are officially issued at program completion.
  */
-export function getCertificateById(_id: string) {
+export function getCertificateById(id: string) {
+  if (SITE_CONFIG.DEMO_MODE) {
+    if (id === demoData.MOCK_SAMPLE_CERTIFICATE.id) {
+      return demoData.MOCK_SAMPLE_CERTIFICATE;
+    }
+  }
+  // When DEMO_MODE is false or non-matching ID: return null (only genuine issued certs exist)
   return null;
 }
 

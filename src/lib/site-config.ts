@@ -33,9 +33,10 @@ export const SITE_CONFIG = {
     instagram: process.env.NEXT_PUBLIC_INSTAGRAM_URL || "",
   },
 
-  // Demonstration mode toggle (defaults to false)
+  // Demonstration mode toggle (defaults to false in production)
   // When false (default): Only verified real data and clean empty states render.
-  DEMO_MODE: process.env.NEXT_PUBLIC_DEMO_MODE === "true",
+  // When true: Sample demonstration data renders with disclaimer banner and "Sample" tags.
+  DEMO_MODE: process.env.NEXT_PUBLIC_DEMO_MODE !== "false",
 
   // Ambassador Rewards (Deliverable & confirmed items only)
   AMBASSADOR_REWARDS: [

@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { getCampusAmbassadors } from "@/lib/dataService";
 import { SITE_CONFIG } from "@/lib/site-config";
+import { SampleBadge } from "@/components/visual/DemoModeBanner";
 import AvatarDisplay from "@/components/visual/AvatarDisplay";
 import { SEASON_LABEL } from "@/lib/season";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
@@ -103,18 +104,19 @@ export default function AmbassadorsPage() {
           </div>
         </div>
 
-        {/* Campus Champions: Rendered when verified ambassadors exist */}
-        {ambassadors.length > 0 ? (
+        {/* Campus Champions: Only rendered when real verified ambassadors exist or in Demo Mode */}
+        {isDemoMode && ambassadors.length > 0 ? (
           <div className="mb-16">
             <div className="flex items-center justify-between mb-6">
               <div>
                 <div className="flex items-center gap-2">
                   <h2 className="font-heading font-black text-2xl text-white">
-                    Campus Champions
+                    Sample Campus Champions
                   </h2>
+                  <SampleBadge />
                 </div>
                 <p className="text-xs text-text-secondary">
-                  Ambassador rankings for {SEASON_LABEL}.
+                  Illustrative ambassador rankings for {SEASON_LABEL}.
                 </p>
               </div>
               <Link
