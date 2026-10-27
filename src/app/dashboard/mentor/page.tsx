@@ -34,7 +34,7 @@ import { SampleBadge } from "@/components/visual/DemoModeBanner";
 import AvatarDisplay from "@/components/visual/AvatarDisplay";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import StatusBadge from "@/components/ui/status-badge";
-import { PHASES, EVENT_END, formatDateRange } from "@/lib/season";
+import { PHASES, EVENT_END, formatDateRange, SEASON_LABEL, EVENT_MONTH_LABEL } from "@/lib/season";
 import {
   ResponsiveContainer,
   AreaChart,
@@ -455,7 +455,7 @@ function MentorDashboardContent() {
                   </p>
                 </div>
                 <span className="text-[10px] font-mono text-red-bright font-bold uppercase px-2 py-0.5 rounded bg-red-primary/10 border border-red-primary/30">
-                  December 2026
+                  {EVENT_MONTH_LABEL}
                 </span>
               </div>
 
@@ -515,8 +515,8 @@ function MentorDashboardContent() {
                     Mentor Certificate of Honor
                   </h4>
                   <p className="text-[11px] text-text-secondary leading-snug">
-                    Issued to verified technical mentors upon completion of the OWOC 2026 season on{" "}
-                    <strong className="text-white">December 31, 2026</strong>.
+                    Issued to verified technical mentors upon completion of the OWOC {SEASON_LABEL} season on{" "}
+                    <strong className="text-white">January 31, 2027</strong>.
                   </p>
                 </div>
 

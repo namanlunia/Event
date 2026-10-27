@@ -118,6 +118,11 @@ export function getFAQItems() {
     },
     {
       category: "General",
+      question: "When does OWOC take place and until when can I register?",
+      answer: "Registrations open on October 28, 2026 and remain open throughout the entire program until January 31, 2027. The official event runs from January 1 to January 31, 2027, with the intensive 23-day coding sprint running from January 4 to January 26, 2027.",
+    },
+    {
+      category: "General",
       question: "Is OWOC free to participate in?",
       answer: "Yes, 100% free! OWOC provides accessible open-source mentorship, project contribution opportunities, and digital certificates.",
     },

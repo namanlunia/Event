@@ -1,9 +1,10 @@
 /**
- * Single Source of Truth for OWOC 2026 Season Configuration.
+ * Single Source of Truth for OWOC 2027 Season Configuration.
  * 
- * The official event runs for the whole month of December 2026 (Dec 1 to Dec 31, 2026).
+ * Official Registration Window: Oct 28, 2026 to Jan 31, 2027 (open through entire program).
+ * Official Event Window: Jan 1, 2027 to Jan 31, 2027 (entire month of January 2027).
  * All dates, season labels, phase schedules, and duration phrases across the
- * entire application derive strictly from this file.
+ * entire application derive strictly from this single configuration.
  */
 
 export interface Phase {
@@ -14,13 +15,17 @@ export interface Phase {
   description: string;
 }
 
-// Season Identity (Entire event takes place in 2026; do NOT use 2026–27)
-export const SEASON_LABEL = "2026";
-export const SEASON_SHORT = "OWOC 2026";
+// Season Identity (Event takes place in January 2027)
+export const SEASON_LABEL = "2027";
+export const SEASON_SHORT = "OWOC 2027";
 
-// Official Event Window (Entire month of December 2026)
-export const EVENT_START = "2026-12-01";
-export const EVENT_END = "2026-12-31";
+// Official Registration Window (Registration stays open until Jan 31, 2027)
+export const REGISTRATION_OPENS = "2026-10-28";
+export const REGISTRATION_CLOSES = "2027-01-31";
+
+// Official Event Window (Entire month of January 2027)
+export const EVENT_START = "2027-01-01";
+export const EVENT_END = "2027-01-31";
 
 // Helper for inclusive day counting between two ISO dates
 function getInclusiveDays(startIso: string, endIso: string): number {
@@ -35,7 +40,7 @@ export const COPYRIGHT_YEAR = new Date().getFullYear();
 // Derived event metrics
 export const EVENT_DAYS = getInclusiveDays(EVENT_START, EVENT_END); // 31 days
 
-// Formatted month label: "December 2026"
+// Formatted month label: "January 2027"
 export const EVENT_MONTH_LABEL = new Intl.DateTimeFormat("en-US", {
   month: "long",
   year: "numeric",
@@ -59,45 +64,45 @@ export function formatDuration(days: number, adjective: boolean = true): string 
 }
 
 // Program Phases (Single place for phase schedule)
-// 1. Registration & Project Onboarding: Oct 28, 2026 to Nov 30, 2026 (pre-event)
-// 2. Community Bonding & AMA Sprints: Dec 1, 2026 to Dec 3, 2026
-// 3. Coding Period & Weekly Sprints: Dec 4, 2026 to Dec 26, 2026
-// 4. Code Freeze & Evaluation: Dec 27, 2026 to Dec 30, 2026
-// 5. Grand Results & Certificate Issuance: Dec 31, 2026
+// 1. Registration & Project Onboarding: Oct 28, 2026 to Dec 31, 2026 (Registration open through Jan 31, 2027)
+// 2. Community Bonding & AMA Sprints: Jan 1, 2027 to Jan 3, 2027
+// 3. Coding Period & Weekly Sprints: Jan 4, 2027 to Jan 26, 2027 (23 days)
+// 4. Code Freeze & Evaluation: Jan 27, 2027 to Jan 30, 2027
+// 5. Grand Results & Certificate Issuance: Jan 31, 2027
 export const PHASES: Phase[] = [
   {
     id: 1,
     name: "Registration & Project Onboarding",
     startDate: "2026-10-28",
-    endDate: "2026-11-30",
-    description: "Contributor registrations open, repository applications vetted, and mentor onboarding begins.",
+    endDate: "2026-12-31",
+    description: "Contributor registrations open, repository applications vetted, and mentor onboarding begins (Registration stays open until Jan 31, 2027).",
   },
   {
     id: 2,
     name: "Community Bonding & AMA Sprints",
-    startDate: "2026-12-01",
-    endDate: "2026-12-03",
+    startDate: "2027-01-01",
+    endDate: "2027-01-03",
     description: "Contributors join project channels, interact with maintainers, attend open-source clinics, and claim good-first-issues.",
   },
   {
     id: 3,
     name: "Coding Period & Weekly Sprints",
-    startDate: "2026-12-04",
-    endDate: "2026-12-26",
-    description: `Intensive 23-day development period. Contributors solve issues, submit PRs, earn points, and climb the live podium.`,
+    startDate: "2027-01-04",
+    endDate: "2027-01-26",
+    description: "Intensive 23-day development period. Contributors solve issues, submit PRs, earn points, and climb the live podium.",
   },
   {
     id: 4,
     name: "Code Freeze & Evaluation",
-    startDate: "2026-12-27",
-    endDate: "2026-12-30",
+    startDate: "2027-01-27",
+    endDate: "2027-01-30",
     description: "All pull requests under final mentor review, automated scoring audits, anti-plagiarism checks, and community verification.",
   },
   {
     id: 5,
     name: "Grand Results & Certificate Issuance",
-    startDate: "2026-12-31",
-    endDate: "2026-12-31",
+    startDate: "2027-01-31",
+    endDate: "2027-01-31",
     description: "Announcement of top podium winners, issuance of official digital certificates, and dispatch of winter swag kits.",
   },
 ];
@@ -124,20 +129,84 @@ export function getCodingDurationWeeks(): number {
 }
 
 /**
+ * Helper to compute calendar day difference between an ISO date string (YYYY-MM-DD)
+ * and a reference date using Asia/Kolkata timezone.
+ */
+export function getCalendarDaysUntil(targetIso: string, referenceDate: Date = new Date()): number {
+  const formatter = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Kolkata",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+  const todayStr = formatter.format(referenceDate);
+
+  const [refYear, refMonth, refDay] = todayStr.split("-").map(Number);
+  const [tgtYear, tgtMonth, tgtDay] = targetIso.split("-").map(Number);
+
+  const refUtc = Date.UTC(refYear, refMonth - 1, refDay);
+  const tgtUtc = Date.UTC(tgtYear, tgtMonth - 1, tgtDay);
+
+  return Math.round((tgtUtc - refUtc) / (1000 * 60 * 60 * 24));
+}
+
+/**
+ * Number of calendar days until registration opens (Oct 28, 2026).
+ */
+export function daysUntilRegistrationOpens(currentDate: Date = new Date()): number {
+  return getCalendarDaysUntil(REGISTRATION_OPENS, currentDate);
+}
+
+/**
+ * Number of calendar days until registration closes (Jan 31, 2027).
+ */
+export function daysUntilRegistrationCloses(currentDate: Date = new Date()): number {
+  return getCalendarDaysUntil(REGISTRATION_CLOSES, currentDate);
+}
+
+/**
+ * Number of calendar days until official event start (Jan 1, 2027).
+ */
+export function daysUntilEventStart(currentDate: Date = new Date()): number {
+  return getCalendarDaysUntil(EVENT_START, currentDate);
+}
+
+/**
+ * Number of calendar days until coding period start (Jan 4, 2027).
+ */
+export function daysUntilCodingStart(currentDate: Date = new Date()): number {
+  return getCalendarDaysUntil(CODING_PHASE.startDate, currentDate);
+}
+
+/**
+ * Returns registration status: 'upcoming' | 'open' | 'closed'
+ */
+export function getRegistrationStatus(
+  currentDate: Date = new Date()
+): "upcoming" | "open" | "closed" {
+  const openDays = daysUntilRegistrationOpens(currentDate);
+  const closeDays = daysUntilRegistrationCloses(currentDate);
+
+  if (openDays > 0) return "upcoming";
+  if (closeDays >= 0) return "open";
+  return "closed";
+}
+
+/**
  * Returns phase status relative to a reference date: 'completed' | 'current' | 'upcoming'
+ * Computed using Asia/Kolkata calendar day boundaries.
  */
 export function getPhaseStatus(
   phase: Phase,
   currentDate: Date = new Date()
 ): "completed" | "current" | "upcoming" {
-  const now = currentDate.getTime();
-  const start = new Date(`${phase.startDate}T00:00:00`).getTime();
-  const end = new Date(`${phase.endDate}T23:59:59`).getTime();
+  const startDays = getCalendarDaysUntil(phase.startDate, currentDate);
+  const endDays = getCalendarDaysUntil(phase.endDate, currentDate);
 
-  if (now > end) {
+  if (endDays < 0) {
     return "completed";
   }
-  if (now >= start && now <= end) {
+  if (startDays <= 0 && endDays >= 0) {
     return "current";
   }
   return "upcoming";
@@ -156,7 +225,7 @@ export function getCurrentPhase(currentDate: Date = new Date()): Phase | null {
 }
 
 /**
- * Formats a readable date range for a phase (e.g. "Oct 28 – Nov 30, 2026" or "Dec 31, 2026").
+ * Formats a readable date range for a phase (e.g. "Oct 28 – Dec 31, 2026" or "Jan 31, 2027").
  */
 export function formatDateRange(phase: Phase): string {
   const start = new Date(`${phase.startDate}T00:00:00`);
@@ -186,18 +255,15 @@ export function formatDateRange(phase: Phase): string {
 
 /**
  * Dynamic hero status badge text based on program phase.
- * "Before the first phase starts, show 'Registration opens {date}'."
  */
 export function getHeroStatusBadge(currentDate: Date = new Date()): {
   text: string;
   isUpcoming: boolean;
 } {
-  const firstPhase = PHASES[0];
-  const firstPhaseStart = new Date(`${firstPhase.startDate}T00:00:00`).getTime();
-  const now = currentDate.getTime();
+  const regStatus = getRegistrationStatus(currentDate);
 
-  if (now < firstPhaseStart) {
-    const formattedStartDate = new Date(`${firstPhase.startDate}T00:00:00`).toLocaleDateString("en-US", {
+  if (regStatus === "upcoming") {
+    const formattedStartDate = new Date(`${REGISTRATION_OPENS}T00:00:00`).toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
     });
@@ -206,8 +272,8 @@ export function getHeroStatusBadge(currentDate: Date = new Date()): {
 
   const activePhase = getCurrentPhase(currentDate);
   if (!activePhase) {
-    const lastPhaseEnd = new Date(`${PHASES[PHASES.length - 1].endDate}T23:59:59`).getTime();
-    if (now > lastPhaseEnd) {
+    const lastPhaseEndDays = getCalendarDaysUntil(PHASES[PHASES.length - 1].endDate, currentDate);
+    if (lastPhaseEndDays < 0) {
       return { text: "Results Announced", isUpcoming: false };
     }
     return { text: "Evaluation Underway", isUpcoming: false };
@@ -230,44 +296,8 @@ export function getHeroStatusBadge(currentDate: Date = new Date()): {
 }
 
 /**
- * Helper to compute calendar day difference between an ISO date string (YYYY-MM-DD)
- * and the current date in Asia/Kolkata timezone.
- */
-export function getCalendarDaysUntil(targetIso: string, referenceDate: Date = new Date()): number {
-  const formatter = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Asia/Kolkata",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  });
-  const todayStr = formatter.format(referenceDate); // e.g. "2026-10-18"
-
-  const [refYear, refMonth, refDay] = todayStr.split("-").map(Number);
-  const [tgtYear, tgtMonth, tgtDay] = targetIso.split("-").map(Number);
-
-  const refUtc = Date.UTC(refYear, refMonth - 1, refDay);
-  const tgtUtc = Date.UTC(tgtYear, tgtMonth - 1, tgtDay);
-
-  return Math.round((tgtUtc - refUtc) / (1000 * 60 * 60 * 24));
-}
-
-/**
- * Returns number of calendar days until official event start (Dec 1, 2026) using Asia/Kolkata calendar math.
- */
-export function daysUntilEventStart(currentDate: Date = new Date()): number {
-  return getCalendarDaysUntil(EVENT_START, currentDate);
-}
-
-/**
- * Returns number of calendar days until coding period start (Dec 4, 2026) using Asia/Kolkata calendar math.
- */
-export function daysUntilCodingStart(currentDate: Date = new Date()): number {
-  return getCalendarDaysUntil(CODING_PHASE.startDate, currentDate);
-}
-
-/**
  * Countdown helper for Hero section:
- * "Event starts in N days" before December 1, then "Ends in N days" during December.
+ * "Event starts in N days" before January 1, 2027, then "Ends in N days" during January.
  */
 export function getHeroCountdown(currentDate: Date = new Date()): string {
   const daysLeft = daysUntilEventStart(currentDate);
@@ -312,11 +342,8 @@ export function getCodingPeriodProgress(currentDate: Date = new Date()): {
     };
   }
 
-  const now = currentDate.getTime();
-  const codingStart = new Date(`${CODING_PHASE.startDate}T00:00:00`).getTime();
-  const codingEnd = new Date(`${CODING_PHASE.endDate}T23:59:59`).getTime();
-
-  if (now > codingEnd) {
+  const codingEndDays = getCalendarDaysUntil(CODING_PHASE.endDate, currentDate);
+  if (codingEndDays < 0) {
     return {
       text: "Coding period complete",
       isUpcoming: false,
@@ -326,8 +353,8 @@ export function getCodingPeriodProgress(currentDate: Date = new Date()): {
     };
   }
 
-  // Active coding period
-  const elapsedDays = Math.floor((now - codingStart) / (1000 * 60 * 60 * 24));
+  // Active coding period (daysLeft <= 0 and codingEndDays >= 0)
+  const elapsedDays = Math.abs(daysLeft);
   const currentWeek = Math.min(Math.floor(elapsedDays / 7) + 1, totalWeeks);
 
   return {
@@ -348,19 +375,19 @@ export interface PrimaryCta {
 
 /**
  * Returns primary call-to-action configuration based on program timeline.
+ * Registration opens Oct 28, 2026 and stays open until Jan 31, 2027.
  * Before Oct 28: returns "Registration opens Oct 28" (disabled).
- * Oct 28 to Dec 3 (pre-coding): returns "Register Now — Free".
- * Dec 4 to Dec 26 (coding sprint): returns "Start Contributing".
+ * Oct 28 to Jan 3 (pre-coding): returns "Register Now — Free".
+ * Jan 4 to Jan 26 (coding sprint): returns "Start Contributing".
  * After coding sprint: returns "View Leaderboard".
  */
 export function getPrimaryCta(currentDate: Date = new Date()): PrimaryCta {
-  const firstPhaseStart = new Date(`${PHASES[0].startDate}T00:00:00`).getTime();
-  const codingStart = new Date(`${CODING_PHASE.startDate}T00:00:00`).getTime();
-  const codingEnd = new Date(`${CODING_PHASE.endDate}T23:59:59`).getTime();
-  const now = currentDate.getTime();
+  const regStatus = getRegistrationStatus(currentDate);
+  const codingStartDays = daysUntilCodingStart(currentDate);
+  const codingEndDays = getCalendarDaysUntil(CODING_PHASE.endDate, currentDate);
 
-  if (now < firstPhaseStart) {
-    const startFormatted = new Date(`${PHASES[0].startDate}T00:00:00`).toLocaleDateString("en-US", {
+  if (regStatus === "upcoming") {
+    const startFormatted = new Date(`${REGISTRATION_OPENS}T00:00:00`).toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
     });
@@ -372,7 +399,7 @@ export function getPrimaryCta(currentDate: Date = new Date()): PrimaryCta {
     };
   }
 
-  if (now < codingStart) {
+  if (codingStartDays > 0) {
     return {
       text: "Register Now — Free",
       href: "/register",
@@ -380,7 +407,7 @@ export function getPrimaryCta(currentDate: Date = new Date()): PrimaryCta {
     };
   }
 
-  if (now <= codingEnd) {
+  if (codingEndDays >= 0) {
     return {
       text: "Start Contributing",
       href: "/projects",
@@ -396,9 +423,8 @@ export function getPrimaryCta(currentDate: Date = new Date()): PrimaryCta {
 }
 
 /**
- * Checks if current date is before coding period starts (Dec 4, 2026).
+ * Checks if current date is before coding period starts (Jan 4, 2027).
  */
 export function isBeforeCodingPeriod(currentDate: Date = new Date()): boolean {
-  const codingStart = new Date(`${CODING_PHASE.startDate}T00:00:00`).getTime();
-  return currentDate.getTime() < codingStart;
+  return daysUntilCodingStart(currentDate) > 0;
 }

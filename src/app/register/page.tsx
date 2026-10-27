@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import BrandLogo from "@/components/brand/BrandLogo";
 import { useAppStore } from "@/lib/store";
-import { SEASON_LABEL } from "@/lib/season";
+import { SEASON_LABEL, EVENT_MONTH_LABEL } from "@/lib/season";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -40,7 +40,7 @@ export default function RegisterPage() {
             Join the Winter Season
           </h1>
           <p className="text-xs sm:text-sm text-text-secondary max-w-lg mx-auto">
-            Choose how you want to participate in Omnikon Winter of Code 2026.
+            Choose how you want to participate in Omnikon Winter of Code {SEASON_LABEL}.
           </p>
         </div>
 
@@ -51,7 +51,7 @@ export default function RegisterPage() {
               <span className="px-2.5 py-0.5 rounded-full bg-red-primary/20 text-red-bright border border-red-primary/40 text-[10px] font-mono font-bold uppercase">
                 Primary Track
               </span>
-              <span className="text-xs font-mono text-text-muted">December 2026</span>
+              <span className="text-xs font-mono text-text-muted">{EVENT_MONTH_LABEL}</span>
             </div>
             <h2 className="font-heading font-black text-xl text-white">
               Student Contributor

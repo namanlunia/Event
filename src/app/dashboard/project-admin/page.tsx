@@ -185,22 +185,22 @@ function ProjectAdminDashboardContent() {
   const mergedPRCount = pullRequests.filter((pr) => pr.status === "merged").length;
   const awaitingIssuesCount = issues.filter((i) => i.status === "open").length;
 
-  // PR Activity Chart Data over December 2026
+  // PR Activity Chart Data over January 2027 coding period
   const prActivityData = isDemo
     ? [
-        { date: "Dec 04", prs: 1 },
-        { date: "Dec 08", prs: 3 },
-        { date: "Dec 12", prs: 5 },
-        { date: "Dec 16", prs: 8 },
-        { date: "Dec 20", prs: 12 },
-        { date: "Dec 24", prs: 15 },
-        { date: "Dec 26", prs: 18 },
+        { date: "Jan 04", prs: 1 },
+        { date: "Jan 08", prs: 3 },
+        { date: "Jan 12", prs: 5 },
+        { date: "Jan 16", prs: 8 },
+        { date: "Jan 20", prs: 12 },
+        { date: "Jan 24", prs: 15 },
+        { date: "Jan 26", prs: 18 },
       ]
     : [
-        { date: "Dec 04", prs: 0 },
-        { date: "Dec 12", prs: 0 },
-        { date: "Dec 20", prs: 0 },
-        { date: "Dec 26", prs: 0 },
+        { date: "Jan 04", prs: 0 },
+        { date: "Jan 12", prs: 0 },
+        { date: "Jan 20", prs: 0 },
+        { date: "Jan 26", prs: 0 },
       ];
 
   // Validate Submit Step

@@ -273,7 +273,7 @@ export default function ContributorDashboard() {
                 Digital Certificate of Excellence
               </h3>
               <p className="text-xs text-text-secondary leading-relaxed mb-4">
-                Official certificates of completion are issued to all qualifying participants upon program completion on December 31, 2026.
+                Official certificates of completion are issued to all qualifying participants upon program completion on January 31, 2027.
               </p>
             </div>
 

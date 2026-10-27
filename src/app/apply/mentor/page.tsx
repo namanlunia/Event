@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { Users, CheckCircle2, ArrowRight, Award } from "lucide-react";
 import { useAppStore } from "@/lib/store";
-import { SEASON_LABEL } from "@/lib/season";
+import { SEASON_LABEL, EVENT_MONTH_LABEL } from "@/lib/season";
 
 export default function ApplyMentorPage() {
   const { addMentorApplication } = useAppStore();
@@ -68,7 +68,7 @@ export default function ApplyMentorPage() {
             Apply as Technical Mentor
           </h1>
           <p className="text-xs text-text-secondary mt-1">
-            Guide student developers, conduct PR reviews, and shape open-source talent during December 2026.
+            Guide student developers, conduct PR reviews, and shape open-source talent during {EVENT_MONTH_LABEL}.
           </p>
         </div>
 
