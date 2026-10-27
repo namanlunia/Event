@@ -36,7 +36,7 @@ export const SITE_CONFIG = {
   // Demonstration mode toggle (defaults to false in production)
   // When false (default): Only verified real data and clean empty states render.
   // When true: Sample demonstration data renders with disclaimer banner and "Sample" tags.
-  DEMO_MODE: process.env.NEXT_PUBLIC_DEMO_MODE !== "false",
+  DEMO_MODE: process.env.NEXT_PUBLIC_DEMO_MODE === "true",
 
   // Ambassador Rewards (Deliverable & confirmed items only)
   AMBASSADOR_REWARDS: [
@@ -85,7 +85,7 @@ export const SITE_CONFIG = {
       minReferrals: 100,
       referrals: "100+ Registrations",
       perks: [
-        "Top Campus Champion Digital Accolade",
+        "Top Campus Ambassador Digital Accolade",
         "Campus Chapter Lead Digital Credential",
         "Direct Invitation to future organizing steering sessions",
         // Physical swag commented out until confirmed:

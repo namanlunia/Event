@@ -15,23 +15,14 @@ export function getActiveContributors(): UserProfile[] {
 }
 
 export function getCampusAmbassadors(): Ambassador[] {
-  if (SITE_CONFIG.DEMO_MODE) {
-    return demoData.MOCK_AMBASSADORS;
-  }
   return [];
 }
 
 export function getScoredPullRequests(): PullRequest[] {
-  if (SITE_CONFIG.DEMO_MODE) {
-    return demoData.MOCK_PRS;
-  }
   return [];
 }
 
 export function getColleges(): College[] {
-  if (SITE_CONFIG.DEMO_MODE) {
-    return demoData.MOCK_COLLEGES;
-  }
   return [];
 }
 
@@ -40,9 +31,6 @@ export function getColleges(): College[] {
  * In production (DEMO_MODE=false), only confirmed sponsors are returned.
  */
 export function getConfirmedSponsors(): Sponsor[] {
-  if (SITE_CONFIG.DEMO_MODE) {
-    return demoData.MOCK_SPONSORS;
-  }
   return [];
 }
 
@@ -59,22 +47,9 @@ export interface SiteStats {
 
 /**
  * Returns centralized program/site stats.
- * When DEMO_MODE is false, computed strictly from real database entries.
+ * Computed strictly from real database entries.
  */
 export function getSiteStats(): SiteStats {
-  if (SITE_CONFIG.DEMO_MODE) {
-    return {
-      mergedPrs: 4800,
-      mergedPRs: 4800,
-      studentBuilders: 2500,
-      openRepositories: 120,
-      approvedProjects: 120,
-      participatingColleges: 350,
-      verifiedCerts: 1800,
-      isLive: false,
-    };
-  }
-
   // Real data computation
   const projects = getApprovedProjects();
   const contributors = getActiveContributors();

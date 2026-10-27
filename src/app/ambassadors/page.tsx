@@ -104,19 +104,18 @@ export default function AmbassadorsPage() {
           </div>
         </div>
 
-        {/* Campus Champions: Only rendered when real verified ambassadors exist or in Demo Mode */}
-        {isDemoMode && ambassadors.length > 0 ? (
+        {/* Campus Champions: Only rendered when real verified ambassadors exist */}
+        {ambassadors.length > 0 ? (
           <div className="mb-16">
             <div className="flex items-center justify-between mb-6">
               <div>
                 <div className="flex items-center gap-2">
                   <h2 className="font-heading font-black text-2xl text-white">
-                    Sample Campus Champions
+                    Campus Champions
                   </h2>
-                  <SampleBadge />
                 </div>
                 <p className="text-xs text-text-secondary">
-                  Illustrative ambassador rankings for {SEASON_LABEL}.
+                  Official ambassador standings for {SEASON_LABEL}.
                 </p>
               </div>
               <Link

@@ -46,7 +46,7 @@ export default function HeroSection() {
     { label: "Participating Colleges", value: stats.participatingColleges, suffix: "+" },
   ];
 
-  const hasStats = isDemoMode || statItems.some((s) => s.value > 0);
+  const hasStats = statItems.some((s) => s.value > 0);
 
   return (
     <section className="relative pt-32 pb-24 md:pt-44 md:pb-32 overflow-hidden">
