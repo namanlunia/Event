@@ -7,16 +7,10 @@ import * as demoData from "@/lib/demo-data";
  * In launch mode, projects are "To Be Announced" prior to official onboarding.
  */
 export function getApprovedProjects(): Project[] {
-  if (SITE_CONFIG.DEMO_MODE) {
-    return demoData.MOCK_PROJECTS;
-  }
   return [];
 }
 
 export function getActiveContributors(): UserProfile[] {
-  if (SITE_CONFIG.DEMO_MODE) {
-    return demoData.MOCK_CONTRIBUTORS;
-  }
   return [];
 }
 
@@ -104,92 +98,23 @@ export const getProgramStats = getSiteStats;
 /**
  * Returns a project by ID.
  */
-export function getProjectById(id: string): Project | undefined {
-  if (SITE_CONFIG.DEMO_MODE) {
-    return demoData.MOCK_PROJECTS.find((p) => p.id === id);
-  }
-  const approved = getApprovedProjects();
-  return approved.find((p) => p.id === id);
+export function getProjectById(_id: string): Project | undefined {
+  return undefined;
 }
 
 /**
  * Returns active mentors.
  */
-export function getMentors() {
-  if (SITE_CONFIG.DEMO_MODE) {
-    return [
-      {
-        name: "Dr. Aris Thorne",
-        role: "AI Compiler Architect",
-        company: "Research Labs",
-        domain: "AI/ML & Systems",
-        github: "aristhorne",
-        bio: "Specializing in compiler optimization, SIMD intrinsics, and neural runtimes.",
-        project: "WinterVision Core",
-        projectId: "proj-1",
-      },
-      {
-        name: "Elena Rostova",
-        role: "CUDA Optimization Lead",
-        company: "Accelerated Compute",
-        domain: "High Performance Computing",
-        github: "erostova",
-        bio: "Specializing in GPU kernel scheduling, memory coalescing, and PyTorch C++ extensions.",
-        project: "WinterVision Core",
-        projectId: "proj-1",
-      },
-      {
-        name: "Kaelen Voss",
-        role: "Protocol Engineer",
-        company: "Distributed Systems Lab",
-        domain: "Web3 & Distributed Ledgers",
-        github: "kaelenvoss",
-        bio: "Developer tooling and smart contract safety on modern protocols.",
-        project: "OpenPay Web3 SDK",
-        projectId: "proj-2",
-      },
-      {
-        name: "Marcus Vance",
-        role: "SRE & Infrastructure Architect",
-        company: "CloudNative Labs",
-        domain: "Cloud & DevOps",
-        github: "marcusvance",
-        bio: "Kubernetes SIG contributor, Wireguard mesh tinkerer, and routing specialist.",
-        project: "Nexus DevOps Mesh",
-        projectId: "proj-3",
-      },
-      {
-        name: "Sarah Chen",
-        role: "Frontend Architect",
-        company: "Design Systems Guild",
-        domain: "Full-Stack & Web Performance",
-        github: "sarahchendev",
-        bio: "Passionate about web accessibility, design systems, and modern React concurrency.",
-        project: "OmniUI Glass React",
-        projectId: "proj-4",
-      },
-      {
-        name: "Tariq Mansoor",
-        role: "Security Researcher",
-        company: "Security Research Group",
-        domain: "Security & Program Analysis",
-        github: "tariqsec",
-        bio: "Symbolic execution enthusiast, analyzing bytecode and vulnerability scanners.",
-        project: "Sentinel Shield Threat Detector",
-        projectId: "proj-5",
-      },
-      {
-        name: "Priya Nair",
-        role: "Mobile Engineering Lead",
-        company: "Mobile Open Core",
-        domain: "Mobile & Embedded",
-        github: "priyanair",
-        bio: "Architecting fluid interfaces and local data synchronization.",
-        project: "PulseFit Native",
-        projectId: "proj-6",
-      },
-    ];
-  }
+export function getMentors(): {
+  name: string;
+  role: string;
+  company: string;
+  domain: string;
+  github: string;
+  bio: string;
+  project?: string;
+  projectId?: string;
+}[] {
   return [];
 }
 
