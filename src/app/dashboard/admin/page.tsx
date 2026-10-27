@@ -218,57 +218,7 @@ function SuperAdminDashboardContent() {
       college: "Omnikon Core",
       points: 0,
       status: "active",
-      joinedAt: "2026-09-01",
-    },
-    {
-      id: "u-1",
-      name: "Aarav Patel",
-      email: "aarav@example.edu",
-      role: "contributor",
-      college: "IIT Bombay",
-      points: 1240,
-      status: "active",
-      joinedAt: "2026-10-10",
-    },
-    {
-      id: "u-2",
-      name: "Dr. Aris Thorne",
-      email: "aris@omnikonhub.com",
-      role: "mentor",
-      college: "Stanford",
-      points: 0,
-      status: "active",
       joinedAt: "2026-10-01",
-    },
-    {
-      id: "u-3",
-      name: "Rohan Kulkarni",
-      email: "rohan@hypercache.org",
-      role: "project_admin",
-      college: "NIT Karnataka",
-      points: 0,
-      status: "active",
-      joinedAt: "2026-10-12",
-    },
-    {
-      id: "u-4",
-      name: "Devon Miller",
-      email: "devon@college.edu",
-      role: "ambassador",
-      college: "BITS Pilani",
-      points: 340,
-      status: "active",
-      joinedAt: "2026-10-14",
-    },
-    {
-      id: "u-5",
-      name: "Suspicious User",
-      email: "sus@botnet.xyz",
-      role: "contributor",
-      college: "Unknown",
-      points: 400,
-      status: "active",
-      joinedAt: "2026-10-16",
     },
   ]);
 
@@ -277,13 +227,7 @@ function SuperAdminDashboardContent() {
   const [rulesSuccess, setRulesSuccess] = useState(false);
 
   // Content Management: Sponsors State
-  const [sponsors, setSponsors] = useState([
-    { id: "sp-1", name: "Sample Partner A", tier: "Alpha Title", confirmed: true },
-    { id: "sp-2", name: "Sample Partner B", tier: "Alpha Title", confirmed: true },
-    { id: "sp-3", name: "Sample Partner C", tier: "Crimson Partner", confirmed: true },
-    { id: "sp-4", name: "Sample Partner D", tier: "Crimson Partner", confirmed: true },
-    { id: "sp-5", name: "Sample Partner E", tier: "Community Supporter", confirmed: false },
-  ]);
+  const [sponsors, setSponsors] = useState<{ id: string; name: string; tier: string; confirmed: boolean }[]>([]);
 
   // Badges Definitions
   const [badges, setBadges] = useState([
@@ -298,29 +242,23 @@ function SuperAdminDashboardContent() {
 
   // Analytics Chart Data
   const registrationTimelineData = [
-    { date: "Oct 28", count: 45 },
-    { date: "Oct 31", count: 110 },
-    { date: "Nov 04", count: 240 },
-    { date: "Nov 08", count: 420 },
-    { date: "Nov 14", count: 780 },
-    { date: "Nov 20", count: 1250 },
-    { date: "Nov 26", count: 1800 },
+    { date: "Launch", count: users.length },
   ];
 
   const roleDistributionData = [
-    { role: "Contributors", count: 1420, color: "#EF4444" },
-    { role: "Mentors", count: 85, color: "#3B82F6" },
-    { role: "Project Admins", count: 42, color: "#10B981" },
-    { role: "Ambassadors", count: 105, color: "#F59E0B" },
-    { role: "Admins", count: 5, color: "#8B5CF6" },
+    { role: "Contributors", count: users.filter((u) => u.role === "contributor").length, color: "#EF4444" },
+    { role: "Mentors", count: users.filter((u) => u.role === "mentor").length, color: "#3B82F6" },
+    { role: "Project Admins", count: users.filter((u) => u.role === "project_admin").length, color: "#10B981" },
+    { role: "Ambassadors", count: users.filter((u) => u.role === "ambassador").length, color: "#F59E0B" },
+    { role: "Admins", count: users.filter((u) => u.role === "super_admin").length, color: "#8B5CF6" },
   ];
 
   const domainBreakdownData = [
-    { domain: "AI/ML", count: 12 },
-    { domain: "Web3", count: 9 },
-    { domain: "Cloud", count: 8 },
-    { domain: "Full-Stack", count: 7 },
-    { domain: "Security", count: 4 },
+    { domain: "AI/ML", count: projects.filter((p) => p.domain === "AI/ML").length },
+    { domain: "Web3", count: projects.filter((p) => p.domain === "Web3").length },
+    { domain: "Cloud & DevOps", count: projects.filter((p) => p.domain === "Cloud & DevOps").length },
+    { domain: "Full-Stack", count: projects.filter((p) => p.domain === "Full-Stack").length },
+    { domain: "Security", count: projects.filter((p) => p.domain === "Security").length },
   ];
 
   const pendingProjects = projects.filter((p) => p.status === "pending");
@@ -640,7 +578,7 @@ function SuperAdminDashboardContent() {
                 <Users className="w-4 h-4 text-red-bright" />
               </div>
               <div className="text-2xl font-black text-white font-mono">
-                <AnimatedCounter to={isDemo ? 1657 : 0} />
+                <AnimatedCounter to={users.length} />
               </div>
               <div className="text-[10px] text-text-muted mt-1">Across all 5 program roles</div>
             </div>
@@ -720,7 +658,7 @@ function SuperAdminDashboardContent() {
                   Cumulative Registrations Growth
                 </h4>
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-surface-2 text-text-muted border border-white/5">
-                  Sample projection
+                  Live metrics
                 </span>
               </div>
               <div className="h-56 w-full">
@@ -752,7 +690,7 @@ function SuperAdminDashboardContent() {
                   Stakeholders by Role Distribution
                 </h4>
                 <span className="text-[10px] font-mono text-text-muted">
-                  Total Users: {isDemo ? 1657 : 0}
+                  Total Users: {users.length}
                 </span>
               </div>
               <div className="h-56 w-full">

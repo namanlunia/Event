@@ -14,8 +14,6 @@ import {
 import { SEASON_LABEL } from "@/lib/season";
 import { SITE_CONFIG } from "@/lib/site-config";
 import { getProgramStats } from "@/lib/dataService";
-import { SampleBadge } from "@/components/visual/DemoModeBanner";
-import AvatarDisplay from "@/components/visual/AvatarDisplay";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export const metadata = {
@@ -52,29 +50,6 @@ export default function AboutPage() {
       title: "Digital Certificates",
       description:
         "Earn official digital certificates of participation upon completing program milestones.",
-    },
-  ];
-
-  const sampleCouncil = [
-    {
-      name: "Sample Program Lead",
-      role: "Program Director & Operations",
-      bio: "Open source advocate and distributed systems contributor.",
-    },
-    {
-      name: "Sample Evaluation Chair",
-      role: "Technical Review Chair",
-      bio: "Systems programmer and compiler optimization researcher.",
-    },
-    {
-      name: "Sample Design Lead",
-      role: "Design Systems & Web Lead",
-      bio: "Frontend engineer focusing on accessible UI primitives.",
-    },
-    {
-      name: "Sample Infrastructure Lead",
-      role: "DevOps & Infrastructure",
-      bio: "Site reliability and containerized staging workflows.",
     },
   ];
 
@@ -120,7 +95,6 @@ export default function AboutPage() {
               <h3 className="font-heading font-bold text-xl text-white">
                 Program Overview ({SEASON_LABEL})
               </h3>
-              {isDemo && <SampleBadge />}
             </div>
 
             <div className="grid grid-cols-2 gap-4 pt-2">
@@ -212,33 +186,7 @@ export default function AboutPage() {
             </p>
           </div>
 
-          {isDemo ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {sampleCouncil.map((member) => (
-                <div
-                  key={member.name}
-                  className="glass-card p-6 rounded-2xl border border-white/10 hover:border-red-primary/40 text-center group relative"
-                >
-                  <div className="absolute top-3 right-3">
-                    <SampleBadge />
-                  </div>
-                  <div className="w-16 h-16 mx-auto mb-4">
-                    <AvatarDisplay name={member.name} size="lg" />
-                  </div>
-                  <h3 className="font-heading font-bold text-base text-white group-hover:text-red-bright transition-colors">
-                    {member.name}
-                  </h3>
-                  <p className="text-xs font-mono text-red-bright/90 mb-2">
-                    {member.role}
-                  </p>
-                  <p className="text-xs text-text-muted leading-relaxed">
-                    {member.bio}
-                  </p>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="glass-panel p-8 sm:p-12 rounded-3xl border border-white/10 text-center max-w-3xl mx-auto space-y-6">
+          <div className="glass-panel p-8 sm:p-12 rounded-3xl border border-white/10 text-center max-w-3xl mx-auto space-y-6">
               <div className="w-12 h-12 rounded-2xl bg-surface-2 border border-red-primary/30 text-red-bright flex items-center justify-center mx-auto shadow-red-glow-sm">
                 <ShieldCheck className="w-6 h-6" />
               </div>
@@ -265,7 +213,6 @@ export default function AboutPage() {
                 </Link>
               </div>
             </div>
-          )}
         </div>
 
         {/* Find Omnikon Online */}

@@ -1,24 +1,17 @@
 "use client";
 
-import React from "react";
-import Link from "next/link";
 import {
-  Sparkles,
   ExternalLink,
   CheckCircle2,
   Mail,
   Building2,
-  ArrowRight,
-  ShieldCheck,
 } from "lucide-react";
 import { getConfirmedSponsors } from "@/lib/dataService";
 import { SITE_CONFIG } from "@/lib/site-config";
-import { SampleBadge } from "@/components/visual/DemoModeBanner";
 import { SEASON_LABEL } from "@/lib/season";
 
 export default function SponsorsPage() {
   const sponsors = getConfirmedSponsors();
-  const isDemoMode = SITE_CONFIG.DEMO_MODE;
 
   const sponsorshipTiers = [
     {
@@ -141,7 +134,6 @@ export default function SponsorsPage() {
               <span className="text-xs font-mono text-text-muted uppercase tracking-wider">
                 Confirmed Sponsors & Partners
               </span>
-              {isDemoMode && <div className="mt-2"><SampleBadge /></div>}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -155,7 +147,6 @@ export default function SponsorsPage() {
                       <span className="text-xs font-mono px-2.5 py-0.5 rounded bg-surface-2 text-red-bright border border-red-primary/30">
                         {sponsor.tier}
                       </span>
-                      {isDemoMode && <SampleBadge />}
                     </div>
 
                     <h3 className="font-heading font-bold text-xl text-white group-hover:text-red-bright transition-colors mb-2">
@@ -176,15 +167,7 @@ export default function SponsorsPage() {
                       <span>Visit Partner Website</span>
                       <ExternalLink className="w-3.5 h-3.5" />
                     </a>
-                  ) : (
-                    <div
-                      title="Sample partner (not a real link)"
-                      className="text-xs font-mono text-text-muted flex items-center justify-between pt-4 border-t border-white/5"
-                    >
-                      <span>Sample partner</span>
-                      <span className="text-[10px] px-2 py-0.5 rounded bg-surface-2 text-text-muted">Not active</span>
-                    </div>
-                  )}
+                  ) : null}
                 </div>
               ))}
             </div>

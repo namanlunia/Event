@@ -34,7 +34,7 @@ export function middleware(request: NextRequest) {
   }
 
   // 4. Session authentication guard when DEMO_MODE is disabled
-  const isDemo = process.env.NEXT_PUBLIC_DEMO_MODE !== "false";
+  const isDemo = process.env.NEXT_PUBLIC_DEMO_MODE === "true";
   if (!isDemo && pathname.startsWith("/dashboard")) {
     if (pathname === "/dashboard/forbidden") {
       return NextResponse.next();
@@ -44,7 +44,7 @@ export function middleware(request: NextRequest) {
       request.cookies.get("sb-access-token")?.value ||
       request.cookies.get("supabase-auth-token")?.value ||
       request.cookies.get("owoc_session")?.value ||
-      (isDev && devRole);
+      isDev;
 
     if (!authToken) {
       const loginUrl = request.nextUrl.clone();

@@ -24,7 +24,6 @@ import {
   isBeforeCodingPeriod,
 } from "@/lib/season";
 import { getProgramStats } from "@/lib/dataService";
-import { SITE_CONFIG } from "@/lib/site-config";
 
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
@@ -36,17 +35,16 @@ export default function HeroSection() {
   const primaryCta = getPrimaryCta();
   const isBeforeCoding = isBeforeCodingPeriod();
   const stats = getProgramStats();
-  const isDemoMode = SITE_CONFIG.DEMO_MODE;
 
-  // Build stat rows only when DEMO_MODE or when real data exists
+  // Build stat rows with honest fallback indicators
   const statItems = [
-    { label: "Merged PRs", value: stats.mergedPrs, suffix: "+", fallbackText: "" },
-    { label: "Student Builders", value: stats.studentBuilders, suffix: "+", fallbackText: "" },
+    { label: "Merged PRs", value: stats.mergedPrs, suffix: "+", fallbackText: "—" },
+    { label: "Student Builders", value: stats.studentBuilders, suffix: "+", fallbackText: "—" },
     { label: "Open Repositories", value: stats.openRepositories, suffix: "+", fallbackText: "TBA" },
-    { label: "Participating Colleges", value: stats.participatingColleges, suffix: "+", fallbackText: "" },
+    { label: "Participating Colleges", value: stats.participatingColleges, suffix: "+", fallbackText: "—" },
   ];
 
-  const hasStats = isDemoMode || statItems.some((s) => s.value > 0 || s.fallbackText);
+  const hasStats = statItems.some((s) => s.value > 0 || s.fallbackText);
 
   return (
     <section className="relative pt-32 pb-24 md:pt-44 md:pb-32 overflow-hidden">
@@ -141,11 +139,7 @@ export default function HeroSection() {
         {hasStats && (
           <div className="mt-16 pt-10 border-t border-white/5">
             <p className="text-xs font-mono uppercase tracking-widest text-text-muted mb-8">
-              {isDemoMode ? (
-                <>Program Statistics — <span className="text-yellow-400">Sample Data</span></>
-              ) : (
-                "Program Statistics — Live"
-              )}
+              Program Statistics
             </p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
               {statItems.map((stat) => (

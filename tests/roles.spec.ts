@@ -1,21 +1,12 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Role consistency, navigation, and persona synchronization', () => {
-  test('Demo mode banner is visible and dismissible', async ({ page }) => {
+  test('Demo mode banner is hidden in launch mode', async ({ page }) => {
     await page.goto('/');
 
-    // Verify demo mode banner is visible
+    // Verify demo mode banner is not visible in launch mode
     const banner = page.locator('[data-testid="demo-mode-banner"]');
-    await expect(banner).toBeVisible();
-    await expect(banner).toContainText('Demo mode active:');
-
-    // Click dismiss button
-    const dismissBtn = page.locator('[data-testid="dismiss-demo-banner"]');
-    await expect(dismissBtn).toBeVisible();
-    await dismissBtn.click();
-
-    // Verify banner is dismissed
-    await expect(banner).not.toBeVisible();
+    await expect(banner).toHaveCount(0);
   });
 
   test('Direct role dashboard access and absence of interactive role switcher', async ({ page }) => {

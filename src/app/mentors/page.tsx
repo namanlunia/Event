@@ -4,14 +4,11 @@ import React from "react";
 import Link from "next/link";
 import { Users, ExternalLink, Code2, ArrowRight, UserCheck } from "lucide-react";
 import { getMentors } from "@/lib/dataService";
-import { SITE_CONFIG } from "@/lib/site-config";
-import { SampleBadge } from "@/components/visual/DemoModeBanner";
 import AvatarDisplay from "@/components/visual/AvatarDisplay";
 import { SEASON_LABEL } from "@/lib/season";
 
 export default function MentorsPage() {
   const mentors = getMentors();
-  const isDemoMode = SITE_CONFIG.DEMO_MODE;
 
   return (
     <div className="relative pt-32 pb-24 min-h-screen">
@@ -30,14 +27,14 @@ export default function MentorsPage() {
           </p>
         </div>
 
-        {/* Empty State when DEMO_MODE is false and no mentors are onboarded yet */}
-        {!isDemoMode && mentors.length === 0 ? (
+        {/* Empty State: Mentors will be announced soon */}
+        {mentors.length === 0 ? (
           <div className="glass-card p-12 sm:p-16 rounded-3xl border border-white/10 text-center max-w-2xl mx-auto shadow-2xl mb-16">
             <div className="w-16 h-16 rounded-2xl bg-surface-2 border border-red-primary/30 flex items-center justify-center mx-auto mb-6 shadow-red-glow-sm">
               <UserCheck className="w-8 h-8 text-red-bright" />
             </div>
             <h2 className="font-heading font-bold text-2xl text-white mb-3">
-              Mentor Applications Are Open
+              Mentors Will Be Announced Soon
             </h2>
             <p className="text-sm text-text-secondary leading-relaxed mb-8 max-w-lg mx-auto">
               We are onboarding technical mentors across AI/ML, Systems, Web3, Cloud, and Mobile for {SEASON_LABEL}. Share your expertise, review contributor PRs, and help shape the next generation of engineers.
@@ -59,7 +56,7 @@ export default function MentorsPage() {
             </div>
           </div>
         ) : (
-          /* Mentors Grid (Demo Mode) */
+          /* Mentors Grid */
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
             {mentors.map((mentor) => (
               <div
@@ -74,7 +71,6 @@ export default function MentorsPage() {
                         <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-surface-2 text-red-bright border border-red-primary/30">
                           {mentor.domain}
                         </span>
-                        {isDemoMode && <SampleBadge />}
                       </div>
                       <h3 className="font-heading font-bold text-lg text-white group-hover:text-red-bright transition-colors mt-1.5">
                         {mentor.name}
@@ -97,13 +93,17 @@ export default function MentorsPage() {
                     <span>Track Mentor &bull; {mentor.domain}</span>
                   </span>
 
-                  <span
-                    title="Sample profile (not a real link)"
-                    className="p-2 rounded-lg bg-surface-2 text-text-secondary/60 cursor-not-allowed"
-                    aria-label={`${mentor.name}'s profile`}
-                  >
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </span>
+                  {mentor.github ? (
+                    <a
+                      href={`https://github.com/${mentor.github}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="p-2 rounded-lg bg-surface-2 hover:bg-surface-3 text-text-secondary hover:text-white transition-colors"
+                      aria-label={`${mentor.name}'s GitHub profile`}
+                    >
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                  ) : null}
                 </div>
               </div>
             ))}
