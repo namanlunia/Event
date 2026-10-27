@@ -62,10 +62,10 @@ test.describe('OWOC Launch Readiness Test Suite', () => {
     await expect(githubLink).toBeVisible();
   });
 
-  test('Item 4: Projects directory and featured section display polished To Be Continued empty states', async ({ page, request }) => {
-    // 1. Projects directory page shows To Be Continued empty state
+  test('Item 4: Projects directory and featured section display polished To Be Announced empty states', async ({ page, request }) => {
+    // 1. Projects directory page shows To Be Announced empty state
     await page.goto('/projects');
-    await expect(page.getByText('To Be Continued').first()).toBeVisible();
+    await expect(page.getByText('To Be Announced').first()).toBeVisible();
     await expect(page.getByRole('link', { name: /Onboard Your Repository/i })).toBeVisible();
 
     // 2. Stats on Home page shows TBA for repositories

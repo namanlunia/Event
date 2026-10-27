@@ -83,11 +83,11 @@ export default function ProjectsDirectoryPage() {
 
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-primary/10 border border-red-primary/30 text-xs font-mono text-red-bright uppercase font-bold mb-4 shadow-red-glow-sm">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>To Be Continued · To Be Announced</span>
+            <span>To Be Announced</span>
           </div>
 
           <h2 className="font-heading font-black text-2xl sm:text-4xl text-white mb-4">
-            To Be Continued: Repositories Unveiled Soon
+            To Be Announced: Repositories Unveiled Soon
           </h2>
 
           <p className="text-sm sm:text-base text-text-secondary leading-relaxed mb-8 max-w-xl mx-auto">

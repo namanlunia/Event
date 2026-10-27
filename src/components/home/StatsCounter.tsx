@@ -37,7 +37,7 @@ export default function StatsCounter() {
     },
     {
       label: "Open Source Projects",
-      sublabel: "To be continued · To be announced",
+      sublabel: "To be announced",
       value: 0,
       suffix: "",
       isTba: true,

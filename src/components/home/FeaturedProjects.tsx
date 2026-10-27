@@ -38,10 +38,10 @@ export default function FeaturedProjects() {
           </div>
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-primary/10 border border-red-primary/30 text-xs font-mono text-red-bright uppercase font-bold mb-3 shadow-red-glow-sm">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>To Be Continued · To Be Announced</span>
+            <span>To Be Announced</span>
           </div>
           <h3 className="font-heading font-bold text-2xl sm:text-3xl text-white mb-3">
-            To Be Continued: Repositories Unveiled Soon
+            To Be Announced: Repositories Unveiled Soon
           </h3>
           <p className="text-sm text-text-secondary leading-relaxed max-w-lg mx-auto mb-8">
             Project applications and repository vetting are currently in progress for {formatDateRange(PHASES[0])}. The full catalog of open-source projects will be announced ahead of the coding sprint.

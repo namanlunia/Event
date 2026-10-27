@@ -5,7 +5,7 @@ import { Project, UserProfile, PullRequest, Ambassador, College, Sponsor } from 
  * In launch mode, projects are "To Be Announced" prior to official onboarding.
  */
 export function getApprovedProjects(): Project[] {
-  // In launch mode, projects are cleared and "To Be Continued / To Be Announced"
+  // In launch mode, projects are cleared and "To Be Announced"
   return [];
 }
 
